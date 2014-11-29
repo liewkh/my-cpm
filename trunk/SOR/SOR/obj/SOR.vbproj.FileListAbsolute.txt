@@ -1,0 +1,12 @@
+C:\Vincent\SOR\SOR\SOR\bin\Debug\SOR.exe.config
+C:\Vincent\SOR\SOR\SOR\bin\Debug\SOR.exe
+C:\Vincent\SOR\SOR\SOR\bin\Debug\SOR.pdb
+C:\Vincent\SOR\SOR\SOR\bin\Debug\SOR.xml
+C:\Vincent\SOR\SOR\SOR\bin\Debug\CPM-DAO.dll
+C:\Vincent\SOR\SOR\SOR\bin\Debug\log4net.dll
+C:\Vincent\SOR\SOR\SOR\obj\Debug\ResolveAssemblyReference.cache
+C:\Vincent\SOR\SOR\SOR\obj\Debug\SOR.Resources.resources
+C:\Vincent\SOR\SOR\SOR\obj\Debug\SOR.vbproj.GenerateResource.Cache
+C:\Vincent\SOR\SOR\SOR\obj\Debug\SOR.exe
+C:\Vincent\SOR\SOR\SOR\obj\Debug\SOR.xml
+C:\Vincent\SOR\SOR\SOR\obj\Debug\SOR.pdb
