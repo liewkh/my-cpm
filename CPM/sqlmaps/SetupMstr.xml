@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<sql-map name="SetupMstr">
+
+  <dynamic-mapped-statement name="Search-HQInfo">
+    <part type="static">
+      SELECT * FROM HQINFO
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-LocationInfo">
+    <part type="static">
+      SELECT LOCATIONINFOID,LOCATIONCODE,LOCATIONNAME,ADDRESS1,ADDRESS2,ADDRESS3,POSTCODE,STATE,SEASONBUDGETAMOUNT,VISITORBUDGETAMOUNT,
+      TELEPHONE,FAX,EMAIL,URL,REMARK,LASTUPDATEDBY AS LUB,(SELECT B.BRANCHNAME FROM BRANCHINFO B WHERE B.BRANCHINFOID = L.BRANCHINFOID) AS BRANCHNAME,
+      BRANCHINFOID,COMPANYINVOICENO,COMPANYINVOICEPREFIX,INDIVIDUALINVOICENO,INDIVIDUALINVOICEPREFIX,RECEIPTNO,RECEIPTPREFIX,SUPERVISORNAME,
+      SUPERVISORHPNO,MANAGERNAME,MANAGERHPNO,LOCATIONCAPACITY,LOCATIONTYPE,DEBITNOTENO,DEBITNOTEPREFIX,CREDITNOTENO,CREDITNOTEPREFIX,REFUNDCUTOFFDATE,
+      LASTUPDATEDDATETIME AS LUDT,ACTIVE,LOCATIONMESSAGE1,LOCATIONMESSAGE2,LOCATIONMESSAGE3 FROM LOCATIONINFO L WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      L.LOCATIONCODE like  #LocationCode#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      L.BRANCHINFOID = #BranchInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      L.LOCATIONNAME like  #LocationName#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      L.ACTIVE =  #Active#
+    </part>
+    <part type="static">
+      ORDER BY L.LOCATIONNAME
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-BankMstr">
+    <part type="static">
+      SELECT BANKMSTRID,BANKCODE,ACCOUNTNO,BANKDESC,ADDRESS1,ADDRESS2,ADDRESS3,TELNO,
+      FAXNO,MANAGER,MANAGERHPNO,OFFICER,OFFICERHPNO,ACTIVE,LASTUPDATEDBY AS LUB,
+      LASTUPDATEDDATETIME AS LUDT FROM BANKMSTR
+    </part>
+    <part type="dynamic" prepend="AND" >
+      BANKCODE like  #BankCode#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      BANKDESC like  #BankDesc#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE =  #Active#
+    </part>
+    <part type="static">
+      ORDER BY BANKDESC
+    </part>
+
+  </dynamic-mapped-statement>
+  
+  <dynamic-mapped-statement name="Search-BranchInfo">
+    <part type="static">
+      SELECT BRANCHINFOID,BRANCHCODE,BRANCHNAME,ADDRESS1,ADDRESS2,ADDRESS3,POSTCODE,STATE,
+      TELEPHONE,FAX,EMAIL,BRANCHMANAGER,BRANCHMANAGERHPNO,REMARK,LASTUPDATEDBY AS LUB,
+      LASTUPDATEDDATETIME AS LUDT,ACTIVE FROM BRANCHINFO B WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      B.BRANCHCODE like  #BranchCode#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      B.BRANCHNAME like  #BranchName#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      B.ACTIVE =  #Active#
+    </part>
+    <part type="static">
+      ORDER BY B.BRANCHNAME
+    </part>
+
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-CodeMstr">
+    <part type="static">
+      SELECT CODEMSTRID AS CODEMSTRID, CODEABBR AS CODEABBR, CODEDESC AS CODEDESC, ACTIVE,
+      LASTUPDATEDDATETIME AS LUDT, LASTUPDATEDBY AS LUB
+      FROM CODEMSTR
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODECAT like  #CodeCat#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODEABBR like  #CodeAbbr#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODEDESC like #CodeDesc#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE = #Active#
+    </part>
+    <part type="static">
+      ORDER BY CODEDESC
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-CodeName">
+    <part type="static">
+      SELECT CODEABBR AS CODEABBR
+      FROM CODEMSTR
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODECAT like  #CodeCat#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODEABBR like  #CodeAbbr#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-CodeDesc">
+    <part type="static">
+      SELECT CODE_DESC
+      FROM CODEMSTR
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODE_CAT like  #CodeCat#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      CODE_DESC like #Desc#
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-PassCardMstr">
+    <part type="static">
+      SELECT PASSCARDMSTRID,DEBTORID,SERIALNO,(select codedesc from codemstr where codecat = 'ITY'
+      and codeabbr = ITEMTYPE) as ITEMTYPEDESC,ITEMTYPE,
+      SUPPLIER,ALLOCATIONDATE,DELIVERYDATE,STATUS,WARRANTYPERIOD,ACTIVE,LOCATIONINFOID,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'PCS' AND CODEABBR = PASSCARDMSTR.STATUS) AS STATUSDESC,
+      (SELECT L.LOCATIONNAME FROM LOCATIONINFO L WHERE L.LOCATIONINFOID = PASSCARDMSTR.LOCATIONINFOID) AS LOCATION,
+      REMARK,LASTUPDATEDBY AS LUB,LASTUPDATEDDATETIME AS LUDT,DEPOSITPRINT
+      FROM PASSCARDMSTR
+      WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE = #Active#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      SERIALNO LIKE #SerialNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ITEMTYPE = #ItemType#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID IN (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      STATUS = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      DEBTORID = #DebtorId#
+    </part>
+    <part type="static">
+      ORDER BY SERIALNO
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-PassCardMstrAvailable">
+    <part type="static">
+      SELECT PASSCARDMSTRID,DEBTORID,SERIALNO,(select codedesc from codemstr where codecat = 'ITY'
+      and codeabbr = ITEMTYPE) as ITEMTYPEDESC,ITEMTYPE,
+      SUPPLIER,PURCHASEDDATE,ACTIVE,BRANCHINFOID,
+      REMARK,LASTUPDATEDBY AS LUB,LASTUPDATEDDATETIME AS LUDT
+      FROM PASSCARDMSTR
+      WHERE DEBTORID IS NULL OR DEBTORID = ''
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE = #Active#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      SERIALNO = #SerialNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ITEMTYPE = #ItemType#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      BRANCHINFOID = #BranchInfoId#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-SeasonTypeMstr">
+    <part type="static">
+      SELECT SEASONTYPEMSTRID,SEASONDURATION,DEPOSIT,LOCATIONINFOID,VEHICLETYPE,SEASONTYPE,SEASONTYPEDESC,AMOUNT,ACTIVE,
+      (SELECT C.CODEDESC FROM CODEMSTR C WHERE C.CODECAT = 'VTY' AND C.CODEABBR = SEASONTYPEMSTR.VEHICLETYPE) AS VEHICLETYPEDESC,
+      OTHER,LASTUPDATEDBY AS LUB,LASTUPDATEDDATETIME AS LUDT
+      FROM SEASONTYPEMSTR WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      SEASONTYPE LIKE #SeasonType#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      SEASONTYPEDESC LIKE #SeasonTypeDesc#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID IN (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      SEASONTYPEMSTRID = #SeasonTypeMstrId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      VEHICLETYPE = #VehicleType#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE = #Active#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-MiscPaymentTypeMstr">
+    <part type="static">
+      SELECT MISCPAYMENTTYPEMSTRID,LOCATIONINFOID,PAYMENTCODE,PAYMENTDESC,ACTIVE,
+      LASTUPDATEDBY AS LUB,LASTUPDATEDDATETIME AS LUDT,AMOUNT
+      FROM MISCPAYMENTTYPEMSTR WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PAYMENTCODE LIKE #PaymentCode#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PAYMENTDESC LIKE #PaymentDesc#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      LOCATIONINFOID IN (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      MISCPAYMENTTYPEMSTRID = #MiscPaymentTypeMstrId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ACTIVE = #Active#
+    </part>
+  </dynamic-mapped-statement>
+
+</sql-map>

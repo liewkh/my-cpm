@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<sql-map name="PassCardMstr">
+
+ 
+  <dynamic-mapped-statement name="Search-PassCardMstrDebtor">
+    <part type="static">
+      SELECT P.PASSCARDMSTRID,P.DEBTORID,P.SERIALNO,(select codedesc from codemstr where codecat = 'ITY'
+      and codeabbr = ITEMTYPE) as ITEMTYPEDESC,P.ITEMTYPE,P.FIRSTUSEDDATE AS FIRSTUSED,DATEADD(MONTH,WARRANTYPERIOD,P.DELIVERYDATE) AS WARRANTYEXPIRY,
+      P.SUPPLIER,P.ALLOCATIONDATE,P.DELIVERYDATE,P.STATUS,P.WARRANTYPERIOD,P.ACTIVE,P.LOCATIONINFOID,D.CATEGORY,
+      (SELECT L.LOCATIONNAME FROM LOCATIONINFO L WHERE L.LOCATIONINFOID = P.LOCATIONINFOID) AS LOCATION,
+      P.REMARK,P.LASTUPDATEDBY AS LUB,P.LASTUPDATEDDATETIME AS LUDT,D.NAME,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'PCS' AND CODEABBR = P.STATUS) AS PASSCARDSTATUS
+      FROM PASSCARDMSTR P,DEBTOR D
+      WHERE P.DEBTORID = D.DEBTORID
+    </part>
+    <part type="dynamic" prepend="AND" >
+      P.SERIALNO LIKE #SerialNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      P.ITEMTYPE = #ItemType#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.STATUS = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.NAME LIKE #Debtor#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.CATEGORY = #Category#
+    </part>
+    <part type="static">
+      ORDER BY D.NAME
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-PassCardMstr">
+    <part type="static">
+      SELECT P.PASSCARDMSTRID,P.DEBTORID,P.SERIALNO,(select codedesc from codemstr where codecat = 'ITY'
+      and codeabbr = ITEMTYPE) as ITEMTYPEDESC,P.ITEMTYPE,P.FIRSTUSEDDATE AS FIRSTUSED,DATEADD(MONTH,WARRANTYPERIOD,P.DELIVERYDATE) AS WARRANTYEXPIRY,
+      P.SUPPLIER,P.ALLOCATIONDATE,P.DELIVERYDATE,P.STATUS,P.WARRANTYPERIOD,P.ACTIVE,P.LOCATIONINFOID,'' AS CATEGORY,
+      (SELECT L.LOCATIONNAME FROM LOCATIONINFO L WHERE L.LOCATIONINFOID = P.LOCATIONINFOID) AS LOCATION,
+      P.REMARK,P.LASTUPDATEDBY AS LUB,P.LASTUPDATEDDATETIME AS LUDT,(SELECT NAME FROM DEBTOR WHERE DEBTORID = P.DEBTORID) AS NAME,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'PCS' AND CODEABBR = P.STATUS) AS PASSCARDSTATUS
+      FROM PASSCARDMSTR P
+      WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      P.SERIALNO LIKE #SerialNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      P.ITEMTYPE = #ItemType#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.LOCATIONINFOID IN (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.STATUS = #Status#
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-PassCardHistory">
+    <part type="static">
+      SELECT D.NAME AS DEBTOR,PCH.STARTDATE,PCH.ENDDATE,CAST(DATEDIFF(MONTH,PCH.STARTDATE,PCH.ENDDATE) AS INT) AS DURATION,PCH.PASSCARDMSTRID,D.DEBTORID
+      FROM PASSCARDHISTORY PCH,DEBTOR D
+      WHERE PCH.DEBTORID = D.DEBTORID
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PCH.PASSCARDMSTRID = #PassCardMstrId#
+    </part>
+    <part type="static" >
+      ORDER BY PCH.STARTDATE
+    </part>
+  </dynamic-mapped-statement>
+
+</sql-map>

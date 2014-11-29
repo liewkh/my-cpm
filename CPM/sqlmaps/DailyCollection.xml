@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="DailyCollection">
+
+  <dynamic-mapped-statement name="Search-DailyCollectionSales">
+    <part type="static">
+      select dc.dailycollectionid,dc.transactiondate,li.locationinfoid,li.locationname as locationName,
+      dc.cashier1,dc.cashier2,dc.cashier3,
+      dc.valetservice1,dc.valetservice2,dc.valetservice3,
+      dc.motorcycle1,dc.motorcycle2,dc.motorcycle3,
+      dc.aps1,dc.aps2,dc.aps3,dc.aps4,dc.aps5,dc.aps6,
+      dc.SeasonCarCash,dc.SeasonCarCheque,dc.SeasonCarCreditCard,dc.SeasonMotorCycleCash,dc.SeasonMotorCycleCheque,dc.SeasonMotorCycleCreditCard,
+      dc.depositcar,dc.depositmotorcycle,dc.depositother,
+      dc.clamp,dc.transponderSticker,dc.numberplate,dc.temporaryrental,dc.misc,
+      floor(dc.InfoEarlyBird) as InfoEarlyBird,floor(dc.InfoComplimentaryTicket) as InfoComplimentaryTicket,floor(dc.InfoManualRaised) as InfoManualRaised,floor(dc.InfoOsTicket) as InfoOsTicket,floor(dc.InfoOther) as InfoOther,
+      dbo.fxGetTotalSales(dc.dailycollectionid) as dailyTotal,
+      dbo.fxGetTotalSeason(dc.dailycollectionid) as dailySeasonTotal,
+      dbo.fxGetTotalDeposit(dc.dailycollectionid) as dailyTotalDeposit,
+      dbo.fxGetTotalOthers(dc.dailycollectionid) as dailyTotalOthers,
+      (dbo.fxGetTotalSales(dc.dailycollectionid) + dbo.fxGetTotalSeason(dc.dailycollectionid) + dbo.fxGetTotalDeposit(dc.dailycollectionid) + dbo.fxGetTotalOthers(dc.dailycollectionid))  as TotalCollection,
+      dbo.fxGetMonthToDateSales(dc.transactiondate,dc.locationinfoid) as MonthToDate,
+      dbo.fxGetLastMonthSales(dc.transactiondate,dc.locationinfoid) as LastMonth,
+      dbo.fxGetCashierTotal(dc.dailycollectionid) as cashierTotal,
+      dbo.fxGetValetTotal(dc.dailycollectionid) as valetTotal,
+      dbo.fxGetMotorcycleTotal(dc.dailycollectionid) as motorcycleTotal,
+      dbo.fxGetApsTotal(dc.dailycollectionid) as apsTotal,
+      dbo.fxGetTotalSeasonCar(dc.dailycollectionid) as seasonCarTotal,
+      dbo.fxGetTotalSeasonMotorcycle(dc.dailycollectionid) as seasonMotorcycleTotal
+      from dailycollection dc,locationinfo li
+      where dc.locationinfoid = li.locationinfoid
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      li.locationinfoid =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      li.locationinfoid in (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" >
+      convert(varchar, dc.transactiondate, 103) =  #TransactionDate#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DailyCollectionKoi">
+    <part type="static">
+      select li.locationname,sum(InfoEarlyBird) EarlyBird,sum(InfoComplimentaryTicket) complimentary,sum(InfoManualRaised) manualraised,sum(InfoOsTicket) outstanding,sum(infoother) others,
+      dbo.fxGetMonthToDateEbKoi(dc.transactiondate,dc.locationinfoid) as MonthToDateEB,
+      dbo.fxGetMonthToDateWaiverKoi(dc.transactiondate,dc.locationinfoid) as MonthToDateComplimentary,
+      dbo.fxGetMonthToDateManualKoi(dc.transactiondate,dc.locationinfoid) as MonthToDateManualRaised,
+      dbo.fxGetMonthToDateOsKoi(dc.transactiondate,dc.locationinfoid) as MonthToDateOs,
+      dbo.fxGetMonthToDateOtherKoi(dc.transactiondate,dc.locationinfoid) as MonthToDateOts,
+      dbo.fxGetLastMonthEBKoi(dc.transactiondate,dc.locationinfoid) as LastMonthEB,
+      dbo.fxGetLastMonthWaiverKoi(dc.transactiondate,dc.locationinfoid) as LastMonthComplimentary,
+      dbo.fxGetLastMonthManualKoi(dc.transactiondate,dc.locationinfoid) as LastMonthManualRaised,
+      dbo.fxGetLastMonthOsKoi(dc.transactiondate,dc.locationinfoid) as LastMonthOs,
+      dbo.fxGetLastMonthOtherKoi(dc.transactiondate,dc.locationinfoid) as LastMonthOts
+      from dailycollection dc,locationinfo li
+      where dc.locationinfoid = li.locationinfoid
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      li.locationinfoid =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      convert(varchar, dc.transactiondate, 103) =  #TransactionDate#
+    </part>
+    <part type="static">
+      group by li.locationname,dc.locationinfoid,dc.transactiondate
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DailyCollectionByLocation">
+    <part type="static">
+      select count(dailycollectionid) as cnt from dailycollection
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      locationinfoid =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      convert(varchar, transactiondate, 103) =  #TransactionDate#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Update-DailyCollection">
+    <part type="static">
+      select dc.dailycollectionid,dc.transactiondate,li.locationinfoid,li.locationname as locationName,
+      dc.cashier1,dc.cashier2,dc.cashier3,
+      dc.valetservice1,dc.valetservice2,dc.valetservice3,
+      dc.motorcycle1,dc.motorcycle2,dc.motorcycle3,
+      dc.aps1,dc.aps2,dc.aps3,dc.aps4,dc.aps5,dc.aps6,
+      dc.SeasonCarCash,dc.SeasonCarCheque,dc.SeasonCarCreditCard,dc.SeasonMotorCycleCash,dc.SeasonMotorCycleCheque,dc.SeasonMotorCycleCreditCard,
+      dc.depositcar,dc.depositmotorcycle,dc.depositother,
+      dc.clamp,dc.transponderSticker,dc.numberplate,dc.temporaryrental,dc.misc,
+      floor(dc.InfoEarlyBird) as InfoEarlyBird,floor(dc.InfoComplimentaryTicket) as InfoComplimentaryTicket,floor(dc.InfoManualRaised) as InfoManualRaised,floor(dc.InfoOsTicket) as InfoOsTicket,floor(dc.InfoOther) as InfoOther,
+      dbo.fxGetMonthToDateSales(dc.transactiondate,dc.locationinfoid) as MonthToDate,
+      dbo.fxGetLastMonthSales(dc.transactiondate,dc.locationinfoid) as LastMonth
+      from dailycollection dc,locationinfo li
+      where dc.locationinfoid = li.locationinfoid
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      li.locationinfoid =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      convert(varchar, dc.transactiondate, 103) =  #TransactionDate#
+    </part>
+    <part type="static" >
+      order by dc.transactiondate desc,li.locationname
+    </part>
+  </dynamic-mapped-statement>
+  
+  </sql-map>

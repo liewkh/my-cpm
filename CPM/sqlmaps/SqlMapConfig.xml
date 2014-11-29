@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map-config>  
+  <sql-map name="UserMstr" resource="sqlmaps/UserMstr.xml" />
+  <sql-map name="SetupMstr" resource="sqlmaps/SetupMstr.xml" />
+  <sql-map name="Debtor" resource="sqlmaps/Debtor.xml" />
+  <sql-map name="BillGeneration" resource="sqlmaps/BillGeneration.xml" />
+  <sql-map name="PassCardMstr" resource="sqlmaps/PassCardMstr.xml" />
+  <sql-map name="DailyCollection" resource="sqlmaps/DailyCollection.xml" />
+  <sql-map name="TicketAllocation" resource="sqlmaps/TicketAllocation.xml" />
+  <sql-map name="ItemReplacement" resource="sqlmaps/ItemReplacement.xml" />
+  <sql-map name="BillingSummary" resource="sqlmaps/BillingSummary.xml" />
+</sql-map-config>

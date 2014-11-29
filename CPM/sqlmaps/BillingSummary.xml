@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<sql-map name="BillingSummary">
+
+ 
+  <dynamic-mapped-statement name="Search-BillingSummary">
+    <part type="static">
+      select top 1 'Initial Billing' as Name ,dbo.fxGetInitialBilling(4,1) as Apr,dbo.fxGetInitialBilling(5,1) as May,dbo.fxGetInitialBilling(6,1) as Jun from debtor
+      union all
+      select top 1 'Debit Note' as Name ,dbo.fxGetdebitNote(4,1) as Apr,dbo.fxGetDebitNote(5,1) as May,dbo.fxGetDebitNote(6,1) as Jun from debtor
+      union all
+      select top 1 'Credit Note' as Name ,dbo.fxGetCreditNote(4,1) as Apr,dbo.fxGetCreditNote(5,1) as May,dbo.fxGetCreditNote(6,1) as Jun from debtor
+      union all
+      select top 1 'Collection' as Name ,dbo.fxGetCollection(4,1) as Apr,dbo.fxGetCollection(5,1) as May,dbo.fxGetCollection(6,1) as Jun from debtor
+      union all
+      select top 1 'Current Month Outstanding' as Name ,(isnull(dbo.fxGetInitialBilling(4,1),0) + isnull(dbo.fxGetdebitNote(4,1),0)) - (isnull(dbo.fxGetCreditNote(4,1),0) + isnull(dbo.fxGetCollection(4,1),0)) as Apr,
+      (isnull(dbo.fxGetInitialBilling(5,1),0) + isnull(dbo.fxGetdebitNote(5,1),0)) - (isnull(dbo.fxGetCreditNote(5,1),0) + isnull(dbo.fxGetCollection(5,1),0))  as May,
+      (isnull(dbo.fxGetInitialBilling(6,1),0) + isnull(dbo.fxGetdebitNote(6,1),0)) - (isnull(dbo.fxGetCreditNote(6,1),0) + isnull(dbo.fxGetCollection(6,1),0))  as Jun from debtor
+
+    </part>
+    <part type="dynamic" prepend="AND" >
+      D.LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+    <part type="dynamic" prepend="AND" >
+      P.ITEMTYPE = #ItemType#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0" >
+      P.STATUS = #Status#
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-PassCardHistory">
+    <part type="static">
+      SELECT D.NAME AS DEBTOR,PCH.STARTDATE,PCH.ENDDATE,CAST(DATEDIFF(MONTH,PCH.STARTDATE,PCH.ENDDATE) AS INT) AS DURATION,PCH.PASSCARDMSTRID,D.DEBTORID
+      FROM PASSCARDHISTORY PCH,DEBTOR D
+      WHERE PCH.DEBTORID = D.DEBTORID
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PCH.PASSCARDMSTRID = #PassCardMstrId#
+    </part>
+    <part type="static" >
+      ORDER BY PCH.STARTDATE
+    </part>
+  </dynamic-mapped-statement>
+
+</sql-map>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu>
+  <menuitem root="" name="Maintenance Screen" menuid="1" />
+  <menuitem root="" name="Transaction Screen"  menuid="2" />
+  <menuitem root="" name="Enguiry Screen"  menuid="3" />
+  <menuitem root="" name="Reporting"  menuid="4" />
+
+  <menuitem root="1" name="HQ Setup" url="Maintenance/HQInfo.html"  menuid="11"/>
+  <menuitem root="1" name="Branch Setup" url="Maintenance/BranchSetup.html"  menuid="12"/>
+  <menuitem root="1" name="Debtor Setup" url="Maintenance/Debtor.html"  menuid="13"/>
+  <menuitem root="1" name="Vehicle Type Setup" url="Maintenance/VehicleType.html"  menuid="14"/>
+  <menuitem root="1" name="Season Type Setup" url="Maintenance/SeasonType.html"  menuid="15"/>
+  <menuitem root="1" name="Bank Setup" url="Maintenance/BankSetup.html"  menuid="16"/>
+  <menuitem root="1" name="Item Type Setup" url="Maintenance/ItemTypeSetup.html"  menuid="17"/>
+  <menuitem root="1" name="Pass Card Setup" url="Maintenance/PassCardInfo.html"  menuid="18"/>
+  <menuitem root="1" name="Payment Type Setup" url="Maintenance/PaymentTypeSetup.html"  menuid="19"/>
+  <menuitem root="1" name="Employee Setup" url="Maintenance/EmployeeSetup.html"  menuid="20"/>
+
+  <menuitem root="2" name="Bill Generation(Invoicing)" url="Transaction/BillGeneration.html"  menuid="21"/>
+  <menuitem root="2" name="Bill Payment" url="Transaction/BillPayment.html"  menuid="22"/>
+  <menuitem root="2" name="Bill Cancellation" url="Transaction/BillCancellation.html"  menuid="23"/>
+  <menuitem root="2" name="Parking Cancellation" url="Transaction/Cancellation.html"  menuid="24"/>
+    <menuitem root="2" name="Item Replacement" url="Transaction/ItemReplacement.html"  menuid="26"/>
+  <menuitem root="2" name="Daily Collection" url="Transaction/DailyCollection.html"  menuid="27"/>
+  <menuitem root="2" name="Misc Collection" url="Transaction/MiscCollection.html"  menuid="28"/>
+       
+        
+  <menuitem root="3" name="Card Profile Enquiry" url="Enquiry/PassCardInfoEnq.html"  menuid="31"/>
+  <menuitem root="3" name="Customer Payment Enquiry" url="Enquiry/CustomerPaymentEnq.html"  menuid="32"/>
+  <menuitem root="3" name="Cancellation Enquiry" url="Enquiry/CancellationEnq.html"  menuid="32"/>
+  <menuitem root="3" name="Daily Collection Enquiry" url="Enquiry/dailyCollectionEnq.html"  menuid="32"/>
+
+  <menuitem root="4" name="Listing Of Card Information" url="http://www.Microsoft.com"  menuid="41"/>
+  <menuitem root="4" name="Billing Summary" url="http://www.GotDotNet.com"  menuid="42"/>
+  <menuitem root="4" name="Credit/Debit Note Summary" url="http://www.GotDotNet.com"  menuid="43"/>
+  <menuitem root="4" name="Monthly Billing Summary" url="http://www.GotDotNet.com"  menuid="44"/>
+  <menuitem root="4" name="Card History" url="Report/rptPassCardHist.html"  menuid="45"/>
+  <menuitem root="4" name="Refund Of Deposit/Advance Payment Report" url="http://www.GotDotNet.com"  menuid="46"/>
+
+</menu>

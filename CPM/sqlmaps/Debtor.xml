@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="Debtor">
+
+  <dynamic-mapped-statement name="Search-Debtor">
+    <part type="static">
+      SELECT DebtorId,Category,LocationInfoId,Name As Debtor,(select li.locationname from locationinfo li where li.locationinfoid = Debtor.locationinfoid) as locationName,
+      ICNo,TelNoOffice,TelNoMobile,TelNoHome,EmployerName,Address1,Address2,Address3,Address1 + ' ' + Address2 + ' ' + Address3 As Address,
+      PostCode,ContactPerson,Designation,Remark,LastInvoiceNo,LastInvoiceDate,LastPayment,State,
+      Balance,Status,LastUpdatedBy as LUB,LastUpdatedDatetime as LUDT,INITIALHALFMONTH,INVOICINGFREQUENCY,FaxNo,BankType,BankAccNo,CompanyNo,EmailAddress FROM Debtor
+      WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND">
+      Category =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      Name LIKE #Name#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ICNo LIKE  #ICNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      Status = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      LocationInfoId =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      LocationInfoId IN  (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      InvoicingFrequency = #InvoicingFrequency#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      DebtorId = #DebtorId#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorByPassBayNo">
+    <part type="static">
+      SELECT d.DebtorId,d.Category,d.LocationInfoId,d.Name As Debtor,
+      (select li.locationname from locationinfo li where li.locationinfoid = d.locationinfoid) as locationName,
+      d.ICNo,d.TelNoOffice,d.TelNoMobile,d.TelNoHome,d.EmployerName,d.Address1,
+      d.Address2,d.Address3,d.Address1 + ' ' + d.Address2 + ' ' + d.Address3 As Address,
+      d.PostCode,d.ContactPerson,d.Designation,d.Remark,d.LastInvoiceNo,d.LastInvoiceDate,d.LastPayment,d.State,
+      d.Balance,d.Status,d.LastUpdatedBy as LUB,d.LastUpdatedDatetime as LUDT,d.INITIALHALFMONTH,
+      d.INVOICINGFREQUENCY,d.FaxNo,d.BankType,d.BankAccNo,d.CompanyNo,d.EmailAddress
+      FROM Debtor d, DebtorPassBay dpb
+      WHERE d.debtorid = dpb.debtorid
+    </part>
+    <part type="dynamic" prepend="AND">
+      d.Category =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      d.Name LIKE #Name#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      d.ICNo LIKE  #ICNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      d.Status = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.LocationInfoId =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.LocationInfoId IN  (#LocationId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.InvoicingFrequency = #InvoicingFrequency#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.DebtorId = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      dpb.SerialNo LIKE #SerialNo#
+    </part>
+  </dynamic-mapped-statement>
+  
+
+  <dynamic-mapped-statement name="Search-DebtorPassBayNo">
+    <part type="static">
+      select top 1 dbo.fxGetPassBay(debtorid) from passcardmstr
+    </part>
+    <part type="dynamic" prepend="AND">
+      DebtorId =  #DebtorId#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorPassByInvoice">
+    <part type="static">
+      select top 1 dbo.fxGetPass(InvoiceNo) From DebtorAccountHeader
+    </part>
+    <part type="dynamic" prepend="AND">
+      InvoiceNo =  #InvoiceNo#
+    </part>
+  </dynamic-mapped-statement>  
+
+  <dynamic-mapped-statement name="Search-DebtorOS">
+    <part type="static">
+      SELECT d.DebtorId,(select codedesc from codemstr where codecat = 'CTG' and codeabbr = d.Category) as Category,d.LastInvoiceNo,d.LastInvoiceDate,d.LastPayment,
+      dah.InvoiceNo,dah.InvoiceDate,dah.InvoicePeriod,dah.status,dah.amount
+      FROM Debtor d,DebtorAccountHeader DAH
+      WHERE d.debtorid = DAH.debtorId
+    </part>
+    <part type="dynamic" prepend="AND">
+      D.Category =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND">
+      D.DebtorId = #DebtorId#
+    </part>
+    <part type="static">
+      AND D.Status = 'A'
+    </part>
+    <part type="static">
+      AND DAH.Status = 'N'
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorPassBay">
+    <part type="static">
+      select dbp.UserName,dbp.seasontypemstrid,dbp.debtorpassbayid,dbp.vehicletype,pcm.itemtype,pcm.serialno,stm.deposit,dbp.passcardmstrid,dbp.debtorid,
+      dbp.commencementdate,dbp.carregistrationno,stm.amount,
+      (select codedesc from codemstr where codecat = 'MAKE' and codeabbr = dbp.make) as makedesc,dbp.make,
+      dbp.model,dbp.types from debtorpassbay dbp,seasontypemstr stm,passcardmstr pcm
+      where dbp.seasontypemstrid = stm.seasontypemstrid
+      and pcm.passcardmstrid = dbp.passcardmstrid
+      and dbp.status = 'A'
+    </part>
+    <part type="dynamic" prepend="AND">
+      dbp.DebtorId = #DebtorId#
+    </part>
+    <part type="static" >
+      order by dbp.commencementdate desc
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-DebtorInvoice">
+    <part type="static">
+      select dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,dah.amount,(dah.amount-isnull(dah.PaidAmount,0)) as OSamount,
+      cancellationremark as status,dah.debtorid,dah.status as statuscode,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DAH.TXNTYPE) AS TXNTYPEDESC,DAH.TXNTYPE
+      from debtoraccountheader dah
+      WHERE 1=1
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.DebtorId = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.InvoiceNo LIKE #InvoiceNo#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.Status In (#Status#)
+    </part>
+    <part type="dynamic" prepend="AND">
+      IsNull(dah.Amount,0) - IsNull(dah.Amount,0) = #Amount#
+    </part>
+    <part type="static" >
+      order by dah.invoicedate desc
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorInvoiceReceipt">
+    <part type="static">
+      select LEFT(datename(m,ih.month),3) + '-' + datename(yy,ih.month) as month,isnull(ih.PaidAmount,0) as PaidAmount,(ih.amount-isnull(ih.PaidAmount,0)) as OSamount,
+      dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,ih.amount,ih.invoicehistoryid,
+      (Select codedesc from codemstr where codecat = 'DAHS' and codeabbr = dah.status) as status,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DAH.TXNTYPE) AS TXNTYPEDESC,DAH.TXNTYPE
+      from debtoraccountheader dah,invoicehistory ih
+      WHERE ih.debtoraccountheaderid = dah.debtoraccountheaderid
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.DebtorId = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.InvoiceNo LIKE #InvoiceNo#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.Status In (#Status#)
+    </part>
+    <part type="static" >
+      and (ih.amount-isnull(ih.PaidAmount,0)) &lt;&gt; 0
+    </part>
+    <part type="static" >
+      order by dah.invoicedate
+    </part>
+    
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorReceipt">
+    <part type="static">
+      select (select remark from debtorpaymentcancellation where debtorpaymentid = dp.debtorpaymentid) as statusdesc,dp.status,dp.debtorid,
+      (select codedesc from codemstr where codecat='PTY' and codeabbr = dp.paymenttype) as paymentType,dp.paymenttype as paymentTypeCode,
+      dp.debtorpaymentid,dp.paymentdate,dp.receiptno,dp.description,dp.amount,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DP.TXNTYPE) AS TXNTYPEDESC,DP.TXNTYPE
+      from debtorpayment dp
+      where 1=1
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      dp.DebtorId = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      dp.DebtorAccountHeaderId = #DebtorAccountHeaderId#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dp.ReceiptNo LIKE #ReceiptNo#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dp.TxnType = #TxnType#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dp.Status IN (#Status#)
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Parking-Cancellation">
+    <part type="static">
+      Select PC.DEBTORPASSBAYNOCANCELID,(SELECT NAME FROM DEBTOR WHERE DEBTORID = PC.DEBTORID) AS DEBTOR,
+      PC.CANCELLATIONDATE,(SELECT SERIALNO FROM PASSCARDMSTR WHERE PASSCARDMSTRID = PC.PASSCARDMSTRID) AS SERIALNO,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='PKR' AND CODEABBR = PC.REASON) AS REASON,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='DPS' AND CODEABBR = PC.DEPOSIT) AS DEPOSITDESC,
+      PC.REMARK,PC.DEPOSIT,PC.OUTSTANDING,PC.UNUSED,PC.EFFECTIVEFROM,
+      (SELECT EMPLOYEENAME FROM EMPLOYEEMSTR E,USERMSTR U WHERE E.EMPLOYEEMSTRID = U.EMPLOYEEMSTRID AND U.USERMSTRID = PC.PROCESSEDBY) AS PROCESSEDBY,
+      PC.LASTUPDATEDBY AS LUB,PC.LASTUPDATEDDATETIME AS LUDT
+      From DEBTORPASSBAYNOCANCEL PC,Debtor D
+      WHERE PC.DebtorId = D.DebtorId
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PC.STATUS = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.DEBTORID = #DebtorId#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Parking-CancellationVerified">
+    <part type="static">
+      Select D.DEBTORID,PC.DEBTORPASSBAYNOCANCELID,(SELECT NAME FROM DEBTOR WHERE DEBTORID = PC.DEBTORID) AS DEBTOR,
+      PC.CANCELLATIONDATE,(SELECT SERIALNO FROM PASSCARDMSTR WHERE PASSCARDMSTRID = PC.PASSCARDMSTRID) AS SERIALNO,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='PKR' AND CODEABBR = PC.REASON) AS REASON,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='DPS' AND CODEABBR = PC.DEPOSIT) AS DEPOSITDESC,
+      PC.REMARK,PC.DEPOSIT,PC.OUTSTANDING,PC.UNUSED,PC.EFFECTIVEFROM,
+      (SELECT EMPLOYEENAME FROM EMPLOYEEMSTR E,USERMSTR U WHERE E.EMPLOYEEMSTRID = U.EMPLOYEEMSTRID AND U.USERMSTRID = PC.PROCESSEDBY) AS PROCESSEDBY,
+      PC.LASTUPDATEDBY AS LUB,PC.LASTUPDATEDDATETIME AS LUDT,
+      PC.CHEQUENO,PC.CHEQUEDATE,AMOUNT = case when deposit = 'RF' THEN depositamount+unused-outstanding ELSE unused-outstanding END
+      From DEBTORPASSBAYNOCANCEL PC,Debtor D
+      WHERE PC.DebtorId = D.DebtorId
+    </part>
+    <part type="dynamic" prepend="AND" >
+      PC.STATUS = #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.DEBTORID = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.CATEGORY = #Category#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      D.NAME LIKE #Name#
+    </part>
+    <part type="static">
+      AND PC.CHEQUENO IS NULL
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Debtor-PaymentOS">
+    <part type="static">
+      select li.locationname,li.LOCATIONINFOID,sum(amount) as amountdue,sum(amountpaid) as amountpaid,sum(osamount) as osamount
+      from debtor d, locationinfo li,
+      (select D.LOCATIONINFOID,d.DEBTORID,SUM(isNULL(dah.amount,0)) AS AMOUNT,
+      sum((dah.amount-isnull(dah.PaidAmount,0))) as OSamount,SUM(ISNULL(DAH.PAIDAMOUNT,0)) AS AMOUNTPAID
+      from debtoraccountheader dah,debtor d
+      WHERE dah.debtorid = d.debtorid
+      AND (dah.amount &gt; isnull(dah.paidamount,0) and DAH.STATUS &lt;&gt; 'C')
+      GROUP BY D.LOCATIONINFOID,d.DEBTORID,dah.amount,dah.PaidAmount) b
+      where d.debtorid = b.debtorid
+      and d.locationinfoid = li.locationinfoid
+    </part>  
+      <part type="dynamic" prepend="AND" skip="0">
+        D.LOCATIONINFOID IN (#LocationId#)
+      </part>
+    <part type="static">
+      group by li.locationname,li.LOCATIONINFOID
+      order by li.locationname
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Debtor-OSDetail">
+    <part type="static">
+      select d.name as debtor,b.invoiceno,sum(osamount) as osamount,b.invoicedate,DATEDIFF(DAY,b.invoicedate,getDate()) as aging
+      from debtor d, locationinfo li,
+      (select d.DEBTORID,sum((dah.amount-isnull(dah.PaidAmount,0))) as OSamount,dah.invoiceno,dah.invoicedate
+      from debtoraccountheader dah,debtor d
+      WHERE dah.debtorid = d.debtorid
+      AND (dah.amount &gt; isnull(dah.paidamount,0) and DAH.STATUS &lt;&gt; 'C')
+      GROUP BY d.DEBTORID,dah.amount,dah.PaidAmount,dah.invoiceno,dah.invoicedate) b
+      where d.debtorid = b.debtorid
+      and d.locationinfoid = li.locationinfoid
+    </part>
+    <part type="dynamic" prepend="AND" >
+      LI.LOCATIONINFOID = #LocationInfoId#
+    </part>
+    <part type="static">
+      group by d.name,b.invoiceno,b.invoicedate
+      order by d.name
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-ParkingCancellation">
+    <part type="static">
+      select d.name as debtor,dc.cancellationdate,dc.effectivefrom,
+      (select codedesc from codemstr where codecat = 'PKR' and codeabbr= dc.reason) as reason,
+      (select codedesc from codemstr where codecat = 'IRS' and codeabbr= dc.status) as statusdesc,
+      (select serialno from passcardmstr where passcardmstrid = dc.passcardmstrid) as serialno,
+      dc.chequeno as chequeno,dc.chequedate as chequedate,AMOUNT = case when deposit = 'RF' THEN depositamount+unused-outstanding ELSE unused-outstanding END
+      from debtorpassbaynocancel dc,debtor d
+      where dc.debtorid = d.debtorid
+    </part>
+    <part type="dynamic" prepend="AND" >
+      D.Name LIKE #Name#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      D.LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+    <part type="dynamic" prepend="AND" >
+      D.CATEGORY = #Category#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      MONTH(DC.CANCELLATIONDATE) = #MonthFrom#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      YEAR(DC.CANCELLATIONDATE) = #YearFrom#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorSOR">
+    <part type="static">
+      select SorId,DebtorId,PassCardMstrId,StartMonth,EndMonth,Remarks,
+      (select serialno from passcardmstr where passcardmstrid = sor.passcardmstrid) as SerialNo
+      from sor where (Active &lt;&gt; 'N' or Active is NULL)
+    </part>
+    <part type="dynamic" prepend="AND" >
+      DebtorId = #DebtorId#
+    </part>
+  </dynamic-mapped-statement>
+  
+  <dynamic-mapped-statement name="Search-DebtorPassBayMinusSor">
+    <part type="static">
+      select dbp.UserName,dbp.seasontypemstrid,dbp.debtorpassbayid,dbp.vehicletype,pcm.itemtype,pcm.serialno,stm.deposit,dbp.passcardmstrid,dbp.debtorid,
+      dbp.commencementdate,dbp.carregistrationno,stm.amount,
+      (select codedesc from codemstr where codecat = 'MAKE' and codeabbr = dbp.make) as makedesc,dbp.make,
+      dbp.model,dbp.types from debtorpassbay dbp,seasontypemstr stm,passcardmstr pcm
+      where dbp.seasontypemstrid = stm.seasontypemstrid
+      and pcm.passcardmstrid = dbp.passcardmstrid
+      and dbp.status = 'A'
+      and pcm.passcardmstrid not in
+      (select passcardmstrid from sor where dbp.debtorid = pcm.debtorid AND Active &lt;&gt; 'N')
+    </part>
+    <part type="dynamic" prepend="AND">
+      dbp.DebtorId = #DebtorId#
+    </part>
+    <part type="static" >
+      order by dbp.commencementdate desc
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorAutoBillGenOS">
+    <part type="static">
+      SELECT d.DebtorId,(select codedesc from codemstr where codecat = 'CTG' and codeabbr = d.Category) as Category,d.LastInvoiceNo,d.LastInvoiceDate,d.LastPayment,
+      dah.InvoiceNo,dah.InvoiceDate,dah.InvoicePeriod,dah.status,dah.amount
+      FROM Debtor d,DebtorAccountHeader DAH
+      WHERE d.debtorid = DAH.debtorId
+    </part>
+    <part type="dynamic" prepend="AND">
+      D.DebtorId = #DebtorId#
+    </part>
+    <part type="static">
+      AND D.Status = 'A'
+    </part>
+    <part type="static">
+      AND DAH.Status &lt;&gt; 'C'
+    </part>
+    <part type="static">
+      AND DAH.TxnType = 'I'
+    </part>
+    <part type="static">
+      AND (DAH.amount - ISNULL(DAH.paidamount,0)) &gt; 0
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.Category =  #Category#
+    </part>
+  </dynamic-mapped-statement>
+
+</sql-map>

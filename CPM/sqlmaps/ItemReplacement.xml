@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="ItemReplacement">
+
+  <dynamic-mapped-statement name="Search-ItemReplacement">
+    <part type="static">
+      Select IR.ITEMREPLACEMENTID,(SELECT NAME FROM DEBTOR WHERE DEBTORID = IR.DEBTORID) AS DEBTOR,IR.TRANSACTIONDATE,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='RRS' AND CODEABBR = IR.REASON) AS REASON,
+      (SELECT EMPLOYEENAME FROM EMPLOYEEMSTR E,USERMSTR U WHERE E.EMPLOYEEMSTRID = U.EMPLOYEEMSTRID AND U.USERMSTRID = IR.PROCESSEDBY) AS PROCESSEDBY,
+      IR.RECEIPTNO,IR.DONO,IR.ACTIVATIONDATE,
+      (SELECT SERIALNO FROM PASSCARDMSTR WHERE PASSCARDMSTRID = IR.OLDPASSCARDMSTRID) AS OLDPASS,
+      (SELECT SERIALNO FROM PASSCARDMSTR WHERE PASSCARDMSTRID = IR.NEWPASSCARDMSTRID) AS NEWPASS,
+      IR.DEPOSIT,IR.LASTUPDATEDBY AS LUB,IR.LASTUPDATEDDATETIME AS LUDT
+      From ItemReplacement IR,Debtor D
+      WHERE IR.DebtorId = D.DebtorId
+    </part>
+    <part type="dynamic" prepend="AND" >
+      IR.STATUS = #Status#
+    </part>    
+    <part type="dynamic" prepend="AND" skip="0">
+      D.LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+  </dynamic-mapped-statement>
+
+
+</sql-map>

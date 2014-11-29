@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="UserMstr">
+
+  <dynamic-mapped-statement name="Search-CheckUserNameExist">
+    <part type="static">
+     SELECT EMP.EMPLOYEEMSTRID,UM.USERMSTRID,UM.USERID,EMP.EMPLOYEENAME,EMP.BRANCHINFOID,EMP.DEFAULTLOCATIONINFOID,UM.ACCESSLEVEL
+     FROM USERMSTR UM,EMPLOYEEMSTR EMP
+     WHERE UM.EMPLOYEEMSTRID = EMP.EMPLOYEEMSTRID
+     AND UM.STATUS = 'A' AND EMP.STATUS='Y'
+    </part>
+    <part type="dynamic" prepend="AND" >
+      UM.USERID =  #UserId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      UM.PASSWORD =  #Password#
+    </part>
+  </dynamic-mapped-statement>
+
+
+  <dynamic-mapped-statement name="Search-UserMenuAccess">
+    <part type="static">
+      SELECT UA.MENUID,MM.NAME,MM.ROOT,MM.URL
+      FROM USERMSTR UM, USERACCESS UA,MENUMSTR MM
+      WHERE UM.ACCESSLEVEL = UA.ACCESSID
+      AND MM.MENUID = UA.MENUID
+    </part>
+    <part type="dynamic" prepend="AND" >
+      UM.ACCESSLEVEL =  #AccessLevel#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      UM.USERMSTRID =  #UserMstrId#
+    </part>    
+    <part type="static" >
+      order by MM.SEQ
+    </part>    
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-Employees">
+    <part type="static">
+      SELECT EMP.EMPLOYEEMSTRID,EMP.EMPLOYEENAME,EMP.EMPLOYEECODE,EMP.TITLE,EMP.BRANCHINFOID,
+      EMP.EMAIL,EMP.CONTACTNO,EMP.DEPARTMENT,EMP.ADDRESS1,EMP.ADDRESS2,EMP.ADDRESS3,
+      EMP.POSTCODE,EMP.STATE,EMP.STATUS,EMP.DEFAULTLOCATIONINFOID,EMP.REMARK,
+      EMP.LASTUPDATEDBY AS LUB,EMP.LASTUPDATEDDATETIME AS LUDT,
+      UM.USERMSTRID,UM.USERID,UM.PASSWORD,UM.ACCESSLEVEL,EMP.ENQUIREREPORT
+      FROM EMPLOYEEMSTR EMP,USERMSTR UM
+      WHERE EMP.EMPLOYEEMSTRID = UM.EMPLOYEEMSTRID
+    </part>
+    <part type="dynamic" prepend="AND" >
+      EMP.EMPLOYEENAME LIKE #EmployeeName#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      UM.USERID LIKE  #UserId#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      EMP.STATUS =  #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      EMP.BRANCHINFOID =  #BranchInfoId#
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-EmployeeMultipleLocation">
+    <part type="static">
+      select top 1 dbo.fxGetMultipleLocation(employeeMstrId) from EmployeeLocation
+    </part>
+    <part type="dynamic" prepend="AND">
+      EmployeeMstrId =  #EmployeeMstrId#
+    </part>
+  </dynamic-mapped-statement>
+
+
+</sql-map>

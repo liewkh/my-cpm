@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="TicketAllocation">
+
+  <dynamic-mapped-statement name="Search-TicketAllocation">
+    <part type="static">
+      Select TicketAllocationId,Item,(SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'ITEM' AND CODEABBR=ITEM) AS ITEMDESC,
+      Supplier,LocationInfoId,Unit,UnitQty,(SELECT LOCATIONNAME FROM LOCATIONINFO WHERE LOCATIONINFOID = TicketAllocation.LOCATIONINFOID) AS LOCATION,
+      QtyAllocation,StartNo,EndNo,DODate,AllocationDate,Remark,LastUpdatedBy As LUB,LastUpdatedDatetime As LUDT
+      From TicketAllocation
+      Where 1=1
+    </part>
+    <part type="dynamic" prepend="AND" >
+      ITEM = #Item#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      SUPPLIER LIKE #Supplier#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      LOCATIONINFOID IN (#LocationInfoId#)
+    </part>
+  </dynamic-mapped-statement>
+
+
+</sql-map>
