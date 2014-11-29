@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sql-map name="BillGeneration">
+
+  <dynamic-mapped-statement name="Search-Debtor">
+    <part type="static">
+      SELECT DEBTORID,NAME AS DEBTOR,0 AS SEQ FROM DEBTOR
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      LOCATIONINFOID =  #LocationInfoId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      CATEGORY =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND">
+      STATUS =  #Status#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      INVOICINGFREQUENCY =  #InvoicingFrequency#
+    </part>    
+    <part type="static">
+      UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'
+      ORDER BY SEQ,DEBTOR
+    </part>
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Generate-Invoice">
+    <part type="static">
+      select dbp.passcardmstrid from debtorpassbay dbp,debtor d
+      where dbp.debtorid = d.debtorid
+      and dbp.status = 'A'
+      and dbp.passcardmstrid not in
+      (select ihd.passcardmstrid from invoicehistorydetail ihd,invoicehistory ih,debtoraccountheader dah
+      where ihd.debtoraccountheaderid = ih.debtoraccountheaderid
+      and dah.debtorid = D.DebtorId
+      and dah.debtoraccountheaderid =  ih.debtoraccountheaderid
+      and ihd.debtoraccountheaderid = ih.debtoraccountheaderid    
+    </part>
+    <part type="dynamic" prepend="AND" >
+      IH.month &gt;= #MonthFrom#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      IH.month &lt;= #MonthTo# )
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      dbp.DebtorId =  #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.InvoicingFrequency =  #InvoicingFrequency#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.Category =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.LocationInfoId =  #LocationInfoId#
+    </part>
+  </dynamic-mapped-statement>  
+
+
+
+</sql-map>
