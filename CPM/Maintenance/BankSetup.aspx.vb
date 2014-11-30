@@ -79,6 +79,7 @@ Partial Class Maintenance_BankSetup
         txtManagerHpNo.Text = ""
         txtOfficer.Text = ""
         txtOfficerHpNo.Text = ""
+        txtAccountCode.Text = ""
         rbActiveYes.Checked = True
 
         gvBank.DataSource = Nothing
@@ -129,6 +130,7 @@ Partial Class Maintenance_BankSetup
             txtManagerHpNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvBank.SelectedDataKey(bankMstrDao.COLUMN_ManagerHpNo))
             txtOfficer.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvBank.SelectedDataKey(bankMstrDao.COLUMN_Officer))
             txtOfficerHpNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvBank.SelectedDataKey(bankMstrDao.COLUMN_OfficerHpNo))
+            txtAccountCode.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvBank.SelectedDataKey(bankMstrDao.COLUMN_AccountCode))
 
             If Utility.DataTypeUtils.parseHTMLSafeToString(gvBank.SelectedDataKey(bankMstrDao.COLUMN_Active)).Equals(ConstantGlobal.Yes) Then
                 rbActiveYes.Checked = True
@@ -247,6 +249,7 @@ Partial Class Maintenance_BankSetup
             bankMstrEnt.setManagerHpNo(Trim(txtManagerHpNo.Text.ToUpper))
             bankMstrEnt.setOfficer(Trim(txtOfficer.Text.ToUpper))
             bankMstrEnt.setOfficerHpNo(Trim(txtOfficerHpNo.Text))
+            bankMstrEnt.setAccountCode(Trim(txtAccountCode.Text))
 
             If rbActiveYes.Checked = True Then VDefunctInd = ConstantGlobal.Yes Else VDefunctInd = ConstantGlobal.No
             bankMstrEnt.setActive(VDefunctInd)
@@ -323,6 +326,7 @@ Partial Class Maintenance_BankSetup
             bankMstrEnt.setManagerHpNo(Trim(txtManagerHpNo.Text.ToUpper))
             bankMstrEnt.setOfficer(Trim(txtOfficer.Text.ToUpper))
             bankMstrEnt.setOfficerHpNo(Trim(txtOfficerHpNo.Text))
+            bankMstrEnt.setAccountCode(Trim(txtAccountCode.Text))
 
             If rbActiveYes.Checked = True Then VDefunctInd = ConstantGlobal.Yes Else VDefunctInd = ConstantGlobal.No
             bankMstrEnt.setActive(VDefunctInd)
