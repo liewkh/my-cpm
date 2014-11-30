@@ -142,9 +142,9 @@
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtAddress1" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="4"></asp:TextBox></td>		
 		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel" style="height: 22px">Account Code</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-        <td class="hSpace" style="width: 319px">&nbsp;</td>
+        <td><asp:TextBox ID="txtAccountCode" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="5"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -158,7 +158,7 @@
     <tr>
 		<td class="normalLabel">Address 2</td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtAddress2" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="5"></asp:TextBox></td>		
+		<td><asp:TextBox ID="txtAddress2" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="6"></asp:TextBox></td>		
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -177,7 +177,7 @@
     <tr>
 		<td class="normalLabel">Address 3</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtAddress3" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="6"></asp:TextBox></td>				
+        <td><asp:TextBox ID="txtAddress3" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="7"></asp:TextBox></td>				
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -195,11 +195,11 @@
     <tr>
 		<td class="normalLabel">Tel No</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtTelNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="7"></asp:TextBox></td>				
+        <td><asp:TextBox ID="txtTelNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="8"></asp:TextBox></td>				
 		<td class="hSpace">&nbsp;</td>
 		<td class="normalLabel">Fax No</td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtFaxNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="8"></asp:TextBox></td>				
+		<td><asp:TextBox ID="txtFaxNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="9"></asp:TextBox></td>				
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -213,11 +213,11 @@
     <tr>
 		<td class="normalLabel">Manager Name</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtManagerName" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="9"></asp:TextBox></td>				
+        <td><asp:TextBox ID="txtManagerName" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="10"></asp:TextBox></td>				
 		<td class="hSpace">&nbsp;</td>
 		<td class="normalLabel">Manager Hp No</td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtManagerHpNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="10"></asp:TextBox></td>				
+		<td><asp:TextBox ID="txtManagerHpNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="11"></asp:TextBox></td>				
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -231,11 +231,11 @@
     <tr>
 		<td class="normalLabel">Officer In Charge</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtOfficer" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="11"></asp:TextBox></td>				
+        <td><asp:TextBox ID="txtOfficer" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="12"></asp:TextBox></td>				
 		<td class="hSpace">&nbsp;</td>
 		<td class="normalLabel">Officer Hp No</td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtOfficerHpNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="12"></asp:TextBox></td>				
+		<td><asp:TextBox ID="txtOfficerHpNo" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="13"></asp:TextBox></td>				
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -307,7 +307,7 @@
                             <asp:GridView ID="gvBank" runat="server" AllowPaging="True" AllowSorting = "True" 
                                 AutoGenerateColumns="False" CellPadding="0" Width="100%"
                                 BorderWidth="1px" HorizontalAlign="Left" CellSpacing="1" DataKeyNames="BANKMSTRID,BANKCODE,BANKDESC,ADDRESS1,ADDRESS2,ADDRESS3,TELNO,
-                                FAXNO,MANAGER,ACCOUNTNO,MANAGERHPNO,OFFICER,OFFICERHPNO,ACTIVE,LUB,LUDT" DataSourceID="dsBank">
+                                FAXNO,MANAGER,ACCOUNTNO,MANAGERHPNO,OFFICER,OFFICERHPNO,ACCOUNTCODE,ACTIVE,LUB,LUDT" DataSourceID="dsBank">
                                 <Columns>
                                     <asp:BoundField DataField="BANKCODE" HeaderText="Bank Code" SortExpression="BANKCODE"
                                         NullDisplayText="N/A" />
