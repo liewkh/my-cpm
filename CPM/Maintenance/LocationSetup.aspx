@@ -727,7 +727,73 @@
                             &nbsp;</td>
                         <td class="hSpace" style="width: 13px">
                             &nbsp;</td>
-                    </tr>                                         
+                    </tr>   
+                    
+                    <tr>
+                        <td class="normalLabel">
+                            Daily Collection No</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td>
+                            <asp:TextBox ID="txtDailyCollectionNo" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="24"></asp:TextBox></td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="normalLabel">
+                            Daily Collection Prefix</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td>
+                            <asp:TextBox ID="txtDailyCollectionPrefix" runat="server" CssClass="textBoxSmall" MaxLength="50"
+                                TabIndex="25"></asp:TextBox></td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace" style="width: 92px">
+                            &nbsp;</td>
+                        <td class="hSpace" style="width: 13px">
+                            &nbsp;</td>
+                    </tr>
+                    
+                     <tr>
+                        <td class="normalLabel">
+                            Account Code</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td>
+                            <asp:TextBox ID="txtAccountCode" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="26"></asp:TextBox></td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace">
+                            &nbsp;</td>
+                        <td class="hSpace" style="width: 92px">
+                            &nbsp;</td>
+                        <td class="hSpace" style="width: 13px">
+                            &nbsp;</td>                                         
 
 
                     <tr>
@@ -736,7 +802,7 @@
                         <td class="hSpace">
                             &nbsp;</td>
                         <td>
-                            <asp:TextBox ID="txtCutOff" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="24"></asp:TextBox></td>
+                            <asp:TextBox ID="txtCutOff" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="27"></asp:TextBox></td>
                         <td class="hSpace">
                             &nbsp;</td>
                         <td class="normalLabel">Remark
@@ -745,7 +811,7 @@
                             &nbsp;</td>
                         <td>
                             <asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxLarge" MaxLength="1000"
-                                TabIndex="25" TextMode="MultiLine"></asp:TextBox></td>
+                                TabIndex="27" TextMode="MultiLine"></asp:TextBox></td>
                         <td class="hSpace">
                             &nbsp;</td>
                         <td class="hSpace">
@@ -770,9 +836,9 @@
                         <td class="hSpace">
                             &nbsp;</td>
                         <td nowrap>
-                            <asp:RadioButton ID="rbActiveYes" runat="server" GroupName="ActiveInd" TabIndex="26"
+                            <asp:RadioButton ID="rbActiveYes" runat="server" GroupName="ActiveInd" TabIndex="28"
                                 Text="Yes" Checked="True" />&nbsp;
-                            <asp:RadioButton ID="rbActiveNo" runat="server" GroupName="ActiveInd" TabIndex="27"
+                            <asp:RadioButton ID="rbActiveNo" runat="server" GroupName="ActiveInd" TabIndex="29"
                                 Text="No" />
                         <td class="hSpace">
                             &nbsp;</td>
@@ -842,7 +908,7 @@
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
                                             CellSpacing="1" DataKeyNames="LOCATIONINFOID,BRANCHINFOID,LOCATIONCODE,LOCATIONNAME,ADDRESS1,ADDRESS2,ADDRESS3,MANAGERNAME,MANAGERHPNO,SUPERVISORNAME,SUPERVISORHPNO,BRANCHNAME,SEASONBUDGETAMOUNT,VISITORBUDGETAMOUNT,
                                                                           LOCATIONCAPACITY,LOCATIONTYPE,COMPANYINVOICENO,COMPANYINVOICEPREFIX,INDIVIDUALINVOICENO,INDIVIDUALINVOICEPREFIX,RECEIPTNO,RECEIPTPREFIX,POSTCODE,STATE,TELEPHONE,FAX,EMAIL,URL,REMARK,
-                                                                          ACTIVE,LUDT,LUB,DEBITNOTENO,DEBITNOTEPREFIX,CREDITNOTENO,CREDITNOTEPREFIX,REFUNDCUTOFFDATE" DataSourceID="dsLocation">
+                                                                          ACTIVE,LUDT,LUB,DEBITNOTENO,DEBITNOTEPREFIX,CREDITNOTENO,CREDITNOTEPREFIX,REFUNDCUTOFFDATE,ACCOUNTCODE,DAILYCOLLECTIONNO,DAILYCOLLECTIONPREFIX" DataSourceID="dsLocation">
                                             <Columns>
                                                 <asp:BoundField DataField="LOCATIONCODE" HeaderText="Location Code" SortExpression="LOCATIONCODE"
                                                     NullDisplayText="N/A" />

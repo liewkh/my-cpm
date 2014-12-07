@@ -101,6 +101,9 @@ Partial Class Maintenance_LocationSetup
         txtCutOff.Text = ""
         txtSeasonAmount.Text = ""
         txtVisitorAmount.Text = ""
+        txtDailyCollectionNo.Text = ""
+        txtDailyCollectionPrefix.Text = ""
+        txtAccountCode.Text = ""
         rbActiveYes.Checked = True
         gvLocation.DataSource = Nothing
         addMode()
@@ -157,6 +160,13 @@ Partial Class Maintenance_LocationSetup
         If txtDebitNoteNo.Text <> "" Then
             If Not Utility.Tools.NumericValidation(txtDebitNoteNo.Text) Then
                 lblmsg.Text = "Please enter numeric value for Debit Note No."
+                Exit Sub
+            End If
+        End If
+
+        If txtDailyCollectionNo.Text <> "" Then
+            If Not Utility.Tools.NumericValidation(txtDailyCollectionNo.Text) Then
+                lblmsg.Text = "Please enter numeric value for Daily Collection No."
                 Exit Sub
             End If
         End If
@@ -290,6 +300,14 @@ Partial Class Maintenance_LocationSetup
                 locInfoEnt.setCreditNoteNo(Trim(txtCreditNoteNo.Text))
             End If
 
+            If txtDailyCollectionNo.Text <> "" Then
+                locInfoEnt.setDailyCollectionNo(Trim(txtDailyCollectionNo.Text))
+            End If
+
+            If txtAccountCode.Text <> "" Then
+                locInfoEnt.setAccountCode(Trim(txtAccountCode.Text))
+            End If
+
             If txtCutOff.Text <> "" Then
                 locInfoEnt.setRefundCutOffDate(txtCutOff.Text)
             End If
@@ -300,6 +318,7 @@ Partial Class Maintenance_LocationSetup
             locInfoEnt.setReceiptPrefix(Trim(txtReceiptPrefix.Text.ToUpper))
             locInfoEnt.setDebitNotePrefix(Trim(txtDebitNotePrefix.Text.ToUpper))
             locInfoEnt.setCreditNotePrefix(Trim(txtCreditNotePrefix.Text.ToUpper))
+            locInfoEnt.setDailyCollectionPrefix(Trim(txtDailyCollectionPrefix.Text.ToUpper))
 
             If rbActiveYes.Checked = True Then activeInd = ConstantGlobal.Yes Else activeInd = ConstantGlobal.No
 
@@ -394,6 +413,9 @@ Partial Class Maintenance_LocationSetup
             txtDebitNotePrefix.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_DebitNotePrefix))
             txtCreditNoteNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_CreditNoteNo))
             txtCreditNotePrefix.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_CreditNotePrefix))
+            txtDailyCollectionPrefix.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_DailyCollectionPrefix))
+            txtDailyCollectionNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_DailyCollectionNo))
+            txtAccountCode.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_AccountCode))
 
             txtCutOff.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_RefundCutOffDate))
 
@@ -505,6 +527,13 @@ Partial Class Maintenance_LocationSetup
             End If
         End If
 
+        If txtDailyCollectionNo.Text <> "" Then
+            If Not Utility.Tools.NumericValidation(txtDailyCollectionNo.Text) Then
+                lblmsg.Text = "Please enter numeric value for Daily Collection No."
+                Exit Sub
+            End If
+        End If
+
         If txtCutOff.Text <> "" Then
             If Not Utility.Tools.NumericValidation(txtCutOff.Text) Then
                 lblmsg.Text = "Please enter numeric value for Cancellation Cut Off."
@@ -609,6 +638,14 @@ Partial Class Maintenance_LocationSetup
                 locInfoEnt.setCreditNoteNo(Trim(txtCreditNoteNo.Text))
             End If
 
+            If txtDailyCollectionNo.Text <> "" Then
+                locInfoEnt.setDailyCollectionNo(Trim(txtDailyCollectionNo.Text))
+            End If
+
+            If txtAccountCode.Text <> "" Then
+                locInfoEnt.setAccountCode(Trim(txtAccountCode.Text))
+            End If
+
 
             locInfoEnt.setCompanyInvoicePrefix(Trim(txtComInvoicePrefix.Text.ToUpper))
             locInfoEnt.setIndividualInvoicePrefix(Trim(txtIndInvoicePrefix.Text.ToUpper))
@@ -616,6 +653,7 @@ Partial Class Maintenance_LocationSetup
             locInfoEnt.setReceiptPrefix(Trim(txtReceiptPrefix.Text.ToUpper))
             locInfoEnt.setDebitNotePrefix(Trim(txtDebitNotePrefix.Text.ToUpper))
             locInfoEnt.setCreditNotePrefix(Trim(txtCreditNotePrefix.Text.ToUpper))
+            locInfoEnt.setDailyCollectionPrefix(Trim(txtDailyCollectionPrefix.Text.ToUpper))
 
 
             If txtSeasonAmount.Text <> "" Then
