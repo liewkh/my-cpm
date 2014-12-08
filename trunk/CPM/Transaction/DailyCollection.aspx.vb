@@ -347,6 +347,9 @@ Partial Class Transaction_DailyCollection
             dailyEnt.setLocationInfoId(ddLocation.SelectedValue)
             dailyEnt.setLastUpdatedDatetime(Now)
             dailyEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dailyEnt.setDailyCollectionNo(dm.getDailyCollectionNextRunningNo(ddLocation.SelectedValue, trans, cn))
+            dailyEnt.setGstAmount(dm.getCurrentTax)
+
             dailyDao.insertDB(dailyEnt, cn, trans)
             trans.Commit()
             clear()
