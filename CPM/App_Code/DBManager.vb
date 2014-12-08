@@ -491,4 +491,84 @@ Public Class DBManager
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
     End Function
 
+    Public Function getDailyCollectionNextRunningNo(ByVal locationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection) As String
+        'Get the RunningNo
+        Dim runningNo As Integer
+        Dim selectSQL As String
+        Dim prefix As String = ""
+        Dim dm As New DBManager
+        Dim dt As New DataTable
+
+
+
+        'Update the RunningNo to the next increment
+        Try
+
+            selectSQL = "Select DailyCollectionNo,DailyCollectionPrefix From LocationInfo WITH (NOLOCK) Where LocationInfoId = " + locationInfoId
+            dt = dm.execTable(selectSQL)
+
+            If dt.Rows.Count > 0 Then
+                If dt.Rows(0)("DailyCollectionNo").Equals(System.DBNull.Value) Then
+                    Return 0 'If never setup
+                End If
+                runningNo = dt.Rows(0)("DailyCollectionNo")
+                prefix = dt.Rows(0)("DailyCollectionPrefix")
+            Else
+                Return 0
+            End If
+
+            If prefix <> "" Then
+                If prefix = "YY" Then
+                    prefix = Now.Year.ToString.Remove(0, 2)
+                End If
+            End If
+
+
+            Dim updateSQL As String
+            updateSQL = "Update LocationInfo WITH (ROWLOCK) set DailyCollectionNo = @DailyCollectionNo Where LocationInfoId = " + locationInfoId
+            Dim cmd As New SqlCommand(updateSQL, cn, trans)
+
+            cmd.Parameters.Add(New SqlParameter("@DailyCollectionNo", SqlDbType.Int))
+            cmd.Parameters("@DailyCollectionNo").Value = runningNo + 1
+
+            cmd.ExecuteNonQuery()
+            cmd.Dispose()
+        Catch ex As Exception
+            'trans.Rollback()
+            Throw ex
+        Finally
+            dt = Nothing
+        End Try
+        Return prefix & runningNo.ToString.PadLeft(7, "0"c)
+    End Function
+
+    Public Function getCurrentTax() As Double
+
+        Dim selectSQL As String
+        Dim dm As New DBManager
+        Dim dt As New DataTable
+        Dim taxAmount As Double
+
+        Try
+
+            selectSQL = "SELECT TAX,TAXDESCRIPTION FROM HQINFO"
+            dt = dm.execTable(selectSQL)
+
+            If dt.Rows.Count > 0 Then
+                If dt.Rows(0)("TAX").Equals(System.DBNull.Value) Then
+                    Return 0 'If never setup
+                End If
+                taxAmount = dt.Rows(0)("TAX")
+            Else
+                Return 0
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        Finally
+            dt = Nothing
+        End Try
+        Return taxAmount
+    End Function
+
 End Class
