@@ -104,6 +104,7 @@ Partial Class Maintenance_LocationSetup
         txtDailyCollectionNo.Text = ""
         txtDailyCollectionPrefix.Text = ""
         txtAccountCode.Text = ""
+        ddBankCode.SelectedIndex = 0
         rbActiveYes.Checked = True
         gvLocation.DataSource = Nothing
         addMode()
@@ -248,6 +249,7 @@ Partial Class Maintenance_LocationSetup
 
         Try
             locInfoEnt.setBranchInfoId(ddBranch.SelectedValue)
+            locInfoEnt.setBankCode(ddBankCode.SelectedValue)
             locInfoEnt.setLocationCode(Trim(txtLocationCode.Text.ToUpper))
             locInfoEnt.setLocationName(Trim(txtLocationName.Text.ToUpper))
             locInfoEnt.setAddress1(Trim(txtAddress1.Text.ToUpper))
@@ -386,6 +388,7 @@ Partial Class Maintenance_LocationSetup
             txtAddress3.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_Address3))
             txtPostCode.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_PostCode))
             ddState.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_State))
+            ddBankCode.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_BankCode))
             txtTelephone.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_Telephone))
             txtFax.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_Fax))
             txtEmail.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_Email))
@@ -589,6 +592,7 @@ Partial Class Maintenance_LocationSetup
         Try
             locInfoEnt.setLocationInfoId(gvLocation.SelectedDataKey(locInfoDao.COLUMN_LocationInfoID))
             locInfoEnt.setBranchInfoId(ddBranch.SelectedValue)
+            locInfoEnt.setBankCode(ddBankCode.SelectedValue)
             locInfoEnt.setLocationCode(Trim(txtLocationCode.Text.ToUpper))
             locInfoEnt.setLocationName(Trim(txtLocationName.Text.ToUpper))
             locInfoEnt.setAddress1(Trim(txtAddress1.Text.ToUpper))

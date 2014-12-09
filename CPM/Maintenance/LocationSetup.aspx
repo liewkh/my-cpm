@@ -772,12 +772,15 @@
                             <asp:TextBox ID="txtAccountCode" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="26"></asp:TextBox></td>
                         <td class="hSpace">
                             &nbsp;</td>
+                        <td class="normalLabel">
+                            Default Bank Code</td>
                         <td class="hSpace">
                             &nbsp;</td>
-                        <td class="hSpace">
-                            &nbsp;</td>
-                        <td class="hSpace">
-                            &nbsp;</td>
+                        <td nowrap><asp:DropDownList ID="ddBankCode" runat="server" TabIndex="27" DataSourceID="dsBankCode"  DataTextField="bankdesc" DataValueField="bankcode" CssClass="dropdownMedium"></asp:DropDownList>
+                               <asp:SqlDataSource ID="dsBankCode" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"
+                                            SelectCommand="select bankcode,bankdesc,0 as seq from BankMstr where Active='Y' union all select codeabbr as bankcode,codedesc as bankdesc,seq from codemstr where codecat = 'DEFAULT' order by seq,bankdesc">
+                                        </asp:SqlDataSource>
+		                </td>
                         <td class="hSpace">
                             &nbsp;</td>
                         <td class="hSpace">
@@ -794,7 +797,7 @@
                             &nbsp;</td>
                         <td class="hSpace" style="width: 13px">
                             &nbsp;</td>                                         
-
+                      </tr>
 
                     <tr>
                         <td class="normalLabel">
@@ -908,7 +911,7 @@
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
                                             CellSpacing="1" DataKeyNames="LOCATIONINFOID,BRANCHINFOID,LOCATIONCODE,LOCATIONNAME,ADDRESS1,ADDRESS2,ADDRESS3,MANAGERNAME,MANAGERHPNO,SUPERVISORNAME,SUPERVISORHPNO,BRANCHNAME,SEASONBUDGETAMOUNT,VISITORBUDGETAMOUNT,
                                                                           LOCATIONCAPACITY,LOCATIONTYPE,COMPANYINVOICENO,COMPANYINVOICEPREFIX,INDIVIDUALINVOICENO,INDIVIDUALINVOICEPREFIX,RECEIPTNO,RECEIPTPREFIX,POSTCODE,STATE,TELEPHONE,FAX,EMAIL,URL,REMARK,
-                                                                          ACTIVE,LUDT,LUB,DEBITNOTENO,DEBITNOTEPREFIX,CREDITNOTENO,CREDITNOTEPREFIX,REFUNDCUTOFFDATE,ACCOUNTCODE,DAILYCOLLECTIONNO,DAILYCOLLECTIONPREFIX" DataSourceID="dsLocation">
+                                                                          ACTIVE,LUDT,LUB,DEBITNOTENO,DEBITNOTEPREFIX,CREDITNOTENO,CREDITNOTEPREFIX,REFUNDCUTOFFDATE,ACCOUNTCODE,DAILYCOLLECTIONNO,DAILYCOLLECTIONPREFIX,BANKCODE" DataSourceID="dsLocation">
                                             <Columns>
                                                 <asp:BoundField DataField="LOCATIONCODE" HeaderText="Location Code" SortExpression="LOCATIONCODE"
                                                     NullDisplayText="N/A" />
