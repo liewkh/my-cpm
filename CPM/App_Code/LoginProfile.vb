@@ -11,6 +11,7 @@ Public Class LoginProfile
     Private employeeMstrId As String
     Private branchInfoId As String
     Private defaultLocationInfoId As String
+    Private defaultBankCode As String
 
 
     Private selectedRoleName As String
@@ -25,6 +26,7 @@ Public Class LoginProfile
 
         Dim searchModelUM As New CPM.UserMstrEntity
         Dim sqlmap As New SQLMap
+        Dim strSQL As String = ""
 
         searchModelUM.setUserId(uName)
         searchModelUM.setPassword(passwd)
@@ -66,6 +68,15 @@ Public Class LoginProfile
             '    i = i + 1
             'End While
 
+            If Not (String.IsNullOrEmpty(defaultLocationInfoId)) Then
+                strSQL = "SELECT BANKCODE FROM LOCATIONINFO WHERE LOCATIONINFOID = " + defaultLocationInfoId
+                dt = dbManager.execTable(strSQL)
+
+                If dt.Rows.Count = 1 Then
+                    defaultBankCode = dt.Rows(0).Item("BANKCODE").ToString
+                End If
+            End If
+
             isAuthenticate = True
         Else
             isAuthenticate = False
@@ -82,6 +93,9 @@ Public Class LoginProfile
         Return defaultLocationInfoId
     End Function
 
+    Public Function getDefaultBankCode() As String
+        Return defaultBankCode
+    End Function
     Public Function getAccessLevel() As String
         Return accessLevel
     End Function

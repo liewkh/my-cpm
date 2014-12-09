@@ -47,6 +47,7 @@ Partial Class Transaction_Receipt
                 txtNoPrint.Text = 3
             End If
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
+            ddBankCode.SelectedValue = lp.getDefaultBankCode
 
             divSearch.Visible = True
             divInv.Visible = False
@@ -144,6 +145,7 @@ Partial Class Transaction_Receipt
         lblmsg.Text = ""
         lblRecCount.Text = ""
         ddLocation.SelectedValue = lp.getDefaultLocationInfoId
+        ddBankCode.SelectedValue = lp.getDefaultBankCode
         txtDebtorName.Text = ""
         rbCompany.Checked = True
         rbIndividual.Checked = False
@@ -681,6 +683,7 @@ Partial Class Transaction_Receipt
             dpEnt.setPaymentType(ddPaymentType.SelectedValue)
             dpEnt.setStatus(ReceiptStatusEnum._NEW)
             dpEnt.setTxnType(TxnTypeEnum.RECEIPT)
+            dpEnt.setBankCode(ddBankCode.SelectedValue)
 
             dpEnt.setReceiptNo(dm.getReceiptNextRunningNo(hidLocationInfoId.Value, trans, cn))
 

@@ -438,16 +438,38 @@ function open_popupModal(page,size)
 		<td class="hSpace">&nbsp;</td>
 	</tr>
 	
+	<tr>
+		<td class="normalLabel">Bank Code</td>
+		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:DropDownList ID="ddBankCode" runat="server" TabIndex="14" DataSourceID="dsBankCode" DataTextField="bankdesc" DataValueField="bankcode" CssClass="dropdownMedium"></asp:DropDownList>
+        <asp:SqlDataSource ID="dsBankCode" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"
+                                            SelectCommand="select bankcode,bankdesc,0 as seq from BankMstr where Active='Y' union all select codeabbr as bankcode,codedesc as bankdesc,seq from codemstr where codecat = 'DEFAULT' order by seq,bankdesc">
+                                        </asp:SqlDataSource>
+		</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+	
 
     <tr>
         <div id="divPrint" runat="server" visible="true">
 		<td class="normalLabel">No Of Receipt To Print?</td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtNoPrint" runat="server" CssClass="textBoxSmall" MaxLength="10" TabIndex="14"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtNoPrint" runat="server" CssClass="textBoxSmall" MaxLength="10" TabIndex="15"></asp:TextBox></td>
 		</div> 
 		<td class="hSpace">&nbsp;</td>		
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+		<td class="hSpace">&nbsp;</td>       
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
