@@ -103,7 +103,6 @@ Partial Class Maintenance_LocationSetup
         txtVisitorAmount.Text = ""
         txtDailyCollectionNo.Text = ""
         txtDailyCollectionPrefix.Text = ""
-        txtAccountCode.Text = ""
         ddBankCode.SelectedIndex = 0
         rbActiveYes.Checked = True
         gvLocation.DataSource = Nothing
@@ -306,10 +305,6 @@ Partial Class Maintenance_LocationSetup
                 locInfoEnt.setDailyCollectionNo(Trim(txtDailyCollectionNo.Text))
             End If
 
-            If txtAccountCode.Text <> "" Then
-                locInfoEnt.setAccountCode(Trim(txtAccountCode.Text))
-            End If
-
             If txtCutOff.Text <> "" Then
                 locInfoEnt.setRefundCutOffDate(txtCutOff.Text)
             End If
@@ -418,7 +413,6 @@ Partial Class Maintenance_LocationSetup
             txtCreditNotePrefix.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_CreditNotePrefix))
             txtDailyCollectionPrefix.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_DailyCollectionPrefix))
             txtDailyCollectionNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_DailyCollectionNo))
-            txtAccountCode.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_AccountCode))
 
             txtCutOff.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvLocation.SelectedDataKey(locInfoDao.COLUMN_RefundCutOffDate))
 
@@ -645,11 +639,6 @@ Partial Class Maintenance_LocationSetup
             If txtDailyCollectionNo.Text <> "" Then
                 locInfoEnt.setDailyCollectionNo(Trim(txtDailyCollectionNo.Text))
             End If
-
-            If txtAccountCode.Text <> "" Then
-                locInfoEnt.setAccountCode(Trim(txtAccountCode.Text))
-            End If
-
 
             locInfoEnt.setCompanyInvoicePrefix(Trim(txtComInvoicePrefix.Text.ToUpper))
             locInfoEnt.setIndividualInvoicePrefix(Trim(txtIndInvoicePrefix.Text.ToUpper))
