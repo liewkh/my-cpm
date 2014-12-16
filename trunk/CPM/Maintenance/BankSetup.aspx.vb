@@ -256,6 +256,7 @@ Partial Class Maintenance_BankSetup
 
             bankMstrEnt.setLastUpdatedDatetime(Now())
             bankMstrEnt.setLastUpdatedBy(lp.getUserMstrId)
+            bankMstrDao.insertDB(bankMstrEnt, cn, trans)
 
         Catch ex As Exception
             Throw ex
