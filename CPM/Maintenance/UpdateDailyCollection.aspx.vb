@@ -93,6 +93,7 @@ Partial Class Maintenance_updateDailyCollection
         txtOtherTotal.Text = ""
         txtInfoTotal.Text = ""
         txtTotalCollection.Text = ""
+        txtTotalGST.Text = ""
 
     End Sub
 
@@ -106,6 +107,13 @@ Partial Class Maintenance_updateDailyCollection
         If hidDailyCollectionId.Value = "" Then
             lblmsg.Text = "Please select the daily collection record for update."
             Exit Sub
+        End If
+
+        If Trim(txtTotalGST.Text) <> "" Then
+            If Not Utility.Tools.NumericValidation(Trim(txtTotalGST.Text)) Then
+                lblmsg.Text = "Please enter a numeric value for Total GST Amount."
+                Exit Sub
+            End If
         End If
 
         cn = New SqlConnection(dm.getDBConn())
@@ -324,6 +332,10 @@ Partial Class Maintenance_updateDailyCollection
                 dailyEnt.setInfoOther(0)
             End If
 
+            If Trim(txtTotalGST.Text) <> "" Then
+                dailyEnt.setGstAmount(txtTotalGST.Text)
+            End If
+
             dailyEnt.setLocationInfoId(ddLocation.SelectedValue)
             dailyEnt.setLastUpdatedDatetime(Now)
             dailyEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -479,6 +491,7 @@ Partial Class Maintenance_updateDailyCollection
                     txtManualRaised.Text = .Rows(0).Item(dcDao.COLUMN_InfoManualRaised)
                     txtOutstandingTicket.Text = .Rows(0).Item(dcDao.COLUMN_InfoOSTicket)
                     txtInfoOthers.Text = .Rows(0).Item(dcDao.COLUMN_InfoOther)
+                    txtTotalGST.Text = .Rows(0).Item(dcDao.COLUMN_GstAmount)
                 End With
 
 

@@ -84,6 +84,7 @@ Partial Class Transaction_DailyCollection
         txtMotorcyleTotal.Text = ""
         txtAPSTotal.Text = ""
         txtTotalDaily.Text = ""
+        txtTotalGST.Text = ""
         txtSeasonTotal.Text = ""
         txtTotalDeposit.Text = ""
         txtOtherTotal.Text = ""
@@ -128,6 +129,14 @@ Partial Class Transaction_DailyCollection
 
             If isExist Then
                 Throw New ApplicationException(ConstantGlobal.Record_Already_Exist)
+            End If
+
+
+            If Trim(txtTotalGST.Text) <> "" Then
+                If Not Utility.Tools.NumericValidation(Trim(txtTotalGST.Text)) Then
+                    lblmsg.Text = "Please enter a numeric value for Total GST Amount."
+                    Exit Sub
+                End If
             End If
 
             If Trim(txtCashierShift1.Text) <> "" Then
@@ -334,12 +343,14 @@ Partial Class Transaction_DailyCollection
                 dailyEnt.setInfoOther(0)
             End If
 
-          
-
             If Trim(txtDate.Text) <> "" Then
                 dailyEnt.setTransactionDate(txtDate.Text)
             Else
                 dailyEnt.setTransactionDate(Now)
+            End If
+
+            If Trim(txtTotalGST.Text) <> "" Then
+                dailyEnt.setGstAmount(txtTotalGST.Text)
             End If
 
          
@@ -347,8 +358,7 @@ Partial Class Transaction_DailyCollection
             dailyEnt.setLocationInfoId(ddLocation.SelectedValue)
             dailyEnt.setLastUpdatedDatetime(Now)
             dailyEnt.setLastUpdatedBy(lp.getUserMstrId)
-            dailyEnt.setDailyCollectionNo(dm.getDailyCollectionNextRunningNo(ddLocation.SelectedValue, trans, cn))
-            dailyEnt.setGstAmount(dm.getCurrentTax)
+            dailyEnt.setDailyCollectionNo(dm.getDailyCollectionNextRunningNo(ddLocation.SelectedValue, trans, cn))            
 
             dailyDao.insertDB(dailyEnt, cn, trans)
             trans.Commit()

@@ -506,6 +506,24 @@
 		<td class="hSpace">&nbsp;</td>
 		<td nowrap><asp:TextBox ID="txtTotalDaily" enabled="false" runat="server" CssClass="textBoxSmallDisabled" MaxLength="20" TabIndex="22"></asp:TextBox></td>
 	</tr>	
+	
+	<tr>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td align="right" class="normalLabel"><b>Total GST Amount</b></td>
+		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:TextBox ID="txtTotalGST" enabled="true" runat="server" CssClass="textBoxSmall" MaxLength="20" TabIndex="22"></asp:TextBox></td>
+	</tr>	
 
 	<tr>
 		<td class="header2" colspan="15">
