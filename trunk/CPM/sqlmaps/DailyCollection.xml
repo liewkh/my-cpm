@@ -91,7 +91,7 @@
       dc.clamp,dc.transponderSticker,dc.numberplate,dc.temporaryrental,dc.misc,
       floor(dc.InfoEarlyBird) as InfoEarlyBird,floor(dc.InfoComplimentaryTicket) as InfoComplimentaryTicket,floor(dc.InfoManualRaised) as InfoManualRaised,floor(dc.InfoOsTicket) as InfoOsTicket,floor(dc.InfoOther) as InfoOther,
       dbo.fxGetMonthToDateSales(dc.transactiondate,dc.locationinfoid) as MonthToDate,
-      dbo.fxGetLastMonthSales(dc.transactiondate,dc.locationinfoid) as LastMonth
+      dbo.fxGetLastMonthSales(dc.transactiondate,dc.locationinfoid) as LastMonth,dc.GSTAmount
       from dailycollection dc,locationinfo li
       where dc.locationinfoid = li.locationinfoid
     </part>
