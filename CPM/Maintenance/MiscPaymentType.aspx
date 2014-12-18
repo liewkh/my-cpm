@@ -157,11 +157,13 @@ window.onscroll=move;
                         </td>
                         <td class="hSpace">
                             &nbsp;</td>
+                        <td class="normalLabel">
+                            Tax Code <font color="#FF0000">*</font></td>
                         <td class="hSpace">
-                            &nbsp;</td>
-                        <td class="hSpace">
-                        <td class="hSpace">
-                            &nbsp;</td>
+                        <td nowrap>
+                            <asp:TextBox ID="txtTaxCode" runat="server" CssClass="textBoxSmall" MaxLength="2"
+                                TabIndex="3"></asp:TextBox>
+                        </td>
                         <td class="hSpace">
                             &nbsp;</td>
                         <td class="hSpace">
@@ -293,13 +295,15 @@ window.onscroll=move;
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvMiscPaymentType" runat="server" AllowPaging="True" AllowSorting="True"
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,LOCATIONINFOID,ACTIVE,LUDT,LUB,AMOUNT"
+                                            CellSpacing="1" DataKeyNames="MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,LOCATIONINFOID,ACTIVE,LUDT,LUB,AMOUNT,TAXCODE"
                                             DataSourceID="dsMiscPaymentType">
                                             <Columns>
                                                 <asp:BoundField DataField="PAYMENTCODE" HeaderText="Payment Type Code" SortExpression="PAYMENTCODE"
                                                     NullDisplayText="N/A" />
                                                 <asp:BoundField DataField="PAYMENTDESC" HeaderText="Payment Type Description" SortExpression="PAYMENTDESC"
-                                                    NullDisplayText="N/A" />                                                
+                                                    NullDisplayText="N/A" /> 
+                                                <asp:BoundField DataField="TAXCODE" HeaderText="Tax Code" SortExpression="TAXCODE"
+                                                    NullDisplayText="N/A" />                                               
                                                 <asp:BoundField DataField="AMOUNT" HeaderText="Amount" SortExpression="AMOUNT"
                                                     NullDisplayText="N/A" />                                                                                                    
                                             </Columns>
