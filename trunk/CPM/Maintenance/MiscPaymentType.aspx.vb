@@ -95,6 +95,7 @@ Partial Class Maintenance_MiscPaymentType
         txtMiscPayment.Text = ""
         txtMiscPaymentDesc.Text = ""
         txtAmount.Text = ""
+        txtTaxCode.Text = ""
         ddLocation.SelectedValue = lp.getDefaultLocationInfoId        
         rbActiveYes.Checked = True       
         gvMiscPaymentType.DataSource = Nothing
@@ -116,6 +117,12 @@ Partial Class Maintenance_MiscPaymentType
 
         If Not Utility.Tools.NumericValidation(txtAmount.Text) Then
             lblmsg.Text = "Please enter numeric value for Amount."
+            Exit Sub
+        End If
+
+
+        If String.IsNullOrEmpty(txtTaxCode.Text) Then
+            lblmsg.Text = "Tax Code is a Required field."
             Exit Sub
         End If
 
@@ -179,6 +186,7 @@ Partial Class Maintenance_MiscPaymentType
             miscPaymentTypeMstrEnt.setPaymentDesc(Trim(txtMiscPaymentDesc.Text.ToUpper))
             miscPaymentTypeMstrEnt.setLocationInfoId(ddLocation.SelectedValue)
             miscPaymentTypeMstrEnt.setAmount(txtAmount.Text)
+            miscPaymentTypeMstrEnt.setTaxCode(Trim(txtTaxCode.Text.ToUpper))
 
 
             If rbActiveYes.Checked = True Then activeInd = ConstantGlobal.Yes Else activeInd = ConstantGlobal.No
@@ -241,7 +249,7 @@ Partial Class Maintenance_MiscPaymentType
             txtMiscPayment.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvMiscPaymentType.SelectedDataKey(miscPaymentTypeMstrDAO.COLUMN_PaymentCode))
             txtMiscPaymentDesc.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvMiscPaymentType.SelectedDataKey(miscPaymentTypeMstrDAO.COLUMN_PaymentDesc))
             txtAmount.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvMiscPaymentType.SelectedDataKey(miscPaymentTypeMstrDAO.COLUMN_Amount))
-          
+            txtTaxCode.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvMiscPaymentType.SelectedDataKey(miscPaymentTypeMstrDAO.COLUMN_TaxCode))
             ddLocation.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvMiscPaymentType.SelectedDataKey(miscPaymentTypeMstrDAO.COLUMN_LocationInfoId))
 
 
@@ -299,6 +307,11 @@ Partial Class Maintenance_MiscPaymentType
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(txtTaxCode.Text) Then
+            lblmsg.Text = "Tax Code is a Required field."
+            Exit Sub
+        End If
+
         cn = New SqlConnection(dm.getDBConn)
         If Not cn.State = ConnectionState.Open Then
             cn.Open()
@@ -337,6 +350,7 @@ Partial Class Maintenance_MiscPaymentType
             miscPaymentTypeMstrEntity.setPaymentDesc(Trim(txtMiscPaymentDesc.Text.ToUpper))           
             miscPaymentTypeMstrEntity.setLocationInfoId(ddLocation.SelectedValue)
             miscPaymentTypeMstrEntity.setAmount(txtAmount.Text)
+            miscPaymentTypeMstrEntity.setTaxCode(Trim(txtTaxCode.Text.ToUpper))
 
             If rbActiveYes.Checked = True Then activeInd = ConstantGlobal.Yes Else activeInd = ConstantGlobal.No
 
