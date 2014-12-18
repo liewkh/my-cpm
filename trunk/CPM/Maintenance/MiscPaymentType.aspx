@@ -161,8 +161,7 @@ window.onscroll=move;
                             Tax Code <font color="#FF0000">*</font></td>
                         <td class="hSpace">
                         <td nowrap>
-                            <asp:TextBox ID="txtTaxCode" runat="server" CssClass="textBoxSmall" MaxLength="2"
-                                TabIndex="3"></asp:TextBox>
+                            <asp:DropDownList ID="ddTaxCode" runat="server" TabIndex="5" CssClass="dropdownSmall"></asp:DropDownList>	
                         </td>
                         <td class="hSpace">
                             &nbsp;</td>
