@@ -20,6 +20,13 @@ Partial Class _Default
                 lblMsg.Text = "Invalid Session. Please re-login."
             End If
         End If
+
+#If debug Then
+        Dim lp As New LoginProfile()
+        lp.authenticate("IT", "IT")
+        Session("LoginProfile") = lp
+        Response.Redirect("default.aspx")
+#End If
     End Sub
 
     Protected Sub btnLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogin.Click
