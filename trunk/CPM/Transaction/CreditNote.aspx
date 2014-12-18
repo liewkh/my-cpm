@@ -16,6 +16,23 @@
     
 </head>
 
+<script type = "text/javascript">
+     function RadioCheck(rb) {
+        var gv = document.getElementById("<%=gvDebtorInv.ClientID%>");
+        var rbs = gv.getElementsByTagName("input");
+ 
+        var row = rb.parentNode.parentNode;
+        for (var i = 0; i < rbs.length; i++) {
+            if (rbs[i].type == "radio") {
+                if (rbs[i].checked && rbs[i] != rb) {
+                    rbs[i].checked = false;
+                    break;
+                }
+            }
+        }
+    }    
+</script>
+
 <script language="javascript" type="text/javascript">
          window.onscroll=move;
                        
@@ -288,14 +305,16 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorInv" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,INVOICEHISTORYID"
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,INVOICEHISTORYID,GSTAMOUNT"                                            
                                             DataSourceID="dsDebtorInv">
-                                            <Columns>
+                                            <Columns>                       
                                                 <asp:TemplateField HeaderText="Pay?" SortExpression="Pay" ItemStyle-HorizontalAlign="Center"  > 
                                                 <ItemTemplate>
-                                                    <asp:CheckBox ID="chkSelect" runat="server" />
-                                                 </ItemTemplate>
-                                                 <ItemStyle Width="5%" />
+                                                    <asp:RadioButton ID="RadioButton1" runat="server"
+                                                        onclick = "RadioCheck(this);"/>
+                                                    <asp:HiddenField ID="HiddenField1" runat="server"
+                                                        Value = '<%#Eval("DEBTORACCOUNTHEADERID")%>'/>
+                                                </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="INVOICEDATE" HeaderText="Invoice Date" SortExpression="INVOICEDATE"
                                                     NullDisplayText="N/A" DataFormatString="{0:dd/MM/yyyy}" htmlencode="false" />
@@ -307,6 +326,8 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                                     NullDisplayText="N/A" />
                                                 <asp:BoundField DataField="AMOUNT" HeaderText="Invoice Amount" SortExpression="AMOUNT"
                                                     NullDisplayText="N/A" DataFormatString="{0:F2}" />
+                                                <asp:BoundField DataField="GSTAMOUNT" HeaderText="GST Amount" SortExpression="GSTAMOUNT"
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />         
                                                 <asp:BoundField DataField="PAIDAMOUNT" HeaderText="Paid Amount" SortExpression="PAIDAMOUNT"
                                                     NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                               
                                                 <asp:BoundField DataField="OSAMOUNT" HeaderText="O/S Amount" SortExpression="OSAMOUNT"
@@ -371,9 +392,27 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 	
     
     <tr>
-		<td class="normalLabel">Credit Amount (RM) <font color="#FF0000">*</font></td>
+		<td class="normalLabel">Credit Invoice Amount (RM)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtPaymentAmount" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="12"></asp:TextBox></td>
+        <td class="hSpace">&nbsp;</td>			
+		<td class="hSpace">&nbsp;</td>		
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>        
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+	
+    <tr>
+		<td class="normalLabel">Credit GST Amount (RM) <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtGSTAmount" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="13"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -388,7 +427,6 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>
 	</tr>
 	
-
     <tr>
 		<td colspan="15" height="17"></td>
     </tr>	

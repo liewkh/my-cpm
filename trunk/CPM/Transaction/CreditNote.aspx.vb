@@ -228,20 +228,22 @@ Partial Class Transaction_CreditNote
 
     Protected Sub gvDebtorInv_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorInv.SelectedIndexChanged
         Dim total As Double = 0
+        Dim gstAmount = 0
 
 
         hidDebtorAccountHeaderId.Value = ""
 
         Try
             For Each row As GridViewRow In gvDebtorInv.Rows
-                Dim chk As CheckBox
+                Dim chk As RadioButton
 
-                chk = row.FindControl("chkSelect")
+                chk = row.FindControl("RadioButton1")
                 If Not chk Is Nothing Then
 
                     If chk.Checked Then
                         If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("MONTH").ToString) Then
                             total += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                            gstAmount = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").ToString)
 
                             hidDebtorAccountHeaderId.Value = hidDebtorAccountHeaderId.Value & "," & gvDebtorInv.DataKeys(row.RowIndex)("DEBTORACCOUNTHEADERID").ToString
                             Dim s As String = hidDebtorAccountHeaderId.Value.ToLower
@@ -263,6 +265,7 @@ Partial Class Transaction_CreditNote
             Next
 
             txtPaymentAmount.Text = String.Format("{0:n2}", total)
+            txtGSTAmount.Text = String.Format("{0:n2}", gstAmount)
             txtselected.text = String.Format("{0:n2}", total)
 
         Catch ex As Exception
@@ -365,6 +368,7 @@ Partial Class Transaction_CreditNote
         Dim dpEnt As New CPM.DebtorPaymentEntity
         Dim dpDao As New CPM.DebtorPaymentDAO
         Dim payAmt As Double = 0
+        Dim gstAmt As Double = 0
         Dim invAmt As Double = 0
         Dim invHistEnt As New CPM.InvoiceHistoryEntity
         Dim invHistDao As New CPM.InvoiceHistoryDAO
@@ -391,22 +395,29 @@ Partial Class Transaction_CreditNote
                 Exit Sub
             End If
 
-
+            If Trim(txtGSTAmount.Text) = "" Then
+                lblmsg.Text = "Please enter gst amount."
+                Exit Sub
+            End If
 
             payAmt = txtPaymentAmount.Text
+
             Dim str As String = ""
             Dim sql As String = ""
             Dim dt As New DataTable
 
             For Each row As GridViewRow In gvDebtorInv.Rows
-                Dim chk As CheckBox
+                Dim chk As RadioButton
 
                 'Referring to invoice amount
-                chk = row.FindControl("chkSelect")
+                chk = row.FindControl("RadioButton1")
                 If Not chk Is Nothing Then
                     If chk.Checked Then
                         str = str + gvDebtorInv.DataKeys(row.RowIndex)(dahDao.COLUMN_DebtorAccountHeaderID).ToString + ","
                         chkMoreThan1 += 1
+                        If Not gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").Equals(System.DBNull.Value) Then
+                            gstAmt = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT"))
+                        End If
                     End If
                 End If
             Next
@@ -429,6 +440,12 @@ Partial Class Transaction_CreditNote
                 Exit Sub
             End If
 
+            'GST Amount Pay cannot greater than the GST AMOUNT
+            If gstAmt < Val(txtGSTAmount.Text) Then
+                lblmsg.Text = "Payment GST Amount cannot be more than GST Amount!"
+                Exit Sub
+            End If
+
 
 
             'Split payment for which invoice if happen
@@ -440,10 +457,10 @@ Partial Class Transaction_CreditNote
 
 
             For Each row As GridViewRow In gvDebtorInv.Rows
-                Dim chk As CheckBox
+                Dim chk As RadioButton
 
 
-                chk = row.FindControl("chkSelect")
+                chk = row.FindControl("RadioButton1")
                 If Not chk Is Nothing Then
                     If chk.Checked Then
                         If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
@@ -591,9 +608,9 @@ Partial Class Transaction_CreditNote
 
             'Get the payment for which month
             For Each row As GridViewRow In gvDebtorInv.Rows
-                Dim chk As CheckBox
+                Dim chk As RadioButton
 
-                chk = row.FindControl("chkSelect")
+                chk = row.FindControl("RadioButton1")
                 If Not chk Is Nothing Then
 
                     If chk.Checked Then
@@ -618,6 +635,7 @@ Partial Class Transaction_CreditNote
             'dpEnt.setPaymentType(PaymentTypeEnum.CREDITNOTE)
             dpEnt.setTxnType(TxnTypeEnum.CREDITNOTE)
             dpEnt.setStatus(ReceiptStatusEnum._NEW)
+            dpEnt.setGSTAmount(txtGSTAmount.Text)
 
             dpEnt.setReceiptNo(dm.getCRNoteNextRunningNo(hidLocationInfoId.Value, trans, cn))
 
@@ -757,6 +775,46 @@ Partial Class Transaction_CreditNote
 
         End Try
 
+    End Sub
+
+    Private Sub GetSelectedRecord()
+        For i As Integer = 0 To gvDebtorInv.Rows.Count - 1
+            Dim rb As RadioButton = DirectCast(gvDebtorInv.Rows(i).Cells(0) _
+             .FindControl("RadioButton1"), RadioButton)
+            If rb IsNot Nothing Then
+                If rb.Checked Then
+                    Dim hf As HiddenField = DirectCast(gvDebtorInv.Rows(i).Cells(0) _
+                     .FindControl("HiddenField1"), HiddenField)
+                    If hf IsNot Nothing Then
+                        ViewState("SelectedContact") = hf.Value
+                    End If
+
+                    Exit For
+                End If
+            End If
+        Next
+    End Sub
+
+    Private Sub SetSelectedRecord()
+        For i As Integer = 0 To gvDebtorInv.Rows.Count - 1
+            Dim rb As RadioButton = DirectCast(gvDebtorInv.Rows(i) _
+                    .Cells(0).FindControl("RadioButton1"), RadioButton)
+            If rb IsNot Nothing Then
+                Dim hf As HiddenField = DirectCast(gvDebtorInv.Rows(i) _
+                    .Cells(0).FindControl("HiddenField1"), HiddenField)
+                If hf IsNot Nothing And ViewState("SelectedContact") IsNot Nothing Then
+                    If hf.Value.Equals(ViewState("SelectedContact").ToString()) Then
+                        rb.Checked = True
+                        Exit For
+                    End If
+                End If
+            End If
+        Next
+    End Sub
+
+    Protected Sub OnPaging(ByVal sender As Object, ByVal e As GridViewPageEventArgs)
+        gvDebtorInv.PageIndex = e.NewPageIndex
+        SetSelectedRecord()
     End Sub
 
     Public Function RemoveDuplicates(ByVal items As String()) As String()
