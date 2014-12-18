@@ -571,4 +571,35 @@ Public Class DBManager
         Return taxAmount
     End Function
 
+    Public Function getTaxCode(ByVal locationInfoId As String, ByVal type As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection) As String
+
+        Dim selectSQL As String
+        Dim dm As New DBManager
+        Dim dt As New DataTable
+        Dim taxCode As String
+
+        Try
+
+            selectSQL = "SELECT TAXCODE FROM MISCPAYMENTTYPEMSTR WHERE LOCATIONINFOID = " + locationInfoId + _
+                        " AND TAXCODE = '" + type + "'"
+
+            dt = dm.execTable(selectSQL)
+
+            If dt.Rows.Count > 0 Then
+                If dt.Rows(0)("TAXCODE").Equals(System.DBNull.Value) Then
+                    Return "" 'If never setup
+                End If
+                taxCode = dt.Rows(0)("TAXCODE")
+            Else
+                Throw New Exception("Missing Tax Code")
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        Finally
+            dt = Nothing
+        End Try
+        Return taxCode
+    End Function
+
 End Class
