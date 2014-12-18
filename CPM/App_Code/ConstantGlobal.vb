@@ -26,6 +26,9 @@ Public Class ConstantGlobal
     Public Shared SP As String = "Season Parking"
     Public Shared STP As String = "Service Tax Payable"
 
+    'For GST
+    Public Shared StandardRated As String = "SR"
+    Public Shared ZeroRated As String = "ZR"
 
 
 
