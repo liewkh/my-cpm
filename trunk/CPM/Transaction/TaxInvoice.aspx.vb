@@ -125,7 +125,9 @@ Partial Class Transaction_TaxInvoice
 
     Protected Sub btnClear_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         clear()
+        txtDebtorName.Text = ""
         ViewState("strSQL") = Nothing
+        bindData()
     End Sub
 
     Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
@@ -266,7 +268,7 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             dahEnt.setAmount(Val(txtSubTotal.Text))
             dahEnt.setBatchNo("")
-            dahEnt.setTxnType(TxnTypeEnum.INVOICE)
+            dahEnt.setTxnType(TxnTypeEnum.MANUALINVOICE)
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
