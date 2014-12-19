@@ -6,5 +6,6 @@ Public Class TxnTypeEnum
     Public Const DEBITNOTE As String = "DN"
     Public Const INVOICE As String = "I"
     Public Const RECEIPT As String = "R"
+    Public Const MANUALINVOICE As String = "MI"
 
 End Class

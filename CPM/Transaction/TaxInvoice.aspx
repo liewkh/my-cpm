@@ -139,12 +139,12 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
         <td class="normalLabel">Tax Invoice Date <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
       	<td class="normalLabel">
-		<asp:TextBox ID="txtTaxInvoiceDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="2"></asp:TextBox> 
+		<asp:TextBox ID="txtTaxInvoiceDate" runat="server" CssClass="dateBox" Enabled="false" MaxLength="12" TabIndex="2"></asp:TextBox> 
         <rjs:PopCalendar id="popCalendar1" runat="server"
            Control="txtTaxInvoiceDate"
            Shadow="True" ShowWeekend="True" Move="True"
            Format="dd mm yyyy" Fade="0.5" Separator= "/"
-           ToolTip="Click For Calendar: ([Format])"                                
+           ToolTip="Click For Calendar: ([Format])" Enabled="false"                               
           />
         </td>
 		<td class="hSpace">&nbsp;</td>
@@ -275,7 +275,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
   <div id="divInv" runat="server" visible="true">
   
   	<tr class="vSpace">
-		<td class="normalLabel">Payment Type <font color="#FF0000">*</font></td>
+		<td class="normalLabel">Sales Type <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
 		<td nowrap><asp:DropDownList ID="ddMiscPaymentType"  AutoPostBack="true"  runat="server" TabIndex="5" DataSourceID="dsMiscPaymentType" DataTextField="PaymentDesc" DataValueField="MiscPaymentTypeMstrId" CssClass="dropdownLarge" OnSelectedIndexChanged="ddMiscPaymentType_SelectedIndexChanged"></asp:DropDownList><asp:SqlDataSource ID="dsMiscPaymentType" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>		
 		</td>        
