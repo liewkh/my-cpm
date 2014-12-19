@@ -95,6 +95,10 @@ Namespace Utility
             End If
             Return retVal
         End Function
+        Public Shared Function str2date1(ByVal strInputText As String) As String
+            Dim dt As Date = strInputText
+            Return (Format(dt, "MM/dd/yyyy"))
+        End Function
         Public Shared Function StrToByteArray(ByVal str As String) As Byte()
             Dim encoding As New System.Text.UTF8Encoding
             Return encoding.GetBytes(str)
