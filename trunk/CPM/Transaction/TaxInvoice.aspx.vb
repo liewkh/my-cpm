@@ -241,7 +241,8 @@ Partial Class Transaction_TaxInvoice
         Dim dahDao As New CPM.DebtorAccountHeaderDAO
         Dim dadEnt As New CPM.DebtorAccountDetailEntity
         Dim dadDao As New CPM.DebtorAccountDetailDAO
-        Dim debtorCategory As String = ""
+        Dim debtorCategory As String = ""        
+        Dim txtTotalAmount As Double = 0
 
         Try
 
@@ -266,13 +267,14 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
-            dahEnt.setAmount(Val(txtSubTotal.Text))
+            'dahEnt.setAmount(Val(txtSubTotal.Text))
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.MANUALINVOICE)
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
-            For Each row As DataRow In dt.Rows
+            For Each row As DataRow In dt.Rows                
+                txtTotalAmount += Val(row.Item("TOTAL"))
                 dadEnt.setDebtorAccountHeaderId(dahId)
                 dadEnt.setMonths("")
                 dadEnt.setDetails(row.Item("DESCRIPTION"))
@@ -285,14 +287,22 @@ Partial Class Transaction_TaxInvoice
                 dadDao.insertDB(dadEnt, cn, trans)
             Next row
 
+            
+
             invEnt.setDebtorId(hidDebtorId.Value)
             invEnt.setDebtorAccountHeaderId(dahId)
             invEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             invEnt.setMonth(txtTaxInvoiceDate.Text)
-            invEnt.setAmount(Val(txtSubTotal.Text))
+            invEnt.setAmount(txtTotalAmount)
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
             invEnt.setLastUpdatedDatetime(Now)
             invDao.insertDB(invEnt, cn, trans)
+
+
+            dahEnt.setDebtorAccountHeaderId(dahId)
+            dahEnt.setAmount(txtTotalAmount)
+            dahEnt.setLastUpdatedDatetime(Now)
+            dahDao.updateDB(dahEnt, cn, trans)
 
             trans.Commit()
 
@@ -358,8 +368,9 @@ Partial Class Transaction_TaxInvoice
     Protected Sub calcSubtotal()
         Dim dt As DataTable = ViewState("CurrentTable")
         Dim subTotal As Double
-        For Each row As DataRow In dt.Rows
-            subTotal += row.Item("Total")
+
+        For Each row As DataRow In dt.Rows            
+            subTotal += Val(row.Item("TOTAL"))
         Next row
 
         txtSubTotal.Text = String.Format("{0:n2}", subTotal)
@@ -486,7 +497,14 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)                
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+
+                If hdTaxCode.Value.Equals(ConstantGlobal.StandardRated) Then
+                    'Get the GST value and apply to chargeble item gn Standard Rated(SR)
+                    dr("TOTAL") = (CInt(txtQty.Text) * CInt(txtAmount.Text)) + ((Val(CInt(txtQty.Text) * CInt(txtAmount.Text)) * dm.getCurrentTax()) / 100)
+                Else
+                    dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                End If
+
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
@@ -500,7 +518,13 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                'dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                If hdTaxCode.Value.Equals(ConstantGlobal.StandardRated) Then
+                    'Get the GST value and apply to chargeble item gn Standard Rated(SR)
+                    dr("TOTAL") = (CInt(txtQty.Text) * CInt(txtAmount.Text)) + ((Val(CInt(txtQty.Text) * CInt(txtAmount.Text)) * dm.getCurrentTax()) / 100)
+                Else
+                    dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                End If
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
