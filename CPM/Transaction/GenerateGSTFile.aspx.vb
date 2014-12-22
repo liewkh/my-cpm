@@ -92,18 +92,24 @@ Partial Class Transaction_GenerateGSTFile
 
             logger.Debug("Start Generating GST Files... " + DateTime.Now())
 
-            Sql = "select * from GSTExportVw where Date between CONVERT(varchar(15), '" + _
-                   Utility.DataTypeUtils.str2date1(txtFrom.Text) + "',103) and CONVERT(varchar(15), '" + _
-            Utility.DataTypeUtils.str2date1(txtTo.Text) + "',103)"
+            If ddLocation.SelectedIndex > 0 Then
+                Sql = "select * from GSTExportVw where CONVERT(datetime, date,103) between CONVERT(datetime, '" + _
+                                   txtFrom.Text + " 00:00:00:00',103) and CONVERT(datetime, '" + _
+                            txtTo.Text + " 23:59:59:59',103) and locationinfoid  = " + ddLocation.SelectedValue
+            Else
+                Sql = "select * from GSTExportVw where CONVERT(datetime, date,103) between CONVERT(datetime, '" + _
+                                                   txtFrom.Text + " 00:00:00:00',103) and CONVERT(datetime, '" + _
+                                            txtTo.Text + " 23:59:59:59',103)"
+            End If
 
             dt = dm.execTable(Sql)
 
-            For iC = 0 To dt.Columns.Count - 1
+            For iC = 0 To dt.Columns.Count - 2 'No Need to export the LocationInfoId
                 xlsheet.Cells(1, iC + 1).Value = dt.Columns(iC).ToString()
             Next
             iz = 1
             For iX = 0 To dt.Rows.Count - 1
-                For iY = 0 To dt.Columns.Count - 1
+                For iY = 0 To dt.Columns.Count - 2 'No Need to export the LocationInfoId
                     Dim a As String = dt.Rows(iX)(iY).ToString()
                     If a <> Nothing Then xlsheet.Cells(iz + 1, iY + 1).value = dt.Rows(iX)(iY).ToString()
                 Next

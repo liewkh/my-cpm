@@ -5,7 +5,7 @@
 
 <html>
 <head>
-<title>Item Replacement List</title>
+<title>Export GST File</title>
 <link rel="stylesheet" type="text/css" href="../include/stylesheet.css" />
 
     <script type="text/javascript" language="JavaScript" src='../include/effect.js'></script>
@@ -107,7 +107,7 @@
 			<tr>
 			  <td class="hSpace">&nbsp;</td>
 			  <td class="hSpace">&nbsp;</td>
-			  <td class="header2" style="border:none;">Item Replacement List</td>
+			  <td class="header2" style="border:none;">Export GST File</td>
 			  <td class="hSpace">&nbsp;</td>
 			</tr>
 		  </table>		   
