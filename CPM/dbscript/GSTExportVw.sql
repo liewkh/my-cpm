@@ -8,8 +8,8 @@ GO
 
 CREATE VIEW [dbo].[GSTExportVw]
 as
-Select '' as "Journal Number",TransactionDate as Date,Memo,
+Select '' as "Journal Number",TransactionDate as Date,'Whatever Context' as Memo,
 AccountCode as "Account Number",DebitAmount as "Debit Amount",
 CreditAmount as "Credit Amount",
-'' as "Job",'' as "Allocation Memo"
+'' as "Job",'' as "Allocation Memo",LocationInfoId
 from [GSTDailyCollection]
