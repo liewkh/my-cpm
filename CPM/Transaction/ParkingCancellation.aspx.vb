@@ -237,19 +237,6 @@ Partial Class Transaction_ParkingCancellation
 
     Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs)
 
-        Dim dpbcEnt As New CPM.DebtorPassBayNoCancelEntity
-        Dim dpbcDao As New CPM.DebtorPassBayNoCancelDAO
-        Dim pcEnt As New CPM.PassCardMstrEntity
-        Dim pcDao As New CPM.PassCardMstrDAO
-        Dim dpbEnt As New CPM.DebtorPassBayEntity
-        Dim dpbDao As New CPM.DebtorPassBayDAO
-        Dim pchEnt As New CPM.PassCardHistoryEntity
-        Dim pchDao As New CPM.PassCardHistoryDAO
-        Dim sql As String
-        Dim dt As New DataTable
-        Dim dpbId As String = ""
-        Dim refundCutOfDay As Integer = 0
-
         Try
 
             cn = New SqlConnection(dm.getDBConn)
@@ -259,7 +246,7 @@ Partial Class Transaction_ParkingCancellation
             trans = cn.BeginTransaction
 
 
-           
+
 
             If Trim(txtCancellationDate.Text) = "" Then
                 lblmsg.Text = "Cancellation Date is a required field."
@@ -277,100 +264,25 @@ Partial Class Transaction_ParkingCancellation
                 Exit Sub
             End If
 
+            If ddReason.SelectedValue = "TF" Then
+                If ddTransferee.SelectedIndex = 0 Then
+                    lblmsg.Text = "Transferee is a required field."
+                    Exit Sub
+                End If
+            End If
+
             If Not Page.IsValid Then
                 Exit Sub
             End If
 
-            sql = "SELECT RefundCutOffDate From LocationInfo Where LocationInfoId = " & hidLocationInfoId.Value
-            dt = dm.execTable(sql)
-
-            If dt.Rows.Count > 0 Then
-                refundCutOfDay = IIf(dt.Rows(0).Item("RefundCutOffDate").Equals(System.DBNull.Value), 0, dt.Rows(0).Item("RefundCutOffDate"))
-            End If
-
-
-
-            sql = "SELECT * FROM DEBTORPASSBAY WHERE DEBTORID = " & hidDebtorId.Value & _
-                  " AND STATUS = 'A' AND PASSCARDMSTRID = " & ddPass.SelectedValue
-            dt = dm.execTableInTrans(sql, cn, trans)
-
-            dpbId = dt.Rows(0).Item("DEBTORPASSBAYID")
-
-            dpbEnt.setDebtorPassBayId(dpbId)
-            dpbEnt.setStatus("C")
-            dpbEnt.setLastUpdatedBy(lp.getUserMstrId)
-            dpbEnt.setLastUpdatedDatetime(Now)
-            dpbDao.updateDB(dpbEnt, cn, trans)
-
-
-            ''Update Old PassCardMstr
-            pcEnt.setPassCardMstrId(ddPass.SelectedValue)
-            pcEnt.setLastUpdatedBy(lp.getUserMstrId)
-            pcEnt.setLastUpdatedDatetime(Now)
-            If ddPassCondition.SelectedValue = PassCardStatusEnum.LOST Then
-                pcEnt.setStatus(PassCardStatusEnum.LOST)
-            ElseIf ddPassCondition.SelectedValue = PassCardStatusEnum.SPOILT Then
-                pcEnt.setStatus(PassCardStatusEnum.SPOILT)
+            'New Process for different cases
+            If ddReason.SelectedValue = "TF" Then
+                TransferProcess(cn, trans)
             Else
-                pcEnt.setStatus(PassCardStatusEnum.AVAILABLE)
-            End If
-            pcEnt.setDepositPrint(ConstantGlobal.No)
-            pcEnt.setDeposit(0)
-            pcEnt.setDebtorId(0)
-            pcDao.updateDB(pcEnt, cn, trans)
-
-
-            'Update Old PassCardHistory Before create new pass history
-            Dim selectSQL As String = "select max(PassCardHistoryId) as ID from PassCardHistory Where PassCardMstrId = " & ddPass.SelectedValue
-
-            dt = dm.execTable(selectSQL)
-
-            If dt.Rows.Count > 0 Then
-                If dt.Rows(0).Item("ID").ToString <> "" Then
-                    Dim updateSQL As String = "Update PassCardHistory set enddate = getDate() where PassCardHistoryId = " & dt.Rows(0).Item("ID").ToString
-                    dm.execTableInTrans(updateSQL, cn, trans)
-                End If
+                NormalProcess(cn, trans)
             End If
 
-            dpbcEnt.setCancellationDate(Utility.DataTypeUtils.formatDateString(txtCancellationDate.Text))
-            dpbcEnt.setDebtorId(hidDebtorId.Value)
-            dpbcEnt.setDeposit(ddDeposit.SelectedValue)
-            dpbcEnt.setDepositAmount(Val(hidDeposit.Value))
 
-            If Trim(txtEffectiveFrom.Text) <> "" Then
-                dpbcEnt.setEffectiveFrom(Utility.DataTypeUtils.formatDateString(txtEffectiveFrom.Text))
-            End If
-
-            dpbcEnt.setLastUpdatedBy(lp.getUserMstrId)
-            dpbcEnt.setLastUpdatedDatetime(Now)
-            dpbcEnt.setPassCardCondition(ddPassCondition.SelectedValue)
-
-            If Trim(txtOutstanding.Text) <> "" Then
-                dpbcEnt.setOutstanding(txtOutstanding.Text)
-            Else
-                dpbcEnt.setOutstanding(0)
-            End If
-
-            If Trim(txtUnused.Text) <> "" Then
-                dpbcEnt.setUnused(txtUnused.Text)
-            Else
-                dpbcEnt.setUnused(0)
-            End If
-
-            dpbcEnt.setPassCardMstrId(ddPass.SelectedValue)
-            dpbcEnt.setProcessedBy(lp.getUserMstrId)
-            dpbcEnt.setReason(ddReason.SelectedValue)
-            dpbcEnt.setRemark(txtRemark.Text)
-            dpbcEnt.setStatus(ItemReplacementStatusEnum.SUBMITTED)
-            dpbcDao.insertDB(dpbcEnt, cn, trans)
-
-
-
-            trans.Commit()
-
-            trans = cn.BeginTransaction
-            checkDebtorPassBay(hidDebtorId.Value, cn, trans)
-            trans.Commit()
 
             lblmsg.Text = ""
 
@@ -388,7 +300,158 @@ Partial Class Transaction_ParkingCancellation
         End Try
     End Sub
 
-    Private Sub checkDebtorPassBay(ByVal debtorId As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
+    Private Sub NormalProcess(ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
+
+        Dim sql As String
+        Dim dt As New DataTable
+        Dim refundCutOfDay As Integer = 0
+        Dim dpbId As String = ""
+        Dim dpbEnt As New CPM.DebtorPassBayEntity
+        Dim dpbDao As New CPM.DebtorPassBayDAO
+        Dim pcEnt As New CPM.PassCardMstrEntity
+        Dim pcDao As New CPM.PassCardMstrDAO
+        Dim dpbcEnt As New CPM.DebtorPassBayNoCancelEntity
+        Dim dpbcDao As New CPM.DebtorPassBayNoCancelDAO
+
+        sql = "SELECT RefundCutOffDate From LocationInfo Where LocationInfoId = " & hidLocationInfoId.Value
+        dt = dm.execTable(sql)
+
+        If dt.Rows.Count > 0 Then
+            refundCutOfDay = IIf(dt.Rows(0).Item("RefundCutOffDate").Equals(System.DBNull.Value), 0, dt.Rows(0).Item("RefundCutOffDate"))
+        End If
+
+
+        sql = "SELECT * FROM DEBTORPASSBAY WHERE DEBTORID = " & hidDebtorId.Value & _
+              " AND STATUS = 'A' AND PASSCARDMSTRID = " & ddPass.SelectedValue
+        dt = dm.execTableInTrans(sql, cn, trans)
+
+        dpbId = dt.Rows(0).Item("DEBTORPASSBAYID")
+
+        dpbEnt.setDebtorPassBayId(dpbId)
+        dpbEnt.setStatus("C")
+        dpbEnt.setLastUpdatedBy(lp.getUserMstrId)
+        dpbEnt.setLastUpdatedDatetime(Now)
+        dpbDao.updateDB(dpbEnt, cn, trans)
+
+
+        ''Update Old PassCardMstr
+        pcEnt.setPassCardMstrId(ddPass.SelectedValue)
+        pcEnt.setLastUpdatedBy(lp.getUserMstrId)
+        pcEnt.setLastUpdatedDatetime(Now)
+        If ddPassCondition.SelectedValue = PassCardStatusEnum.LOST Then
+            pcEnt.setStatus(PassCardStatusEnum.LOST)
+        ElseIf ddPassCondition.SelectedValue = PassCardStatusEnum.SPOILT Then
+            pcEnt.setStatus(PassCardStatusEnum.SPOILT)
+        Else
+            pcEnt.setStatus(PassCardStatusEnum.AVAILABLE)
+        End If
+        pcEnt.setDepositPrint(ConstantGlobal.No)
+        pcEnt.setDeposit(0)
+        pcEnt.setDebtorId(0)
+        pcDao.updateDB(pcEnt, cn, trans)
+
+
+        'Update Old PassCardHistory Before create new pass history
+        Dim selectSQL As String = "select max(PassCardHistoryId) as ID from PassCardHistory Where PassCardMstrId = " & ddPass.SelectedValue
+
+        dt = dm.execTable(selectSQL)
+
+        If dt.Rows.Count > 0 Then
+            If dt.Rows(0).Item("ID").ToString <> "" Then
+                Dim updateSQL As String = "Update PassCardHistory set enddate = getDate() where PassCardHistoryId = " & dt.Rows(0).Item("ID").ToString
+                dm.execTableInTrans(updateSQL, cn, trans)
+            End If
+        End If
+
+        dpbcEnt.setCancellationDate(Utility.DataTypeUtils.formatDateString(txtCancellationDate.Text))
+        dpbcEnt.setDebtorId(hidDebtorId.Value)
+        dpbcEnt.setDeposit(ddDeposit.SelectedValue)
+        dpbcEnt.setDepositAmount(Val(hidDeposit.Value))
+
+        If Trim(txtEffectiveFrom.Text) <> "" Then
+            dpbcEnt.setEffectiveFrom(Utility.DataTypeUtils.formatDateString(txtEffectiveFrom.Text))
+        End If
+
+        dpbcEnt.setLastUpdatedBy(lp.getUserMstrId)
+        dpbcEnt.setLastUpdatedDatetime(Now)
+        dpbcEnt.setPassCardCondition(ddPassCondition.SelectedValue)
+
+        If Trim(txtOutstanding.Text) <> "" Then
+            dpbcEnt.setOutstanding(txtOutstanding.Text)
+        Else
+            dpbcEnt.setOutstanding(0)
+        End If
+
+        If Trim(txtUnused.Text) <> "" Then
+            dpbcEnt.setUnused(txtUnused.Text)
+        Else
+            dpbcEnt.setUnused(0)
+        End If
+
+        dpbcEnt.setPassCardMstrId(ddPass.SelectedValue)
+        dpbcEnt.setProcessedBy(lp.getUserMstrId)
+        dpbcEnt.setReason(ddReason.SelectedValue)
+        dpbcEnt.setRemark(txtRemark.Text)
+        dpbcEnt.setStatus(ItemReplacementStatusEnum.SUBMITTED)
+        dpbcDao.insertDB(dpbcEnt, cn, trans)
+
+
+
+        trans.Commit()
+
+        trans = cn.BeginTransaction
+        checkDebtorPassBay(hidDebtorId.Value, "Parking Services Cancelled", cn, trans)
+        trans.Commit()
+    End Sub
+
+    Private Sub TransferProcess(ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
+
+        Dim sql As String
+        Dim dt As New DataTable
+        Dim refundCutOfDay As Integer = 0
+        Dim dpbId As String = ""
+        Dim dpbEnt As New CPM.DebtorPassBayEntity
+        Dim dpbDao As New CPM.DebtorPassBayDAO
+        Dim pcEnt As New CPM.PassCardMstrEntity
+        Dim pcDao As New CPM.PassCardMstrDAO
+
+        sql = "SELECT RefundCutOffDate From LocationInfo Where LocationInfoId = " & hidLocationInfoId.Value
+        dt = dm.execTable(sql)
+
+        If dt.Rows.Count > 0 Then
+            refundCutOfDay = IIf(dt.Rows(0).Item("RefundCutOffDate").Equals(System.DBNull.Value), 0, dt.Rows(0).Item("RefundCutOffDate"))
+        End If
+
+
+        sql = "SELECT * FROM DEBTORPASSBAY WHERE DEBTORID = " & hidDebtorId.Value & _
+              " AND STATUS = 'A' AND PASSCARDMSTRID = " & ddPass.SelectedValue
+        dt = dm.execTableInTrans(sql, cn, trans)
+
+        dpbId = dt.Rows(0).Item("DEBTORPASSBAYID")
+
+        dpbEnt.setDebtorPassBayId(dpbId)        
+        dpbEnt.setDebtorId(ddTransferee.SelectedValue)
+        dpbEnt.setLastUpdatedBy(lp.getUserMstrId)
+        dpbEnt.setLastUpdatedDatetime(Now)
+        dpbDao.updateDB(dpbEnt, cn, trans)
+
+
+        'Update PassCardMstr debtorid to new transferee
+        pcEnt.setPassCardMstrId(ddPass.SelectedValue)
+        pcEnt.setLastUpdatedBy(lp.getUserMstrId)
+        pcEnt.setLastUpdatedDatetime(Now)       
+        pcEnt.setDepositPrint(ConstantGlobal.No)
+        pcEnt.setDebtorId(ddTransferee.SelectedValue)
+        pcDao.updateDB(pcEnt, cn, trans)
+
+        trans.Commit()
+
+        trans = cn.BeginTransaction
+        checkDebtorPassBay(hidDebtorId.Value, "Transferred to debtor " + ddTransferee.SelectedItem.Text, cn, trans)
+        trans.Commit()
+    End Sub
+
+    Private Sub checkDebtorPassBay(ByVal debtorId As String, ByVal remark As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
         'To inactive debtor if no more passbay tied to the debtor
 
         Dim dt As New DataTable
@@ -402,7 +465,7 @@ Partial Class Transaction_ParkingCancellation
 
 
             If dt.Rows(0).Item("ID") = 0 Then
-                Dim updateSQL As String = "Update Debtor set status = 'I',Remark='Parking Services Cancelled' where DebtorId = " & debtorId
+                Dim updateSQL As String = "Update Debtor set status = 'I',Remark='" + remark + "' where DebtorId = " & debtorId
                 dm.execTableInTrans(updateSQL, cn, trans)
             End If
 
@@ -460,5 +523,37 @@ Partial Class Transaction_ParkingCancellation
             dt = Nothing
         End Try
         
+    End Sub
+
+    Protected Sub ddReason_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim sql As String
+        Dim category As String
+
+        Try
+
+            If ddReason.SelectedValue = "TF" Then
+                transferree.Visible = True
+
+                If rbCompany.Checked = True Then
+                    category = CategoryEnum.COMPANY
+                Else
+                    category = CategoryEnum.INDIVIDUAL
+                End If
+
+                sql = "Select DEBTORID,NAME AS DEBTOR,0 as Seq From Debtor Where Status = '" & DebtorStatusEnum.ACTIVE & "'" & _
+                      "And LocationInfoId = " & lp.getDefaultLocationInfoId & " And Category='" + category + "' UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'" & _
+                      "ORDER BY SEQ,DEBTOR"
+
+                dsDebtor.SelectCommand = sql
+                dsDebtor.DataBind()
+
+            Else
+                transferree.Visible = False
+            End If
+
+          
+        Catch ex As Exception
+
+        End Try
     End Sub
 End Class

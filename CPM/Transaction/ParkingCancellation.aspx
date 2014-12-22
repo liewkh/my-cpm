@@ -164,7 +164,11 @@
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtDebtorName" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="6"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<div id="transferree" runat ="server" visible = "false" >
+           <td><asp:Label ID="lblDisplay" Text="Transferee" runat="server"></asp:Label></td>
+           <td class="hSpace">&nbsp;</td>
+           <td nowrap><asp:DropDownList ID="ddTransferee" runat="server" TabIndex="5" DataSourceID="dsDebtor" DataTextField="Debtor" DataValueField="DebtorId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsDebtor" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource> </td>
+        </div>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -172,9 +176,7 @@
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
 	</tr>
 	
   <div id="divSearch" runat="server" visible="true">
@@ -281,8 +283,8 @@
 	<tr>
 		<td class="normalLabel">Reason <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
-        <td nowrap><asp:DropDownList ID="ddReason" runat="server" TabIndex="1" DataSourceID="dsReason"
-                                    DataTextField="CodeDesc" DataValueField="codeabbr" CssClass="dropdownLarge">
+        <td nowrap><asp:DropDownList ID="ddReason" runat="server" TabIndex="1" DataSourceID="dsReason" AutoPostBack ="true" 
+                                    DataTextField="CodeDesc" DataValueField="codeabbr" CssClass="dropdownLarge" OnSelectedIndexChanged="ddReason_SelectedIndexChanged">
                                    </asp:DropDownList><asp:SqlDataSource ID="dsReason" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"
                                     SelectCommand="select codeabbr,codedesc,0 as seq from codemstr where codecat='PKR' union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq,codedesc">
                                    </asp:SqlDataSource>
