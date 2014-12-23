@@ -322,7 +322,8 @@
       (select codedesc from codemstr where codecat = 'PKR' and codeabbr= dc.reason) as reason,
       (select codedesc from codemstr where codecat = 'IRS' and codeabbr= dc.status) as statusdesc,
       (select serialno from passcardmstr where passcardmstrid = dc.passcardmstrid) as serialno,
-      dc.chequeno as chequeno,dc.chequedate as chequedate,AMOUNT = case when deposit = 'RF' THEN depositamount+unused-outstanding ELSE unused-outstanding END
+      dc.chequeno as chequeno,dc.chequedate as chequedate,AMOUNT = case when deposit = 'RF' THEN depositamount+unused-outstanding ELSE unused-outstanding END,
+      dc.DEPOSITAMOUNT
       from debtorpassbaynocancel dc,debtor d
       where dc.debtorid = d.debtorid
     </part>

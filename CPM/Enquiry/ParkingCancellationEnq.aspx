@@ -284,7 +284,9 @@
                                                 <asp:BoundField DataField="CHEQUEDATE" HeaderText="Cheque Date" SortExpression="CHEQUEDATE"
                                                     NullDisplayText="N/A" DataFormatString="{0:d}" htmlencode="false" />
                                                 <asp:BoundField DataField="AMOUNT" HeaderText="Amount" SortExpression="AMOUNT"
-                                                    NullDisplayText="N/A" dataformatstring="{0:RM #,##0.00}" />                      
+                                                    NullDisplayText="N/A" dataformatstring="{0:RM #,##0.00}" />
+                                                <asp:BoundField DataField="DEPOSITAMOUNT" HeaderText="Deposit" SortExpression="DEPOSITAMOUNT"
+                                                    NullDisplayText="N/A" dataformatstring="{0:RM #,##0.00}" />                       
                                                 <asp:BoundField DataField="REASON" HeaderText="Reason" SortExpression="REASON"
                                                     NullDisplayText="N/A" />                                                    
                                                 <asp:BoundField DataField="STATUSDESC" HeaderText="Status" SortExpression="STATUSDESC"
