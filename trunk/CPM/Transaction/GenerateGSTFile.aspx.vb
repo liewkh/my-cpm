@@ -101,15 +101,16 @@ Partial Class Transaction_GenerateGSTFile
                                                    txtFrom.Text + " 00:00:00:00',103) and CONVERT(datetime, '" + _
                                             txtTo.Text + " 23:59:59:59',103)"
             End If
+            Sql = Sql + " order by date,seq"
 
             dt = dm.execTable(Sql)
 
-            For iC = 0 To dt.Columns.Count - 2 'No Need to export the LocationInfoId
+            For iC = 0 To dt.Columns.Count - 4 'No Need to export the LocationInfoId,Seq,Source
                 xlsheet.Cells(1, iC + 1).Value = dt.Columns(iC).ToString()
             Next
             iz = 1
             For iX = 0 To dt.Rows.Count - 1
-                For iY = 0 To dt.Columns.Count - 2 'No Need to export the LocationInfoId
+                For iY = 0 To dt.Columns.Count - 4 'No Need to export the LocationInfoId,Seq,Source
                     Dim a As String = dt.Rows(iX)(iY).ToString()
                     If a <> Nothing Then xlsheet.Cells(iz + 1, iY + 1).value = dt.Rows(iX)(iY).ToString()
                 Next
