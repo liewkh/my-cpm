@@ -243,6 +243,7 @@ Partial Class Transaction_TaxInvoice
         Dim dadDao As New CPM.DebtorAccountDetailDAO
         Dim debtorCategory As String = ""        
         Dim txtTotalAmount As Double = 0
+        Dim txtTotalGSTAmount As Double = 0
 
         Try
 
@@ -266,14 +267,19 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setInvoicePeriod("")
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
-            dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
-            'dahEnt.setAmount(Val(txtSubTotal.Text))
+            dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)            
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.MANUALINVOICE)
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
-            For Each row As DataRow In dt.Rows                
+            For Each row As DataRow In dt.Rows
+
+                If row.Item("TAXCODE").Equals(ConstantGlobal.StandardRated) Then
+                    'Get the GST value and apply to chargeble item gn Standard Rated(SR)
+                    txtTotalGSTAmount += Val(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
+                End If
+
                 txtTotalAmount += Val(row.Item("TOTAL"))
                 dadEnt.setDebtorAccountHeaderId(dahId)
                 dadEnt.setMonths("")
@@ -303,6 +309,19 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setAmount(txtTotalAmount)
             dahEnt.setLastUpdatedDatetime(Now)
             dahDao.updateDB(dahEnt, cn, trans)
+
+            If txtTotalGSTAmount > 0 Then                
+                dadEnt.setDebtorAccountHeaderId(dahId)
+                dadEnt.setMonths("")
+                dadEnt.setDetails("GST Amount")
+                dadEnt.setUnitPrice(0)
+                dadEnt.setQuantity(0)
+                dadEnt.setAmount(txtTotalGSTAmount)
+                dadEnt.setTaxCode("")
+                dadEnt.setLastUpdatedBy(lp.getUserMstrId)
+                dadEnt.setLastUpdatedDatetime(Now)
+                dadDao.insertDB(dadEnt, cn, trans)
+            End If
 
             trans.Commit()
 
@@ -497,14 +516,7 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)                
                 dr("AMOUNT") = Trim(txtAmount.Text)
-
-                If hdTaxCode.Value.Equals(ConstantGlobal.StandardRated) Then
-                    'Get the GST value and apply to chargeble item gn Standard Rated(SR)
-                    dr("TOTAL") = (CInt(txtQty.Text) * CInt(txtAmount.Text)) + ((Val(CInt(txtQty.Text) * CInt(txtAmount.Text)) * dm.getCurrentTax()) / 100)
-                Else
-                    dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
-                End If
-
+                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
@@ -518,13 +530,7 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                'dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
-                If hdTaxCode.Value.Equals(ConstantGlobal.StandardRated) Then
-                    'Get the GST value and apply to chargeble item gn Standard Rated(SR)
-                    dr("TOTAL") = (CInt(txtQty.Text) * CInt(txtAmount.Text)) + ((Val(CInt(txtQty.Text) * CInt(txtAmount.Text)) * dm.getCurrentTax()) / 100)
-                Else
-                    dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
-                End If
+                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)            
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
@@ -549,7 +555,7 @@ Partial Class Transaction_TaxInvoice
 
         Catch ex As Exception
             trans.Rollback()
-            lblMsg.Text = ex.Message
+            lblmsg.Text = ex.Message
             logger.Debug(ex.Message)
         Finally
             'trans.Dispose()
