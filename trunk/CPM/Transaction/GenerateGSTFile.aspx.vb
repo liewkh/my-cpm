@@ -10,6 +10,8 @@ Partial Class Transaction_GenerateGSTFile
     Dim cn As SqlConnection
     Dim trans As SqlTransaction
     Dim lp As New LoginProfile
+    Dim myDate As DateTime
+    Dim myYear As Integer
     Private logger As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
 
 
@@ -32,6 +34,20 @@ Partial Class Transaction_GenerateGSTFile
             dsLocation.DataBind()
 
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
+
+            ddMonth.SelectedValue = Now.Month
+            ddLocation.SelectedValue = lp.getDefaultLocationInfoId
+
+            myDate = DateTime.Now()
+            Dim x As Integer
+            myYear = myDate.Year
+
+            x = myYear - 5
+            For x = x To (x + 10)
+                ddYear.Items.Add(x)
+            Next x
+
+            ddYear.Items.FindByText(myYear).Selected = True
 
         End If
 
@@ -93,24 +109,22 @@ Partial Class Transaction_GenerateGSTFile
             logger.Debug("Start Generating GST Files... " + DateTime.Now())
 
             If ddLocation.SelectedIndex > 0 Then
-                Sql = "select * from GSTExportVw where CONVERT(datetime, date,103) between CONVERT(datetime, '" + _
-                                   txtFrom.Text + " 00:00:00:00',103) and CONVERT(datetime, '" + _
-                            txtTo.Text + " 23:59:59:59',103) and locationinfoid  = " + ddLocation.SelectedValue
+                Sql = "select * from GSTExportVw where Year = " + ddYear.SelectedValue + " and Month = " + ddMonth.SelectedValue + _
+                      " and locationinfoid = " + ddLocation.SelectedValue
             Else
-                Sql = "select * from GSTExportVw where CONVERT(datetime, date,103) between CONVERT(datetime, '" + _
-                                                   txtFrom.Text + " 00:00:00:00',103) and CONVERT(datetime, '" + _
-                                            txtTo.Text + " 23:59:59:59',103)"
+                Sql = "select * from GSTExportVw where Year = " + ddYear.SelectedValue + " and Month = " + ddMonth.SelectedValue
             End If
+
             Sql = Sql + " order by date,seq"
 
             dt = dm.execTable(Sql)
 
-            For iC = 0 To dt.Columns.Count - 4 'No Need to export the LocationInfoId,Seq,Source
+            For iC = 0 To dt.Columns.Count - 6 'No Need to export the LocationInfoId,Seq,Source,Year,Month
                 xlsheet.Cells(1, iC + 1).Value = dt.Columns(iC).ToString()
             Next
             iz = 1
             For iX = 0 To dt.Rows.Count - 1
-                For iY = 0 To dt.Columns.Count - 4 'No Need to export the LocationInfoId,Seq,Source
+                For iY = 0 To dt.Columns.Count - 6 'No Need to export the LocationInfoId,Seq,Source,Year,Month
                     Dim a As String = dt.Rows(iX)(iY).ToString()
                     If a <> Nothing Then xlsheet.Cells(iz + 1, iY + 1).value = dt.Rows(iX)(iY).ToString()
                 Next

@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTDailyCollection]    Script Date: 12/23/2014 15:09:55 ******/
+/****** Object:  View [dbo].[GSTDailyCollection]    Script Date: 12/24/2014 17:02:52 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -8,7 +8,8 @@ GO
 
 CREATE VIEW [dbo].[GSTDailyCollection]
 as
-SELECT CONVERT(varchar, CAST(dc.TransactionDate AS datetime), 103) TransactionDate,li.LocationInfoId, 'BANK - ' + dbo.fxGetBank(li.locationinfoid) as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
+
+SELECT Year(dc.TransactionDate) as "Year",datepart(m, transactiondate) as "Month",li.LocationInfoId, 'BANK - ' + dbo.fxGetBank(li.locationinfoid) as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
        SUM(dc.Cashier1 + dc.Cashier2 + dc.Cashier3 + 
            dc.valetservice1 + dc.valetservice2 + dc.valetservice3 +
            dc.Motorcycle1 + dc.Motorcycle2 + dc.Motorcycle3 + 
@@ -17,12 +18,15 @@ SELECT CONVERT(varchar, CAST(dc.TransactionDate AS datetime), 103) TransactionDa
        'DC' as Source
 FROM   dbo.DailyCollection AS dc INNER JOIN
        dbo.LocationInfo AS li ON dc.LocationInfoId = li.LocationInfoId
-GROUP BY li.LocationInfoId, li.LocationName, dc.TransactionDate
+GROUP BY li.LocationInfoId, li.LocationName, Year(dc.TransactionDate), Month(dc.TransactionDate)
+
+
+
 
 union
 
 SELECT 
-CONVERT(varchar, CAST(dc.TransactionDate AS datetime), 103) TransactionDate,li.LocationInfoId, dbo.fxGetLocationCode(li.locationinfoid) + '_DC' as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
+Year(dc.TransactionDate) as "Year",datepart(m, transactiondate) as "Month",li.LocationInfoId, dbo.fxGetLocationCode(li.locationinfoid) + '_DC' as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
 0 AS "DebitAmount",
        SUM(dc.Cashier1 + dc.Cashier2 + dc.Cashier3 + 
            dc.valetservice1 + dc.valetservice2 + dc.valetservice3 +
@@ -33,13 +37,13 @@ CONVERT(varchar, CAST(dc.TransactionDate AS datetime), 103) TransactionDate,li.L
 FROM   dbo.DailyCollection AS dc INNER JOIN
        dbo.LocationInfo AS li ON dc.LocationInfoId = li.LocationInfoId
 
-GROUP BY li.LocationInfoId, li.LocationName, dc.TransactionDate
+GROUP BY li.LocationInfoId, li.LocationName, Year(dc.TransactionDate), Month(dc.TransactionDate)
 
 union
-SELECT CONVERT(varchar, CAST(dc.TransactionDate AS datetime), 103) TransactionDate,li.LocationInfoId, dbo.fxGetLocationCode(li.locationinfoid) + '_DC' as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
+Select Year(dc.TransactionDate) as "Year",datepart(m, transactiondate) as "Month",li.LocationInfoId, dbo.fxGetLocationCode(li.locationinfoid) + '_DC' as Memo,dbo.fxGetAccountCode(li.LocationInfoId) as AccountCode,
        0 AS "DebitAmount",SUM(dc.GSTAmount) AS "CreditAmount",dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,3 as seq,
        'DC' as Source
 FROM   dbo.DailyCollection AS dc INNER JOIN
        dbo.LocationInfo AS li ON dc.LocationInfoId = li.LocationInfoId
 
-GROUP BY li.LocationInfoId, li.LocationName, dc.TransactionDate
+GROUP BY li.LocationInfoId, li.LocationName, Year(dc.TransactionDate), Month(dc.TransactionDate)
