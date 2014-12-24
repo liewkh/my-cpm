@@ -156,48 +156,59 @@
                         <td class="hSpace">&nbsp;</td>
      </tr>
 
- <tr>
-                        <td class="normalLabel">Date From <font color="#FF0000">*</font></td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="normalLabel"><asp:TextBox ID="txtFrom" runat="server" CssClass="textBoxSmall" MaxLength="12" TabIndex="4"></asp:TextBox>
-                            <rjs:PopCalendar ID="popCalendar1" RequiredDate="True" From-Date="" To-Today = "true" runat="server" Control="txtFrom" InvalidDateMessage="Invalid Date Range Selection"
-                                Shadow="True" ShowWeekend="True" Move="True" Format="dd mm yyyy" Separator="/" Fade="0.5" ToolTip="Click For Calendar: ([Format])" />
-                        </td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                    </tr>
+<tr>
+		<td class="normalLabel">Month <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+        <td nowrap>  <asp:DropDownList ID="ddMonth" runat="server">
+                                                <asp:ListItem Value="">Please Choose One</asp:ListItem>
+                                                <asp:ListItem Value="01">January</asp:ListItem>
+                                                <asp:ListItem Value="02">February</asp:ListItem>
+                                                <asp:ListItem Value="03">March</asp:ListItem>
+                                                <asp:ListItem Value="04">April</asp:ListItem>
+                                                <asp:ListItem Value="05">May</asp:ListItem>
+                                                <asp:ListItem Value="06">June</asp:ListItem>
+                                                <asp:ListItem Value="07">July</asp:ListItem>
+                                                <asp:ListItem Value="08">August</asp:ListItem>
+                                                <asp:ListItem Value="09">September</asp:ListItem>
+                                                <asp:ListItem Value="10">October</asp:ListItem>
+                                                <asp:ListItem Value="11">November</asp:ListItem>
+                                                <asp:ListItem Value="12">December</asp:ListItem>
+                                            </asp:DropDownList>&nbsp;
+		</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
 	
 
-                    <tr>
-                        <td class="normalLabel">Date To <font color="#FF0000">*</font></td>
-                        <td class="hSpace">&nbsp;</td>
-                         <td class="normalLabel"><asp:TextBox ID="txtTo" runat="server" CssClass="textBoxSmall" MaxLength="12" TabIndex="4"></asp:TextBox>
-                            <rjs:PopCalendar ID="popCalendar2" RequiredDate="True" From-Control="txtFrom" From-Date="" From-Increment="0" To-Today = "true" runat="server" Control="txtTo" InvalidDateMessage="Invalid Date Range Selection"
-                                Shadow="True" ShowWeekend="True" Move="True" Format="dd mm yyyy" Separator="/" Fade="0.5" ToolTip="Click For Calendar: ([Format])" />
-                        </td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                        <td class="hSpace">&nbsp;</td>
-                    </tr>     
+<tr>
+		<td class="normalLabel">Year <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+        <td nowrap><asp:DropDownList ID="ddYear" runat="server" AutoPostBack="true" >
+                                            </asp:DropDownList>&nbsp;
+		</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>	    
      
 	
 	<tr class="vSpace">
