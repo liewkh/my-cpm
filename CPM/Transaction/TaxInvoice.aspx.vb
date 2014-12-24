@@ -269,7 +269,7 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)            
             dahEnt.setBatchNo("")
-            dahEnt.setTxnType(TxnTypeEnum.MANUALINVOICE)
+            dahEnt.setTxnType(TxnTypeEnum.INVOICE)
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
@@ -293,6 +293,7 @@ Partial Class Transaction_TaxInvoice
                 dadDao.insertDB(dadEnt, cn, trans)
             Next row
 
+            txtTotalAmount += txtTotalGSTAmount
             
 
             invEnt.setDebtorId(hidDebtorId.Value)
@@ -310,7 +311,8 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setLastUpdatedDatetime(Now)
             dahDao.updateDB(dahEnt, cn, trans)
 
-            If txtTotalGSTAmount > 0 Then                
+            'To create a new record for GST Amount
+            If txtTotalGSTAmount > 0 Then
                 dadEnt.setDebtorAccountHeaderId(dahId)
                 dadEnt.setMonths("")
                 dadEnt.setDetails("GST Amount")
