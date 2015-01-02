@@ -319,7 +319,7 @@ Partial Class Transaction_TaxInvoice
                 dadEnt.setUnitPrice(0)
                 dadEnt.setQuantity(0)
                 dadEnt.setAmount(txtTotalGSTAmount)
-                dadEnt.setTaxCode("NA")
+                dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                 dadEnt.setLastUpdatedBy(lp.getUserMstrId)
                 dadEnt.setLastUpdatedDatetime(Now)
                 dadDao.insertDB(dadEnt, cn, trans)

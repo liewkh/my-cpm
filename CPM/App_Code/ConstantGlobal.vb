@@ -30,6 +30,8 @@ Public Class ConstantGlobal
     Public Shared StandardRated As String = "SR"
     Public Shared ZeroRated As String = "ZR"
 
+    Public Shared NotAvailable As String = "NA"
+
 
 
 
