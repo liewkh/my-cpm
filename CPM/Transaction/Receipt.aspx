@@ -497,7 +497,7 @@ function open_popupModal(page,size)
                             <asp:Button ID="btnDataBack" runat="server" Text="Back" CssClass="buttonMedium" CausesValidation="false"
                                 TabIndex="16" OnClick="btnDataBack_Click" />         
                             <asp:Button ID="btnMiscPayment" runat="server" Text="Misc Payment" CssClass="buttonLarge" CausesValidation="false"
-                                TabIndex="17" />    
+                                TabIndex="17" visible="false"/>    
                         </td>
                         <td class="hSpace" height="22">
                             &nbsp;</td>
