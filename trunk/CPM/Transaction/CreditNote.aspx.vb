@@ -122,7 +122,7 @@ Partial Class Transaction_CreditNote
         txtDebtorName.Text = ""
         rbCompany.Checked = True
         rbIndividual.Checked = False
-        txtTotalOS.Text = ""
+        'txtTotalOS.Text = ""
         txtSelected.text = ""
         txtDescription.Text = ""
         txtPaymentAmount.Text = ""
@@ -264,7 +264,7 @@ Partial Class Transaction_CreditNote
                 End If
             Next
 
-            txtPaymentAmount.Text = String.Format("{0:n2}", total)
+            txtPaymentAmount.Text = String.Format("{0:n2}", total - gstAmount)
             txtGSTAmount.Text = String.Format("{0:n2}", gstAmount)
             txtselected.text = String.Format("{0:n2}", total)
 
@@ -338,7 +338,7 @@ Partial Class Transaction_CreditNote
 
             End If
 
-            txtTotalOS.Text = String.Format("{0:n2}", total)
+            'txtTotalOS.Text = String.Format("{0:n2}", total)
 
 
         Catch ex As Exception
@@ -361,6 +361,7 @@ Partial Class Transaction_CreditNote
         txtDescription.Text = ""
         txtPaymentAmount.Text = ""
         txtSelected.Text = ""
+        txtGSTAmount.Text = ""
     End Sub
 
     Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -400,7 +401,7 @@ Partial Class Transaction_CreditNote
                 Exit Sub
             End If
 
-            payAmt = txtPaymentAmount.Text
+            payAmt = Val(txtPaymentAmount.Text) + Val(txtGSTAmount.Text)
 
             Dim str As String = ""
             Dim sql As String = ""
@@ -435,7 +436,7 @@ Partial Class Transaction_CreditNote
 
 
             'Pay less ok but not extra per invoice base
-            If payAmt > invAmt Then
+            If Val(txtSelected.Text) < Val(txtPaymentAmount.Text) + Val(txtGSTAmount.Text) Then
                 lblmsg.Text = "Payment Amount cannot be more than Total Outstanding Amount!"
                 Exit Sub
             End If
