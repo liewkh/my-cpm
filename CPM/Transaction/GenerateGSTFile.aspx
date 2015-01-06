@@ -11,6 +11,7 @@
     <script type="text/javascript" language="JavaScript" src='../include/effect.js'></script>
 
     <script type="text/javascript" language="JavaScript" src='../include/javascript.js'></script>
+
 </head>
 
 <script language="javascript" type="text/javascript">
