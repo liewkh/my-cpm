@@ -15,6 +15,7 @@ Partial Class Transaction_GenerateGSTFile
     Private logger As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
 
 
+
     Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
         lp = Session("LoginProfile")
         Session.LCID = 2057
@@ -58,7 +59,7 @@ Partial Class Transaction_GenerateGSTFile
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)        
         hdPreview.Value = ""
     End Sub
 
@@ -82,7 +83,7 @@ Partial Class Transaction_GenerateGSTFile
         ddLocation.SelectedIndex = 0
     End Sub
 
-    Protected Sub DoAsyncWork()
+    Private Sub DoAsyncWork()
         Try
 
             Dim app As Object
@@ -109,10 +110,10 @@ Partial Class Transaction_GenerateGSTFile
             logger.Debug("Start Generating GST Files... " + DateTime.Now())
 
             If ddLocation.SelectedIndex > 0 Then
-                Sql = "select * from GSTExportVw where Year = " + ddYear.SelectedValue + " and Month = " + ddMonth.SelectedValue + _
+                Sql = "select * from GSTExportVw where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue + _
                       " and locationinfoid = " + ddLocation.SelectedValue
             Else
-                Sql = "select * from GSTExportVw where Year = " + ddYear.SelectedValue + " and Month = " + ddMonth.SelectedValue
+                Sql = "select * from GSTExportVw where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue
             End If
 
             Sql = Sql + " order by date,seq"
@@ -131,10 +132,19 @@ Partial Class Transaction_GenerateGSTFile
                 iz = iz + 1
             Next
 
-            MsgBox("Export Done", MsgBoxStyle.Information, "")
 
             app.Visible = True
             app.UserControl = True
+
+            Dim saveAsName As String
+            Dim todaysDate As String
+            todaysDate = Today()
+            todaysDate = Replace(todaysDate, "/", "-")
+
+            saveAsName = todaysDate & ".xls"
+
+            xlsheet.SaveAs("C:\Temp\" + saveAsName)
+
             releaseobject(app)
             releaseobject(xlbook)
             releaseobject(xlsheet)
@@ -155,5 +165,6 @@ Partial Class Transaction_GenerateGSTFile
             logger.Warn(ex.Message)
         End Try
     End Sub
+
 
 End Class
