@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  UserDefinedFunction [dbo].[fxGetAccountCode]    Script Date: 12/19/2014 18:10:38 ******/
+/****** Object:  UserDefinedFunction [dbo].[fxGetAccountCode]    Script Date: 01/07/2015 14:14:00 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -12,7 +12,7 @@ AS
 BEGIN
 declare @accountCode nvarchar(200)
 
-select @accountCode = bm.AccountNo 
+select @accountCode = bm.AccountCode 
 from locationinfo li,bankmstr bm
 where li.bankcode = bm.bankcode
 and li.locationinfoid = @LocationInfoId
@@ -20,3 +20,12 @@ and li.locationinfoid = @LocationInfoId
 return isnull(@accountCode,'')
 
 end
+
+
+
+
+
+
+
+
+
