@@ -116,7 +116,7 @@ Partial Class Transaction_GenerateGSTFile
                 Sql = "select * from GSTExportVw where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue
             End If
 
-            Sql = Sql + " order by date,seq"
+            Sql = Sql + " order by seq"
 
             dt = dm.execTable(Sql)
 
