@@ -263,7 +263,7 @@ Partial Class Transaction_Receipt
 
     Protected Sub gvDebtorInv_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorInv.SelectedIndexChanged
         Dim total As Double = 0
-
+        Dim strSQL As String = "" 
        
         hidDebtorAccountHeaderId.Value = ""
 
@@ -298,7 +298,8 @@ Partial Class Transaction_Receipt
             Next
 
             txtPaymentAmount.Text = String.Format("{0:n2}", total)
-            txtselected.text = String.Format("{0:n2}", total)
+            txtSelected.Text = String.Format("{0:n2}", total)
+
 
         Catch ex As Exception
             lblmsg.Text = ex.Message
@@ -339,6 +340,7 @@ Partial Class Transaction_Receipt
         Dim searchModel As New CPM.DebtorAccountHeaderEntity
         Dim sqlmap As New SQLMap
         Dim total As Double
+        Dim dt As DataTable
 
         Try
 
@@ -372,6 +374,14 @@ Partial Class Transaction_Receipt
 
             txtTotalOS.Text = String.Format("{0:n2}", total)
 
+            If Not (String.IsNullOrEmpty(ddLocation.SelectedValue)) Then
+                strSQL = "SELECT BANKCODE FROM LOCATIONINFO WHERE LOCATIONINFOID = " + ddLocation.SelectedValue
+                dt = dm.execTable(strSQL)
+
+                If dt.Rows.Count = 1 Then
+                    ddBankCode.SelectedValue = dt.Rows(0).Item("BANKCODE").ToString
+                End If
+            End If
 
         Catch ex As Exception
             lblmsg.Text = ex.Message

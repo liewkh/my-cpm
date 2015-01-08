@@ -810,7 +810,7 @@
                         <td class="hSpace">
                             &nbsp;</td>
                         <td class="normalLabel">
-                            Default Bank Code</td>
+                            Default Bank</td>
                         <td class="hSpace">
                             &nbsp;</td>
                         <td nowrap><asp:DropDownList ID="ddBankCode" runat="server" TabIndex="30" DataSourceID="dsBankCode"  DataTextField="bankdesc" DataValueField="bankcode" CssClass="dropdownMedium"></asp:DropDownList>
