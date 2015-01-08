@@ -326,6 +326,23 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>		
 	</tr>
 	
+	<tr class="vSpace">
+		<td class="normalLabel">Remark</td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxLarge" TabIndex="11" MaxLength ="0"></asp:TextBox></td>        
+        <td class="hSpace">&nbsp;</td>       
+        <td class="hSpace">&nbsp;</td>       
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>
+	
 
 
     <tr>
