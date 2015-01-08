@@ -116,7 +116,7 @@ Partial Class Transaction_TaxInvoice
         lblmsg.Text = ""
         lblRecCount.Text = ""                        
         txtAmount.Text = ""        
-        txtQty.Text = ""        
+        txtQty.Text = ""
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -223,6 +223,7 @@ Partial Class Transaction_TaxInvoice
         lblmsg.Text = ""
         txtAmount.Text = ""
         txtQty.Text = ""
+        txtRemark.Text = ""
         gvMisc.DataSource = Nothing
         gvMisc.DataBind()
         btnConfirm.Visible = False
@@ -270,6 +271,7 @@ Partial Class Transaction_TaxInvoice
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)            
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.INVOICE)
+            dahEnt.setMIRemark(Trim(txtRemark.Text))
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
@@ -307,7 +309,7 @@ Partial Class Transaction_TaxInvoice
 
 
             dahEnt.setDebtorAccountHeaderId(dahId)
-            dahEnt.setAmount(txtTotalAmount)
+            dahEnt.setAmount(txtTotalAmount)   
             dahEnt.setLastUpdatedDatetime(Now)
             dahDao.updateDB(dahEnt, cn, trans)
 
@@ -339,6 +341,7 @@ Partial Class Transaction_TaxInvoice
             lblmsg.Text = ""
             txtAmount.Text = ""
             txtQty.Text = ""
+            txtRemark.Text = ""
             gvMisc.DataSource = Nothing
             gvMisc.DataBind()
             btnConfirm.Visible = False
@@ -346,7 +349,7 @@ Partial Class Transaction_TaxInvoice
             txtSubTotal.Text = ""
             txtSubTotal.Visible = False
 
-            PrintTaxInvoice(dahEnt.getInvoiceNo)
+            PrintTaxInvoice(dahEnt.getInvoiceNo, Trim(txtRemark.Text))
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
 
 
@@ -368,7 +371,7 @@ Partial Class Transaction_TaxInvoice
     Protected Sub btnPrint_Click(ByVal sender As Object, ByVal e As System.EventArgs)
 
         If (hdInvoiceNo.Value <> "" And hidDebtorAccountHeaderId.Value <> "" And hdSubTotal.Value <> "") Then
-            PrintTaxInvoice(hdInvoiceNo.Value)
+            PrintTaxInvoice(hdInvoiceNo.Value, Trim(txtRemark.Text))
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
         End If
     End Sub
@@ -398,7 +401,7 @@ Partial Class Transaction_TaxInvoice
 
     End Sub
 
-    Private Sub PrintTaxInvoice(ByVal invNo As String)
+    Private Sub PrintTaxInvoice(ByVal invNo As String, ByVal MIRemark As String)
         Dim rptMgr As New ReportManager
         Dim mySql As String = ""
         Dim dt As New DataTable
@@ -442,6 +445,7 @@ Partial Class Transaction_TaxInvoice
                 rptMgr.setParameterDiscrete("debtorid", hidDebtorId.Value)
                 rptMgr.setParameterDiscrete("invoiceno", invNo)
                 rptMgr.setParameterDiscrete("CompanyNo", companyNo)
+                rptMgr.setParameterDiscrete("MIRemark", MIRemark)
 
                 rptMgr.Logon()
 
