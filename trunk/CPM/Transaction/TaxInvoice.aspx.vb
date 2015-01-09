@@ -292,6 +292,7 @@ Partial Class Transaction_TaxInvoice
                 dadEnt.setTaxCode(row.Item("TAXCODE"))
                 dadEnt.setLastUpdatedBy(lp.getUserMstrId)
                 dadEnt.setLastUpdatedDatetime(Now)
+                dadEnt.setxRef(TxnTypeEnum.MANUALTAXINVOICE)
                 dadDao.insertDB(dadEnt, cn, trans)
             Next row
 
@@ -324,6 +325,7 @@ Partial Class Transaction_TaxInvoice
                 dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                 dadEnt.setLastUpdatedBy(lp.getUserMstrId)
                 dadEnt.setLastUpdatedDatetime(Now)
+                dadEnt.setxRef(TxnTypeEnum.MANUALTAXINVOICEGST)
                 dadDao.insertDB(dadEnt, cn, trans)
             End If
 

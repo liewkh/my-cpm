@@ -127,6 +127,7 @@ Partial Class Transaction_GenerateGSTFile
             For iX = 0 To dt.Rows.Count - 1
                 For iY = 0 To dt.Columns.Count - 6 'No Need to export the LocationInfoId,Seq,Source,Year,Month
                     Dim a As String = dt.Rows(iX)(iY).ToString()
+                    xlsheet.Cells.NumberFormat = "@" 'Format Cell to Text
                     If a <> Nothing Then xlsheet.Cells(iz + 1, iY + 1).value = dt.Rows(iX)(iY).ToString()
                 Next
                 iz = iz + 1
@@ -154,10 +155,13 @@ Partial Class Transaction_GenerateGSTFile
         Catch ex As System.Runtime.InteropServices.COMException
             If ex.ErrorCode = -2147221164 Then
                 lblMsg.Text = "Error in export: Please install Microsoft Office (Excel) to use the Export to Excel feature."
+                logger.Warn(lblMsg.Text)
             ElseIf ex.ErrorCode = -2146827284 Then
                 lblMsg.Text = "Error in export: Excel allows only 65,536 maximum rows in a sheet."
+                logger.Warn(lblMsg.Text)
             Else
                 lblMsg.Text = (("Error in export: " & ex.Message) + Environment.NewLine & " Error: ") + ex.ErrorCode
+                logger.Warn(lblMsg.Text)
             End If
 
         Catch ex As Exception
