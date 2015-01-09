@@ -201,9 +201,10 @@ Public Class InvoiceManager
                     dadEnt.setUnitPrice(dt2.Rows(i).Item("UNITPRICE"))
                     dadEnt.setQuantity(dt2.Rows(i).Item("QTY"))
                     dadEnt.setAmount(dadEnt.getMonths * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
-                    dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.StandardRated, trans, cn))
+                    dadEnt.setTaxCode(ConstantGlobal.StandardRated)
                     dadEnt.setLastUpdatedBy(userId)
                     dadEnt.setLastUpdatedDatetime(Now)
+                    dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
                     dadDao.insertDB(dadEnt, cn, trans)
                     invAmount += (dadEnt.getMonths * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
                 Next
@@ -231,6 +232,7 @@ Public Class InvoiceManager
                         dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
                         dadDao.insertDB(dadEnt, cn, trans)
                         invAmount += dadEnt.getAmount
                     End If
@@ -262,9 +264,10 @@ Public Class InvoiceManager
                         dadEnt.setUnitPrice(dtDeposit.Rows(i).Item("UNITPRICE"))
                         dadEnt.setQuantity(dtDeposit.Rows(i).Item("QTY"))
                         dadEnt.setAmount(dtDeposit.Rows(i).Item("DEPOSIT"))
-                        dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.ZeroRated, trans, cn))
+                        dadEnt.setTaxCode(ConstantGlobal.ZeroRated)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
                         dadDao.insertDB(dadEnt, cn, trans)
                         depositAmount += dtDeposit.Rows(i).Item("DEPOSIT")
                         invAmount += dadEnt.getAmount
@@ -454,9 +457,10 @@ Public Class InvoiceManager
                     dadEnt.setUnitPrice(dt2.Rows(i).Item("SEASONDURATION") * dt2.Rows(i).Item("UNITPRICE"))
                     dadEnt.setQuantity(dt2.Rows(i).Item("QTY"))
                     dadEnt.setAmount(duration * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
-                    dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.StandardRated, trans, cn))
+                    dadEnt.setTaxCode(ConstantGlobal.StandardRated)
                     dadEnt.setLastUpdatedBy(userId)
                     dadEnt.setLastUpdatedDatetime(Now)
+                    dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
                     dadDao.insertDB(dadEnt, cn, trans)
                     invAmount += duration * (dt2.Rows(i).Item("QTY") * dt2.Rows(i).Item("UNITPRICE"))
                 Next
@@ -482,6 +486,7 @@ Public Class InvoiceManager
                         dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
                         dadDao.insertDB(dadEnt, cn, trans)
                         invAmount += dadEnt.getAmount
                     End If
@@ -512,9 +517,10 @@ Public Class InvoiceManager
                         dadEnt.setUnitPrice(dtDeposit.Rows(i).Item("UNITPRICE"))
                         dadEnt.setQuantity(dtDeposit.Rows(i).Item("QTY"))
                         dadEnt.setAmount(dtDeposit.Rows(i).Item("DEPOSIT"))
-                        dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.ZeroRated, trans, cn))
+                        dadEnt.setTaxCode(ConstantGlobal.ZeroRated)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
                         dadDao.insertDB(dadEnt, cn, trans)
                         depositAmount += dtDeposit.Rows(i).Item("DEPOSIT")
                         invAmount += dadEnt.getAmount
@@ -817,9 +823,10 @@ Public Class InvoiceManager
                     dadEnt.setUnitPrice(dt2.Rows(i).Item("UNITPRICE"))
                     dadEnt.setQuantity(dt2.Rows(i).Item("QTY"))
                     dadEnt.setAmount(dadEnt.getMonths * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
-                    dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.StandardRated, trans, cn))
+                    dadEnt.setTaxCode(ConstantGlobal.StandardRated)
                     dadEnt.setLastUpdatedBy(userId)
                     dadEnt.setLastUpdatedDatetime(Now)
+                    dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
                     dadDao.insertDB(dadEnt, cn, trans)
                     invAmount += (dadEnt.getMonths * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
                 Next
@@ -847,6 +854,7 @@ Public Class InvoiceManager
                         dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
                         dadDao.insertDB(dadEnt, cn, trans)
                         invAmount += dadEnt.getAmount
                     End If
@@ -878,9 +886,10 @@ Public Class InvoiceManager
                         dadEnt.setUnitPrice(dtDeposit.Rows(i).Item("UNITPRICE"))
                         dadEnt.setQuantity(dtDeposit.Rows(i).Item("QTY"))
                         dadEnt.setAmount(dtDeposit.Rows(i).Item("DEPOSIT"))
-                        dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.ZeroRated, trans, cn))
+                        dadEnt.setTaxCode(ConstantGlobal.ZeroRated)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
                         dadDao.insertDB(dadEnt, cn, trans)
                         depositAmount += dtDeposit.Rows(i).Item("DEPOSIT")
                         invAmount += dadEnt.getAmount
@@ -1090,9 +1099,10 @@ Public Class InvoiceManager
                     dadEnt.setUnitPrice(dt2.Rows(i).Item("SEASONDURATION") * dt2.Rows(i).Item("UNITPRICE"))
                     dadEnt.setQuantity(dt2.Rows(i).Item("QTY"))
                     dadEnt.setAmount(duration * (dt2.Rows(i).Item("QTY") * dadEnt.getUnitPrice))
-                    dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.StandardRated, trans, cn))
+                    dadEnt.setTaxCode(ConstantGlobal.StandardRated)
                     dadEnt.setLastUpdatedBy(userId)
                     dadEnt.setLastUpdatedDatetime(Now)
+                    dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
                     dadDao.insertDB(dadEnt, cn, trans)
                     invAmount += duration * (dt2.Rows(i).Item("QTY") * dt2.Rows(i).Item("UNITPRICE"))
                 Next
@@ -1118,6 +1128,7 @@ Public Class InvoiceManager
                         dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
                         dadDao.insertDB(dadEnt, cn, trans)
                         invAmount += dadEnt.getAmount
                     End If
@@ -1148,9 +1159,10 @@ Public Class InvoiceManager
                         dadEnt.setUnitPrice(dtDeposit.Rows(i).Item("UNITPRICE"))
                         dadEnt.setQuantity(dtDeposit.Rows(i).Item("QTY"))
                         dadEnt.setAmount(dtDeposit.Rows(i).Item("DEPOSIT"))
-                        dadEnt.setTaxCode(dm.getTaxCode(locationInfoId, ConstantGlobal.ZeroRated, trans, cn))
+                        dadEnt.setTaxCode(ConstantGlobal.ZeroRated)
                         dadEnt.setLastUpdatedBy(userId)
                         dadEnt.setLastUpdatedDatetime(Now)
+                        dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
                         dadDao.insertDB(dadEnt, cn, trans)
                         depositAmount += dtDeposit.Rows(i).Item("DEPOSIT")
                         invAmount += dadEnt.getAmount
