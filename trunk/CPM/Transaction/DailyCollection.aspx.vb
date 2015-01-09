@@ -132,12 +132,12 @@ Partial Class Transaction_DailyCollection
             End If
 
 
-            If Trim(txtTotalGST.Text) <> "" Then
-                If Not Utility.Tools.NumericValidation(Trim(txtTotalGST.Text)) Then
-                    lblmsg.Text = "Please enter a numeric value for Total GST Amount."
-                    Exit Sub
-                End If
-            End If
+            'If Trim(txtTotalGST.Text) <> "" Then
+            '    If Not Utility.Tools.NumericValidation(Trim(txtTotalGST.Text)) Then
+            '        lblmsg.Text = "Please enter a numeric value for Total GST Amount."
+            '        Exit Sub
+            '    End If
+            'End If
 
             If Trim(txtCashierShift1.Text) <> "" Then
                 dailyEnt.setCashier1(txtCashierShift1.Text)
@@ -382,6 +382,7 @@ Partial Class Transaction_DailyCollection
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Myscript", "AssignValue('" + dm.getCurrentTax.ToString() + "');", True)
     End Sub
 
     Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)

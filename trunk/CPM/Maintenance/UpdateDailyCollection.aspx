@@ -17,6 +17,12 @@
 
   window.onscroll=move;
 
+  var tax=0;
+
+function AssignValue(Value)
+{
+    tax = Value;
+}
        
  function onUpdating(){
                 // get the update progress div
@@ -183,6 +189,8 @@
                                        
           var total = a + b + c + d;
           document.getElementById('txtTotalDaily').value = formatCurrency(total);
+          document.getElementById('txtTotalGST').value = formatCurrency((total*tax)/100);
+          
           sumTotalCollection();
         }        
         
@@ -544,7 +552,7 @@
 		<td class="hSpace">&nbsp;</td>
 		<td align="right" class="normalLabel"><b>Total GST Amount</b></td>
 		<td class="hSpace">&nbsp;</td>
-		<td nowrap><asp:TextBox ID="txtTotalGST" enabled="true" runat="server" CssClass="textBoxSmall" MaxLength="20" TabIndex="22"></asp:TextBox></td>
+		<td nowrap><asp:TextBox ID="txtTotalGST" enabled="false" runat="server" CssClass="textBoxSmallDisabled" MaxLength="20" TabIndex="22"></asp:TextBox></td>
 	</tr>		
 
 	<tr>

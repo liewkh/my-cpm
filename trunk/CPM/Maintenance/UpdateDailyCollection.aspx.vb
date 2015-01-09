@@ -358,6 +358,7 @@ Partial Class Maintenance_updateDailyCollection
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)
         ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Message", "doSum();", True)
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Myscript", "AssignValue('" + dm.getCurrentTax.ToString() + "');", True)
     End Sub
 
 
