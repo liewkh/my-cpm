@@ -186,10 +186,12 @@ function AssignValue(Value)
              c = 0;                
           if(isNaN(d))
              d = 0;            
-                                       
+                          
+          var gst = (100+parseFloat(tax))/100;
+                                        
           var total = a + b + c + d;
           document.getElementById('txtTotalDaily').value = formatCurrency(total);
-          document.getElementById('txtTotalGST').value = formatCurrency((total*tax)/100);
+          document.getElementById('txtTotalGST').value = formatCurrency(total - (total/gst));
           
           sumTotalCollection();
         }        
