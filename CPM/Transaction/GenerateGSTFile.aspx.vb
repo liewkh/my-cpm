@@ -134,8 +134,8 @@ Partial Class Transaction_GenerateGSTFile
             Next
 
 
-            app.Visible = True
-            app.UserControl = True
+            'app.Visible = True
+            'app.UserControl = True
 
             Dim saveAsName As String
             Dim todaysDate As String
