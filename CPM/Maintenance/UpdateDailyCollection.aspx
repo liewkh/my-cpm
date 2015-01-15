@@ -190,8 +190,11 @@ function AssignValue(Value)
           var gst = (100+parseFloat(tax))/100;
                                         
           var total = a + b + c + d;
+          var finalTotalGST = total - (total/gst);
+          finalTotalGST = roundingAdjustment(finalTotalGST);
+          
           document.getElementById('txtTotalDaily').value = formatCurrency(total);
-          document.getElementById('txtTotalGST').value = formatCurrency(total - (total/gst));
+          document.getElementById('txtTotalGST').value = formatCurrency(finalTotalGST);                   
           
           sumTotalCollection();
         }        
@@ -315,6 +318,26 @@ function AssignValue(Value)
           sumTotalCollection();
           sumInfoTotal();
           
+        }
+        
+        function roundingAdjustment(Amount)
+        {
+           var ModAmount = 0;
+           var AddUpAmount = 0;
+           var NewAmount = 0;
+
+        
+           ModAmount = parseFloat(Amount) % 0.05;
+           
+           if (ModAmount > 0.02)
+              { AddUpAmount = 0.05 - ModAmount;
+                NewAmount = Amount + AddUpAmount;
+              }
+           else
+              { NewAmount = Amount - ModAmount; }
+            
+
+           return NewAmount;
         } 
                                                  
 		</script>
