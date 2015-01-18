@@ -394,7 +394,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="normalLabel">Credit Invoice Amount (RM)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtPaymentAmount" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="12"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtPaymentAmount" runat="server" CssClass="textBoxMediumDisabled" enabled="false" MaxLength="200" TabIndex="12"></asp:TextBox></td>
         <td class="hSpace">&nbsp;</td>			
 		<td class="hSpace">&nbsp;</td>		
 		<td class="hSpace">&nbsp;</td>
@@ -412,7 +412,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="normalLabel">Credit GST Amount (RM) <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtGSTAmount" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="13"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtGSTAmount" runat="server" CssClass="textBoxMediumDisabled" enabled="false" MaxLength="200" TabIndex="13"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
