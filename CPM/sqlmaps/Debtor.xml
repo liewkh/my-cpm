@@ -164,7 +164,7 @@
   <dynamic-mapped-statement name="Search-DebtorInvoiceReceipt">
     <part type="static">
       select LEFT(datename(m,ih.month),3) + '-' + datename(yy,ih.month) as month,isnull(ih.PaidAmount,0) as PaidAmount,(ih.amount-isnull(ih.PaidAmount,0)) as OSamount,
-      dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,ih.amount - dbo.fxGetGSTAmount(dah.debtoraccountheaderid) as Amount,ih.invoicehistoryid,
+      dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,ih.amount as Amount,ih.invoicehistoryid,
       (Select codedesc from codemstr where codecat = 'DAHS' and codeabbr = dah.status) as status,
       (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DAH.TXNTYPE) AS TXNTYPEDESC,DAH.TXNTYPE,
       dbo.fxGetGSTAmount(dah.debtoraccountheaderid) as GSTAmount
