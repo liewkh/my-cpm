@@ -189,6 +189,37 @@
     
   </dynamic-mapped-statement>
 
+  <dynamic-mapped-statement name="Search-DebtorInvoiceReceiptSingle">
+    <part type="static">
+      select left(dah.invoiceperiod,11) as month,
+      isnull(dah.PaidAmount,0) as PaidAmount,
+      dah.amount-isnull(dah.PaidAmount,0) as OSamount,
+      dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,
+      dah.amount - dbo.fxGetGSTAmount(dah.debtoraccountheaderid) as Amount,      
+      (Select codedesc from codemstr where codecat = 'DAHS' and codeabbr = dah.status) as status,
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DAH.TXNTYPE) AS TXNTYPEDESC,DAH.TXNTYPE,
+      dbo.fxGetGSTAmount(dah.debtoraccountheaderid) as GSTAmount
+      from debtoraccountheader dah
+      WHERE 1 = 1
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.DebtorId = #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.InvoiceNo LIKE #InvoiceNo#
+    </part>
+    <part type="dynamic" prepend="AND">
+      dah.Status In (#Status#)
+    </part>
+    <part type="static" >
+      and (dah.amount-isnull(dah.PaidAmount,0)) &lt;&gt; 0
+    </part>
+    <part type="static" >
+      order by dah.invoicedate
+    </part>
+
+  </dynamic-mapped-statement>
+
   <dynamic-mapped-statement name="Search-DebtorReceipt">
     <part type="static">
       select (select remark from debtorpaymentcancellation where debtorpaymentid = dp.debtorpaymentid) as statusdesc,dp.status,dp.debtorid,
