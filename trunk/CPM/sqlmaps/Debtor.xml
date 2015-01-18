@@ -224,7 +224,7 @@
     <part type="static">
       select (select remark from debtorpaymentcancellation where debtorpaymentid = dp.debtorpaymentid) as statusdesc,dp.status,dp.debtorid,
       (select codedesc from codemstr where codecat='PTY' and codeabbr = dp.paymenttype) as paymentType,dp.paymenttype as paymentTypeCode,
-      dp.debtorpaymentid,dp.paymentdate,dp.receiptno,dp.description,dp.amount,
+      dp.debtorpaymentid,dp.paymentdate,dp.receiptno,dp.description,dp.amount + isnull(dp.gstamount,0) as amount,
       (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DP.TXNTYPE) AS TXNTYPEDESC,DP.TXNTYPE
       from debtorpayment dp
       where 1=1
