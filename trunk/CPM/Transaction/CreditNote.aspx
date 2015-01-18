@@ -305,7 +305,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorInv" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,INVOICEHISTORYID,GSTAMOUNT"                                            
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,GSTAMOUNT"                                            
                                             DataSourceID="dsDebtorInv">
                                             <Columns>                       
                                                 <asp:TemplateField HeaderText="Pay?" SortExpression="Pay" ItemStyle-HorizontalAlign="Center"  > 
