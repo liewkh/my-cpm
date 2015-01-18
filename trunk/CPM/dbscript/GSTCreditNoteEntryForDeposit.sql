@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 01/18/2015 19:46:31 ******/
+/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 01/18/2015 23:32:45 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -41,10 +41,13 @@ li.LocationInfoId,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,18 as seq,
        'GSTCreditNoteEntryForDeposit-18' as Source
-from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
+from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li,debtorpayment dp
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
 and dad.xref in ('2')
 and dah.status <> 'C'
+and dp.TxnType = 'CN'
+and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
+and dp.debtorid = d.debtorid
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
