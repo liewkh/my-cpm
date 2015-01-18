@@ -344,7 +344,7 @@ Partial Class Enquiry_RcpDebitEnq
 
 
 
-            strSQL = "SELECT AMOUNT FROM DEBTORPAYMENT WHERE DEBTORPAYMENTID = " & CInt(e.ToString.Split("|")(0))
+            strSQL = "SELECT AMOUNT + ISNULL(GSTAMOUNT,0) AS AMOUNT FROM DEBTORPAYMENT WHERE DEBTORPAYMENTID = " & CInt(e.ToString.Split("|")(0))
 
             dt = dm.execTable(strSQL)
             If dt.Rows.Count > 0 Then
