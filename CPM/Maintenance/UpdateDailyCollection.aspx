@@ -191,7 +191,7 @@ function AssignValue(Value)
                                         
           var total = a + b + c + d;
           var finalTotalGST = total - (total/gst);
-          finalTotalGST = roundingAdjustment(finalTotalGST);
+          finalTotalGST = finalTotalGST;
           
           document.getElementById('txtTotalDaily').value = formatCurrency(total);
           document.getElementById('txtTotalGST').value = formatCurrency(finalTotalGST);                   
