@@ -241,7 +241,7 @@ Partial Class Transaction_CreditNote
                 If Not chk Is Nothing Then
 
                     If chk.Checked Then
-                        If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("MONTH").ToString) Then
+                        If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("INVOICENO").ToString) Then
                             total += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
                             gstAmount = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").ToString)
 

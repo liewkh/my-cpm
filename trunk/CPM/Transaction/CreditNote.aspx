@@ -355,7 +355,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="errorMsg"><font color="#FF0000">Selected Invoice Amount (RM)</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtSelected" runat="server" CssClass="textBoxMediumDisabled" MaxLength="200" TabIndex="9"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtSelected" runat="server" CssClass="textBoxMediumDisabled" enabled="false" MaxLength="200" TabIndex="9"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
