@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteForDepositSR]    Script Date: 01/15/2015 14:42:02 ******/
+/****** Object:  View [dbo].[GSTCreditNoteForDepositSR]    Script Date: 01/18/2015 23:52:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,7 +80,4 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('5')
 and dah.status <> 'C'
-and dad.TaxCode = 'SR'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
-
-
