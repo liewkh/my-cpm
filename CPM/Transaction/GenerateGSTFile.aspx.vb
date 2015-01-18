@@ -136,6 +136,7 @@ Partial Class Transaction_GenerateGSTFile
 
             'app.Visible = True
             'app.UserControl = True
+            app.Quit()
 
             Dim saveAsName As String
             Dim todaysDate As String
@@ -146,9 +147,13 @@ Partial Class Transaction_GenerateGSTFile
 
             xlsheet.SaveAs("C:\Temp\" + saveAsName)
 
+            xlsheet.Close()
+
             releaseobject(app)
             releaseobject(xlbook)
             releaseobject(xlsheet)
+
+            app.Quit()
 
             logger.Debug("End Generating GST Files... " + DateTime.Now())
 
@@ -160,7 +165,7 @@ Partial Class Transaction_GenerateGSTFile
                 lblMsg.Text = "Error in export: Excel allows only 65,536 maximum rows in a sheet."
                 logger.Warn(lblMsg.Text)
             Else
-                lblMsg.Text = (("Error in export: " & ex.Message) + Environment.NewLine & " Error: ") + ex.ErrorCode
+                lblMsg.Text = "Error in export: " & ex.Message.ToString()
                 logger.Warn(lblMsg.Text)
             End If
 
