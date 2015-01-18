@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTInvoiceEntryForDeposit]    Script Date: 01/15/2015 14:45:00 ******/
+/****** Object:  View [dbo].[GSTInvoiceEntryForDeposit]    Script Date: 01/18/2015 19:43:48 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

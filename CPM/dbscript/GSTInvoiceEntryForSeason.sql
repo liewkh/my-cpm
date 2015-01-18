@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTInvoiceEntryForSeason]    Script Date: 01/15/2015 14:46:37 ******/
+/****** Object:  View [dbo].[GSTInvoiceEntryForSeason]    Script Date: 01/18/2015 19:43:25 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -13,10 +13,10 @@ SELECT Year(dah.InvoiceDate) as "Years",
 datepart(m, dah.InvoiceDate) as "Months",
 li.LocationInfoId, 
 'SEASON PARKING RECEIVABLE' as AccountName,
-'1-2303' as AccountCode,
+'1-2302' as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,4 as seq,
-       'DAD' as Source
+       'GSTInvoiceEntryForSeason-4' as Source
 FROM debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
@@ -35,7 +35,7 @@ li.LocationInfoId,
 '4-1100' as AccountCode,
        0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,5 as seq,
-       'DAD' as Source
+       'GSTInvoiceEntryForSeason-5' as Source
 from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
@@ -54,7 +54,7 @@ li.LocationInfoId,
 '2-9950' as AccountCode,
        0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,6 as seq,
-       'DAD' as Source
+       'GSTInvoiceEntryForSeason-6' as Source
 from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid

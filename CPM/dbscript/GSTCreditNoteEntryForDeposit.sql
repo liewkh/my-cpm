@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 01/15/2015 14:41:20 ******/
+/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 01/18/2015 19:46:31 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -16,7 +16,7 @@ li.LocationInfoId,
 '1-2302' as AccountCode,
        0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,17 as seq,
-       'DAD' as Source
+       'GSTCreditNoteEntryForDeposit-17' as Source
 from debtorpayment dp, locationinfo li,
 debtor d,debtoraccountheader dah,debtoraccountdetail dad
 where dp.debtorid = d.debtorid
@@ -40,7 +40,7 @@ li.LocationInfoId,
 '2-4002' as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,18 as seq,
-       'DAD' as Source
+       'GSTCreditNoteEntryForDeposit-18' as Source
 from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
