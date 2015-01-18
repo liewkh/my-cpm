@@ -680,7 +680,7 @@ Partial Class Transaction_CreditNote
             rptMgr.setParameterDiscrete("amount", Amt)
             rptMgr.setParameterDiscrete("gstAmount", gstAmount)
 
-            rptMgr.setParameterDiscrete("rm", Utility.Tools.SpellNumber(Amt))
+            rptMgr.setParameterDiscrete("rm", Utility.Tools.SpellNumber(Amt + gstAmount))
 
             rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
 
