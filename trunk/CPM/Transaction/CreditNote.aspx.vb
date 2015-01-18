@@ -382,6 +382,7 @@ Partial Class Transaction_CreditNote
         Dim dtInvHist As New DataTable
         Dim totalActualPay As Double = 0
         Dim chkMoreThan1 As Integer = 0
+        Dim invoiceNo As String = ""
 
         Try
 
@@ -415,6 +416,7 @@ Partial Class Transaction_CreditNote
                 If Not chk Is Nothing Then
                     If chk.Checked Then
                         str = str + gvDebtorInv.DataKeys(row.RowIndex)(dahDao.COLUMN_DebtorAccountHeaderID).ToString + ","
+                        invoiceNo = gvDebtorInv.DataKeys(row.RowIndex)("INVOICENO").ToString
                         chkMoreThan1 += 1
                         If Not gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").Equals(System.DBNull.Value) Then
                             gstAmt = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT"))
@@ -422,6 +424,8 @@ Partial Class Transaction_CreditNote
                     End If
                 End If
             Next
+
+
 
             str = Mid(str, 1, str.Length - 1)
             sql = "select sum(ISNULL(dah.amount,0) - ISNULL(dah.paidamount,0)) as invAmt from debtoraccountheader dah where dah.debtoraccountheaderid in (" & str & ")"
@@ -573,7 +577,7 @@ Partial Class Transaction_CreditNote
 
             SearchData()
 
-            PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount)
+            PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount, invoiceNo, Double.Parse(txtGSTAmount.Text))
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
 
 
@@ -600,7 +604,7 @@ Partial Class Transaction_CreditNote
         End Try
     End Sub
 
-    Private Sub PrintReceipt(ByVal debtorPaymentId As Long, ByVal debtorId As Long, ByVal Amt As String)
+    Private Sub PrintReceipt(ByVal debtorPaymentId As Long, ByVal debtorId As Long, ByVal Amt As String, ByVal invoiceNo As String, ByVal gstAmount As Double)
         Dim rptMgr As New ReportManager
         Dim sqlmap As New SQLMap
         Dim mySql As String = ""
@@ -672,10 +676,13 @@ Partial Class Transaction_CreditNote
             rptMgr.setParameterDiscrete("reservedQty", "")
             rptMgr.setParameterDiscrete("depositQty", "")
             rptMgr.setParameterDiscrete("othersQty", "")
+            rptMgr.setParameterDiscrete("invoiceNo", invoiceNo)
+            rptMgr.setParameterDiscrete("amount", Amt)
+            rptMgr.setParameterDiscrete("gstAmount", gstAmount)
 
             rptMgr.setParameterDiscrete("rm", Utility.Tools.SpellNumber(Amt))
 
-		rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
+            rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
 
 
             rptMgr.Logon()
