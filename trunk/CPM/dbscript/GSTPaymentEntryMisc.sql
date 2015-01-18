@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTPaymentEntryMisc]    Script Date: 01/15/2015 14:47:23 ******/
+/****** Object:  View [dbo].[GSTPaymentEntryMisc]    Script Date: 01/18/2015 19:45:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -15,7 +15,7 @@ li.LocationInfoId,
 dbo.fxGetAccountCode(li.locationinfoid) as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,27 as seq,
-       'DAD' as Source
+       'GSTPaymentEntryMisc-27' as Source
 from debtorpayment dp, locationinfo li,
 debtor d,debtoraccountheader dah,debtoraccountdetail dad
 where dp.debtorid = d.debtorid
@@ -38,7 +38,7 @@ li.LocationInfoId,
 '1-2302' as AccountCode,
        0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,28 as seq,
-       'DAD' as Source
+       'GSTPaymentEntryMisc-28' as Source
 from debtorpayment dp, locationinfo li,
 debtor d,debtoraccountheader dah,debtoraccountdetail dad
 where dp.debtorid = d.debtorid
@@ -50,5 +50,3 @@ and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('2')
 and dah.status <> 'C'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
-
-
