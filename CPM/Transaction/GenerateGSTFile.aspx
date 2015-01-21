@@ -14,6 +14,8 @@
 
 </head>
 
+
+
 <script language="javascript" type="text/javascript">
          window.onscroll=move;
 
@@ -63,7 +65,7 @@
 <body>
 <form id="Form1" action='' runat="server">
 <!--10 minutes -->
- <asp:ScriptManager EnablePartialRendering="true" ID="ScriptManager1" runat="server" AsyncPostBackTimeOut="600">
+ <asp:ScriptManager EnablePartialRendering="false" ID="ScriptManager1" runat="server" AsyncPostBackTimeOut="600">
         </asp:ScriptManager>
         
 <script language="javascript" type="text/javascript">
