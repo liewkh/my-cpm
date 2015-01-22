@@ -16,23 +16,6 @@
     
 </head>
 
-<script type = "text/javascript">
-     function RadioCheck(rb) {
-        var gv = document.getElementById("<%=gvDebtorInv.ClientID%>");
-        var rbs = gv.getElementsByTagName("input");
- 
-        var row = rb.parentNode.parentNode;
-        for (var i = 0; i < rbs.length; i++) {
-            if (rbs[i].type == "radio") {
-                if (rbs[i].checked && rbs[i] != rb) {
-                    rbs[i].checked = false;
-                    break;
-                }
-            }
-        }
-    }    
-</script>
-
 <script language="javascript" type="text/javascript">
          window.onscroll=move;
                        
@@ -210,6 +193,24 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>
 	</tr>
 	
+	<tr class="vSpace">
+		<td class="normalLabel">Invoice <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:DropDownList ID="ddInvoice" AutoPostBack ="True" OnSelectedIndexChanged="ddInvoice_SelectedIndexChanged" runat="server" TabIndex="5" DataSourceID="dsInvoice" DataTextField="InvoiceNo" DataValueField="DebtorAccountHeaderId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsInvoice" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
+		</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>
+	
   <div id="divSearch" runat="server" visible="true">
 	
     <tr>
@@ -305,13 +306,12 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorInv" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,GSTAMOUNT"                                            
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,GSTAMOUNT,INVOICEHISTORYID"                                            
                                             DataSourceID="dsDebtorInv">
                                             <Columns>                       
                                                 <asp:TemplateField HeaderText="Pay?" SortExpression="Pay" ItemStyle-HorizontalAlign="Center"  > 
                                                 <ItemTemplate>
-                                                    <asp:RadioButton ID="RadioButton1" runat="server"
-                                                        onclick = "RadioCheck(this);"/>
+                                                    <asp:CheckBox ID="chkSelect" runat="server" />
                                                     <asp:HiddenField ID="HiddenField1" runat="server"
                                                         Value = '<%#Eval("DEBTORACCOUNTHEADERID")%>'/>
                                                 </ItemTemplate>
@@ -325,9 +325,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                                 <asp:BoundField DataField="INVOICEPERIOD" HeaderText="Invoice Period" SortExpression="INVOICEPERIOD"
                                                     NullDisplayText="N/A" />
                                                 <asp:BoundField DataField="AMOUNT" HeaderText="Invoice Amount" SortExpression="AMOUNT"
-                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />
-                                                <asp:BoundField DataField="GSTAMOUNT" HeaderText="GST Amount" SortExpression="GSTAMOUNT"
-                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />         
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />      
                                                 <asp:BoundField DataField="PAIDAMOUNT" HeaderText="Paid Amount" SortExpression="PAIDAMOUNT"
                                                     NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                               
                                                 <asp:BoundField DataField="OSAMOUNT" HeaderText="O/S Amount" SortExpression="OSAMOUNT"
@@ -351,6 +349,24 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td colspan="15" height="17"></td>
     </tr>
 
+  <tr>
+		<td class="normalLabel">GST Amount (RM) <font color="#FF0000"></font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel"><asp:Label ID="lblGSTAmount" runat="server"></asp:Label></td>		
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	    <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+	
 
     <tr>
 		<td class="errorMsg"><font color="#FF0000">Selected Invoice Amount (RM)</font></td>
@@ -394,7 +410,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="normalLabel">Credit Invoice Amount (RM)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtPaymentAmount" runat="server" CssClass="textBoxMediumDisabled" enabled="false" MaxLength="200" TabIndex="12"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtPaymentAmount" runat="server" MaxLength="200" TabIndex="12"></asp:TextBox></td>
         <td class="hSpace">&nbsp;</td>			
 		<td class="hSpace">&nbsp;</td>		
 		<td class="hSpace">&nbsp;</td>
@@ -412,7 +428,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="normalLabel">Credit GST Amount (RM) <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtGSTAmount" runat="server" CssClass="textBoxMediumDisabled" enabled="false" MaxLength="200" TabIndex="13"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtGSTAmount" runat="server"  MaxLength="200" TabIndex="13"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
