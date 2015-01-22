@@ -1,6 +1,4 @@
-USE [CPM]
-GO
-/****** Object:  View [dbo].[GSTPaymentEntryMiscSR]    Script Date: 01/18/2015 19:45:47 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,7 +25,7 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3','5')
 and dah.status <> 'C'
-and dad.taxcode = 'SR'
+and dad.taxcode in ('SR','NA')
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
 union
@@ -49,12 +47,12 @@ and dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('3')
+and dad.xref in ('3','5')
 and dah.status <> 'C'
-and dad.taxcode = 'SR'
+and dad.taxcode in ('SR','NA')
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
-union
+/* union
 
 --GST OUTPUT TAX
 SELECT Year(dah.InvoiceDate) as "Years",
@@ -75,4 +73,12 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('5')
 and dah.status <> 'C'
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate) */
+
+GO
+
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+
