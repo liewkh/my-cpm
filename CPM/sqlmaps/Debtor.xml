@@ -221,6 +221,9 @@
       and (dah.amount-isnull(dah.PaidAmount,0)) &lt;&gt; 0
     </part>
     <part type="static" >
+      and (ih.amount-isnull(ih.PaidAmount,0)) &lt;&gt; 0
+    </part>        
+    <part type="static" >
       order by dah.invoicedate
     </part>
 
