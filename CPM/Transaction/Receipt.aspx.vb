@@ -161,6 +161,7 @@ Partial Class Transaction_Receipt
         txtNoPrint.Text = 3
         gvDebtorEnq.DataSource = Nothing
         gvDebtorInv.DataSource = Nothing
+        ddInvoice.Items.Clear()
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -244,12 +245,24 @@ Partial Class Transaction_Receipt
 
     Protected Sub gvDebtorEnq_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorEnq.SelectedIndexChanged
         Dim debtorDao As New CPM.DebtorDAO
+        Dim Sql As String = ""
 
         Try
-            hidDebtorId.value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString
+
+            Sql = "select dah.debtoraccountheaderid,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
+               " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
+               " from debtoraccountheader dah where (dah.amount-isnull(dah.PaidAmount,0)) <> 0 and dah.status <> 'C'and dah.txntype = 'I'and dah.debtorid = " + gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString & _
+               " union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq"
+
+            dsInvoice.SelectCommand = Sql
+            dsInvoice.DataBind()
+
+            '''''''''''''''''''''''
+
+            hidDebtorId.Value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString
             txtDebtorName.Text = gvDebtorEnq.SelectedDataKey("DEBTOR").ToString
-            hidLocationInfoId.value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_LocationInfoId).ToString
-            DataMode()
+            hidLocationInfoId.Value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_LocationInfoId).ToString
+            'DataMode()
 
 
         Catch ex As Exception
@@ -259,6 +272,10 @@ Partial Class Transaction_Receipt
             debtorDao = Nothing
         End Try
 
+    End Sub
+
+    Protected Sub ddInvoice_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        DataMode()
     End Sub
 
     Protected Sub gvDebtorInv_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorInv.SelectedIndexChanged
@@ -348,6 +365,7 @@ Partial Class Transaction_Receipt
 
             searchModel.setDebtorId(hidDebtorId.Value)
             searchModel.setStatus(InvoiceStatusEnum.OUTSTANDING)
+            searchModel.setDebtorAccountHeaderId(ddInvoice.SelectedValue)
 
             Dim strSQL As String = sqlmap.getMappedStatement("Debtor/Search-DebtorInvoiceReceipt", searchModel)
 
