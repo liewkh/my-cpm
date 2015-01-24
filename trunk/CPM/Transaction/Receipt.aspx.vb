@@ -453,6 +453,8 @@ Partial Class Transaction_Receipt
         Dim dtHeader As New DataTable
         Dim dtInvHist As New DataTable
         Dim flgNotEnufFund As Boolean = False
+        Dim invoiceNo As String = ""
+        Dim invoiceDate As String = ""
         
         Try
 
@@ -500,6 +502,8 @@ Partial Class Transaction_Receipt
                 If Not chk Is Nothing Then
                     If chk.Checked Then
                         str = str + gvDebtorInv.DataKeys(row.RowIndex)(dahDao.COLUMN_DebtorAccountHeaderID).ToString + ","
+                        invoiceNo = gvDebtorInv.DataKeys(row.RowIndex)("INVOICENO").ToString
+                        invoiceDate = gvDebtorInv.DataKeys(row.RowIndex)("INVOICEDATE").ToString
                     End If
                 End If
             Next
@@ -712,6 +716,8 @@ Partial Class Transaction_Receipt
             dpEnt.setStatus(ReceiptStatusEnum._NEW)
             dpEnt.setTxnType(TxnTypeEnum.RECEIPT)
             dpEnt.setBankCode(ddBankCode.SelectedValue)
+            dpEnt.setInvoiceNo(invoiceNo)
+            dpEnt.setInvoiceDate(CDate(invoiceDate))
 
             dpEnt.setReceiptNo(dm.getReceiptNextRunningNo(hidLocationInfoId.Value, trans, cn))
 
