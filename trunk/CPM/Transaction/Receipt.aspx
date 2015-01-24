@@ -234,6 +234,24 @@ function open_popupModal(page,size)
 		<td class="hSpace">&nbsp;</td>
 	</tr>
 	
+	<tr class="vSpace">
+		<td class="normalLabel">Invoice <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:DropDownList ID="ddInvoice" AutoPostBack ="True" OnSelectedIndexChanged="ddInvoice_SelectedIndexChanged" runat="server" TabIndex="5" DataSourceID="dsInvoice" DataTextField="InvoiceNo" DataValueField="DebtorAccountHeaderId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsInvoice" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
+		</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>	
+	
   <div id="divSearch" runat="server" visible="true">
 	
     <tr>

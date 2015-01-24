@@ -178,6 +178,9 @@
       dah.InvoiceNo LIKE #InvoiceNo#
     </part>
     <part type="dynamic" prepend="AND">
+      dah.debtoraccountheaderid = #DebtorAccountHeaderId#
+    </part>
+    <part type="dynamic" prepend="AND">
       dah.Status In (#Status#)
     </part>
     <part type="static" >
