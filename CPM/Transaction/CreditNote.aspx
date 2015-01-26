@@ -388,7 +388,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 
     	  	
     <tr>
-		<td class="normalLabel">Description</td>
+		<td class="normalLabel">Description<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtDescription" runat="server" CssClass="textBoxLarge" MaxLength="1000" TabIndex="10"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
@@ -408,7 +408,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 	
     
     <tr>
-		<td class="normalLabel">Credit Invoice Amount (RM)<font color="#FF0000">*</font></td>
+		<td class="normalLabel">Credit Fees Amount (RM)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtPaymentAmount" runat="server" MaxLength="200" TabIndex="12"></asp:TextBox></td>
         <td class="hSpace">&nbsp;</td>			

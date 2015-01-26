@@ -6,7 +6,6 @@ Public Class TxnTypeEnum
     Public Const DEBITNOTE As String = "DN"
     Public Const INVOICE As String = "I"
     Public Const RECEIPT As String = "R"
-    Public Const MANUALINVOICE As String = "MI"
 
     'Usage for xRef in the DebtorAccountDetail to identify the transaction type from where
     Public Const INVOICEENTRYSEASON As String = "1"

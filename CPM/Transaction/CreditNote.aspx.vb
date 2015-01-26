@@ -426,6 +426,11 @@ Partial Class Transaction_CreditNote
                 Exit Sub
             End If
 
+            If Trim(txtDescription.Text) = "" Then
+                lblmsg.Text = "Please enter description."
+                Exit Sub
+            End If
+
             payAmt = Val(txtPaymentAmount.Text) + Val(txtGSTAmount.Text)
 
             Dim str As String = ""
