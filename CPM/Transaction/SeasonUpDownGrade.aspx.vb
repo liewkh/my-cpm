@@ -117,7 +117,7 @@ Partial Class Transaction_SeasonUpDowngrade
         lblRecCount.Text = ""
         ddLocation.SelectedValue = lp.getDefaultLocationInfoId
         txtDebtorName.Text = ""
-        chkDeposit.Checked = False
+        'chkDeposit.Checked = False
         rbCompany.Checked = True
         rbIndividual.Checked = False
         gvDebtorEnq.DataSource = Nothing
@@ -137,6 +137,8 @@ Partial Class Transaction_SeasonUpDowngrade
         For i As Integer = 0 To gvDebtorEnq.Rows.Count
             ClientScript.RegisterForEventValidation(gvDebtorEnq.UniqueID, "Select$" + i.ToString)
         Next
+
+        ClientScript.RegisterForEventValidation(lnkProcess.UniqueID)
 
         MyBase.Render(writer)
     End Sub
@@ -270,7 +272,7 @@ Partial Class Transaction_SeasonUpDowngrade
         'ddOldPass.SelectedIndex = 0
         'bindPass()
         txtEffectiveFrom.Text = ""
-        chkDeposit.Checked = FALSE
+        'chkDeposit.Checked = FALSE
     End Sub
 
     Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -453,6 +455,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
         Try
 
+
             sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
                    "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
                    "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & Now.Year & _
@@ -462,44 +465,60 @@ Partial Class Transaction_SeasonUpDowngrade
 
             dt = dm.execTableInTrans(sql, cn, trans)
 
-            If dt.Rows(0).Item("CNT") > 0 Then
+            If dt.Rows(0).Item("CNT") > 0 Then 'Invoice Generated
                 Dim monthCharged As Integer = dt.Rows(0).Item("CNT")
                 Dim parkingFee As Double
 
                 Dim total As Double
                 parkingFee = monthCharged * (Val(hdNewSeasonAmount.Value) - Val(hdOldSeasonAmount.Value))
                 depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
-                total = parkingFee + depositFee
+                total = parkingFee '+ depositFee New Requirement remove deposit
 
                 'Check box "Deposit Update Only". If user checked it, it will not process the "Debit Note" or "Credit Note" 
                 'generation but all other logic and updating remained the same
-                If Not chkDeposit.Checked Then
-                    If total < 0 Then
-                        receiptNo = createCreditNote(Math.Abs(parkingFee), Math.Abs(depositFee), "Refund Parking Fee : RM " & Math.Abs(parkingFee).ToString & ", Deposit : RM " & Math.Abs(depositFee).ToString, cn, trans)
-                    Else
-                        receiptNo = createDebitNote(Math.Abs(parkingFee), Math.Abs(depositFee), cn, trans)
-                    End If
+
+                'Check with Vincent
+                'If Not chkDeposit.Checked Then
+                '    If total < 0 Then
+                '        receiptNo = createCreditNote(Math.Abs(parkingFee), Math.Abs(depositFee), "Refund Parking Fee : RM " & Math.Abs(parkingFee).ToString & ", Deposit : RM " & Math.Abs(depositFee).ToString, cn, trans)
+                '        'Else
+                '        '   receiptNo = createDebitNote(Math.Abs(parkingFee), Math.Abs(depositFee), cn, trans)
+                '    End If
+                'End If
+                'Check with Vincent
+
+                If total > 0 Then 'upgrade
+                    createTaxInvoice(Math.Abs(parkingFee), depositFee, cn, trans)
+                ElseIf total < 0 Then
+                    'downgrade
+                    'pending
+
                 End If
+
+               
             Else ' No generated invoice
 
                 depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
 
-                If Not chkDeposit.Checked Then
+                'If Not chkDeposit.Checked Then
 
-                 If depositFee <> 0 Then '
-                 
-                  If depositFee > 0 Then
-                    receiptNo = createDebitNote(0, Math.Abs(depositFee), cn, trans)
-                  Else
-                    receiptNo = createCreditNote(0, Math.Abs(depositFee), "Refund Deposit : RM " & Math.Abs(depositFee).ToString, cn, trans)
-                  End If
+                '    If depositFee <> 0 Then '
 
-                 End If
-
-  		End If 
-
+                If depositFee > 0 Then
+                    'receiptNo = createDebitNote(0, Math.Abs(depositFee), cn, trans)
+                    MsgBox("Season Upgrade : Please generate invoice manually!")
+                ElseIf depositFee < 0 Then
+                    'receiptNo = createCreditNote(0, Math.Abs(depositFee), "Refund Deposit : RM " & Math.Abs(depositFee).ToString, cn, trans)
+                    MsgBox("Season Downgrade : Please generate invoice manually!")
+                End If
 
             End If
+
+            'End If
+
+
+
+
 
             'If ddToSeasonType.SelectedIndex > 0 Then
             '    'Check Is Up/Down Grade
@@ -575,8 +594,36 @@ Partial Class Transaction_SeasonUpDowngrade
                 pcDao.updateDB(pcEnt, cn, trans)
             End If
 
-            'lblmsg.Text = ConstantGlobal.Record_Updated
 
+            ''New code for the changes if season downgrade extra use to knock off invoices
+            'If ddToSeasonType.SelectedIndex > 0 Then
+            '    'Check Is Up/Down Grade
+            '    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "myFunction", "myFunction();", True)
+
+            '    Dim differentSeason As Long = 0
+            '    Dim differentDeposit As Long = 0
+
+            '    sql = "select dah.debtoraccountheaderid,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
+            '     " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
+            '     " from debtoraccountheader dah where (dah.amount-isnull(dah.PaidAmount,0)) <> 0 and dah.status <> 'C' and dah.txntype = 'I'and dah.debtorid = " + hidDebtorId.Value & _
+            '     " union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq"
+
+            '    dsInvoice.SelectCommand = sql
+            '    dsInvoice.DataBind()
+
+
+            '    If Val(hdNewSeasonAmount.Value) > Val(hdOldSeasonAmount.Value) Then 'Upgrade
+
+
+
+            '    ElseIf Val(hdNewSeasonAmount.Value) < Val(hdOldSeasonAmount.Value) Then 'DownGrade
+            '        'longTextContent.Visible = True
+            '        'ScriptManager.RegisterStartupScript(Me, Me.GetType(), "myFunction", "myFunction();", True)
+
+            '    End If
+
+
+            'End If
 
         Catch ex As Exception
             logger.Error(ex.Message)
@@ -1378,5 +1425,241 @@ Partial Class Transaction_SeasonUpDowngrade
             Throw ex
         End Try
 
+    End Sub
+
+    Private Function createTaxInvoice(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
+
+        Dim invEnt As New CPM.InvoiceHistoryEntity
+        Dim invDao As New CPM.InvoiceHistoryDAO
+        Dim dahEnt As New CPM.DebtorAccountHeaderEntity
+        Dim dahDao As New CPM.DebtorAccountHeaderDAO
+        Dim dadEnt As New CPM.DebtorAccountDetailEntity
+        Dim dadDao As New CPM.DebtorAccountDetailDAO
+
+        Try
+
+            Dim totalCharge As Double = amtChargeSeason + amtChargeDeposit
+            Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))
+
+            'Header
+            dahEnt.setDebtorId(hidDebtorId.Value)
+            dahEnt.setInvoiceNo(dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceDate(Now.ToShortDateString)
+            dahEnt.setInvoicePeriod(Trim(txtRemark.Text))
+            dahEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dahEnt.setLastUpdatedDatetime(Now)
+            dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
+            dahEnt.setAmount(totalCharge)
+            dahEnt.setBatchNo("")
+            dahEnt.setTxnType(TxnTypeEnum.INVOICE)
+            Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
+
+            'Season Charges
+            dadEnt.setDebtorAccountHeaderId(dahId)
+            dadEnt.setMonths("")
+            dadEnt.setDetails("Additional Season Parking Fee : RM " & amtChargeSeason)
+            dadEnt.setUnitPrice(0)
+            dadEnt.setQuantity(0)
+            dadEnt.setAmount(amtChargeSeason)
+            dadEnt.setTaxCode("SR")
+            dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
+            dadEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dadEnt.setLastUpdatedDatetime(Now)
+            dadDao.insertDB(dadEnt, cn, trans)
+
+            'Deposit Charges
+            dadEnt.setDebtorAccountHeaderId(dahId)
+            dadEnt.setMonths("")
+            dadEnt.setDetails("Deposit : RM " & amtChargeDeposit)
+            dadEnt.setUnitPrice(0)
+            dadEnt.setQuantity(0)
+            dadEnt.setAmount(amtChargeDeposit)
+            dadEnt.setTaxCode("ZR")
+            dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
+            dadEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dadEnt.setLastUpdatedDatetime(Now)
+            dadDao.insertDB(dadEnt, cn, trans)
+
+
+
+            'Tax Charges
+            dadEnt.setDebtorAccountHeaderId(dahId)
+            dadEnt.setMonths("")
+            dadEnt.setDetails("Tax : RM " & totalCharge * (dm.getCurrentTax() / 100))
+            dadEnt.setUnitPrice(0)
+            dadEnt.setQuantity(0)
+            dadEnt.setAmount(totalCharge * (dm.getCurrentTax() / 100))
+            dadEnt.setTaxCode("NA")
+            dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
+            dadEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dadEnt.setLastUpdatedDatetime(Now)
+            dadDao.insertDB(dadEnt, cn, trans)
+
+            invEnt.setDebtorId(hidDebtorId.Value)
+            invEnt.setDebtorAccountHeaderId(dahId)
+            invEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
+            invEnt.setMonth(txtTransactionDate.Text)
+            invEnt.setAmount(totalChargeWithGst)
+            invEnt.setLastUpdatedBy(lp.getUserMstrId)
+            invEnt.setLastUpdatedDatetime(Now)            
+            invDao.insertDB(invEnt, cn, trans)
+
+
+            lblmsg.Text = ""
+
+            clear()
+
+            Return dahEnt.getInvoiceNo
+
+        Catch ex As Exception
+            lblmsg.Text = ex.Message
+            logger.Error(ex.Message)
+        Finally
+            invEnt = Nothing
+            invDao = Nothing
+            dahEnt = Nothing
+            dahDao = Nothing
+
+
+        End Try
+
+
+    End Function
+
+    Protected Sub lnkProcess_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim selectSql As String
+        Dim dtInvHist As New DataTable
+        Dim dtHeader As New DataTable
+        Dim invHistEnt As New CPM.InvoiceHistoryEntity
+        Dim invHistDao As New CPM.InvoiceHistoryDAO
+        Dim dahEnt As New CPM.DebtorAccountHeaderEntity
+        Dim dahDao As New CPM.DebtorAccountHeaderDAO
+        Dim dpEnt As New CPM.DebtorPaymentEntity
+        Dim dpDao As New CPM.DebtorPaymentDAO
+        Dim payAmt, totalActualPay As Double 'Extra money from downgrade to knock off invoice
+        Dim chkMoreThan1 As Integer = 0
+        Dim updateSql As String = ""
+        Dim strInvHistoryId As String = ""
+
+        Try
+
+            cn = New SqlConnection(dm.getDBConn)
+            If Not cn.State = ConnectionState.Open Then
+                cn.Open()
+            End If
+            trans = cn.BeginTransaction
+
+            'MsgBox(hidInvoice.Value)
+
+            'Single Invoice Code *******            
+            selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT,INVOICEHISTORYID,AMOUNT FROM INVOICEHISTORY WHERE DEBTORACCOUNTHEADERID = " + hidInvoice.Value & _
+            " and (amount-isnull(PaidAmount,0)) <> 0"
+            dtInvHist = dm.execTableInTrans(selectSql, cn, trans)
+
+            'For loop to credit off the txn
+            If dtInvHist.Rows.Count > 0 Then
+                For Each rec As DataRow In dtInvHist.Rows
+                    Dim recPaidAmount As Double = rec.Item("PAIDAMOUNT")
+                    Dim recOSAmount As Double = Double.Parse(rec.Item("AMOUNT")) - recPaidAmount
+                    invHistEnt.setInvoiceHistoryId(rec.Item("INVOICEHISTORYID"))
+
+                    If payAmt <= recOSAmount Then
+                        invHistEnt.setPaidAmount(recPaidAmount + payAmt)
+                    Else
+                        invHistEnt.setPaidAmount(recPaidAmount + Double.Parse(rec.Item("AMOUNT")))
+                    End If
+
+                    invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
+                    invHistEnt.setLastUpdatedDatetime(Now)
+                    invHistDao.updateDB(invHistEnt, cn, trans)
+
+                    payAmt -= recOSAmount
+
+                    If payAmt > 0 Then
+                        totalActualPay += recOSAmount
+                    Else
+                        totalActualPay += recOSAmount + payAmt
+                    End If
+
+
+                    'Get the latest PaidAmount from header
+                    selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & hidInvoice.Value
+                    dtHeader = dm.execTableInTrans(selectSql, cn, trans)
+
+                    dahEnt.setDebtorAccountHeaderId(hidInvoice.Value)
+                    If payAmt < 0 Then
+                        'Issue reported double charged
+                        'dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
+                        If chkMoreThan1 > 1 Then
+                            dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
+                            strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & CStr(invHistEnt.getPaidAmount) & "|"
+                        Else
+                            dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + totalActualPay)
+                            strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                        End If
+                        'strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                    Else
+                        dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(totalActualPay))
+                        strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay.ToString & "|"
+                    End If
+
+                    dahEnt.setLastUpdatedDatetime(Now)
+                    dahDao.updateDB(dahEnt, cn, trans)
+
+                    selectSql = "SELECT AMOUNT,ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & hidInvoice.Value
+                    dtHeader = dm.execTableInTrans(selectSql, cn, trans)
+                    If dtHeader.Rows(0).Item(dahDao.COLUMN_Amount).Equals(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount)) Then
+                        updateSql = "UPDATE DEBTORACCOUNTHEADER SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & hidInvoice.Value
+                        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+                        updateSql = "UPDATE INVOICEHISTORY SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & hidInvoice.Value
+                        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+                    End If
+
+                    If payAmt < 0 Then
+                        Exit For
+                    End If
+
+
+                Next rec
+            End If
+
+            dpEnt.setAmount(payAmt)
+            dpEnt.setLastUpdatedBy(lp.getUserMstrId)
+            dpEnt.setDebtorId(hidDebtorId.Value)
+            dpEnt.setInvoiceHistoryIdAndAmount(strInvHistoryId)
+            dpEnt.setPaymentFor("Knock Off from")
+            dpEnt.setDebtorAccountHeaderId(hidInvoice.Value)
+            dpEnt.setPaymentDate(DateTime.Now)
+            dpEnt.setDescription("")            
+            dpEnt.setTxnType("")
+            dpEnt.setStatus(ReceiptStatusEnum._NEW)
+            dpEnt.setGSTAmount("")
+            'dpEnt.setInvoiceNo(invoiceNo)
+            'dpEnt.setInvoiceDate(CDate(invoiceDate))
+
+            dpEnt.setReceiptNo(dm.getCRNoteNextRunningNo(hidLocationInfoId.Value, trans, cn))
+
+
+            dpEnt.setLastUpdatedDatetime(Now)
+            Dim dpId As Long = dpDao.insertDB(dpEnt, cn, trans)
+
+            trans.Commit()
+
+        Catch ex As Exception
+            trans.Rollback()
+            lblmsg.Text = ex.Message
+        Finally
+            trans.Dispose()
+            cn.Close()
+            dtInvHist = Nothing
+            invHistEnt = Nothing
+            invHistDao = Nothing
+            dahEnt = Nothing
+            dahDao = Nothing
+            dpEnt = Nothing
+            dpDao = Nothing
+
+
+        End Try
     End Sub
 End Class

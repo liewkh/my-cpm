@@ -13,6 +13,13 @@
     <script type="text/javascript" language="JavaScript" src='../include/effect.js'></script>
     <script type="text/javascript" language="JavaScript" src='../include/javascript.js'></script>
 
+     <!-- Start Of ModalBox-->
+     <script type="text/javascript" src="../include/ModalBox/prototype.js"></script>
+     <script type="text/javascript" src="../include/ModalBox/scriptaculous.js?load=effects"></script>
+     <script type="text/javascript" src="../include/ModalBox/modalbox.js"></script>
+     <link rel="stylesheet" href="../include/ModalBox/modalbox.css" type="text/css" media="screen" />
+     <!-- End Of ModalBox-->
+    <base target="_self" />
         
 </head>
 
@@ -57,8 +64,32 @@
     } 
     
  function alertUpdated(){ 
-            alert("Record Succesfully Updated.");
-    }     
+            //alert("Record Succesfully Updated.");            
+    }  
+    
+  function doProcess() {
+   var p=document.getElementById("<%=ddInvoice.ClientID%>");
+   var q=document.getElementById("<%=hidInvoice.ClientID%>");
+   
+   if (p.options[p.selectedIndex].value=="")
+    { alert('Please select and Invoice!'); 
+      return false;       
+    }
+    
+    q.value = p.options[p.selectedIndex].value;
+    
+    __doPostBack('lnkProcess','');
+    
+    document.forms(0).submit; 
+
+}   
+
+
+ function myFunction() {
+            //some code here            
+            Modalbox.show($('longTextContent'), {title: this.title, height: 200, overlayClose: false, autoFocusing: false, closeValue: 'Close me' });                         
+            return false;
+        }
     
 </script>
 
@@ -106,6 +137,10 @@
 			<asp:HiddenField ID="hdOldDeposit" runat="server" />
 			<asp:HiddenField ID="hdNewSeasonAmount" runat="server" />
 			<asp:HiddenField ID="hdOldSeasonAmount" runat="server" />
+		    <asp:HiddenField ID="hdKnockOffAmount" runat="server" />
+			<asp:LinkButton ID="lnkProcess" Visible="false"  runat="server" OnClick="lnkProcess_Click"></asp:LinkButton>
+			<asp:HiddenField ID="hidInvoice" runat="server"/>
+			</td>		
 			</tr>
 		  </table>
 		</td>
@@ -115,7 +150,17 @@
 		                <td colspan="15"><asp:Label ID="lblmsg" runat="server" CssClass="errorMsg"></asp:Label></td>		                
                         </td>
 	                </tr>
-
+	                
+	                
+	        <tr>
+	           <div id="longTextContent" style="display: none" runat="server">
+                    <p>Please select an Invoice &nbsp; <asp:DropDownList ID="ddInvoice" runat="server" DataSourceID="dsInvoice" DataTextField="InvoiceNo" DataValueField="DebtorAccountHeaderId">
+                                            </asp:DropDownList><asp:SqlDataSource ID="dsInvoice" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>&nbsp;	                                            </p>
+            
+                                            <asp:Button ID="btnInvoiceTest" runat="server" Text="OK" CssClass="buttonMedium" CausesValidation="false"
+                                                   TabIndex="50" OnClientClick ="doProcess();return true;"/>
+		        </div>
+	          </tr>	
 
   
 	<tr class="vSpace">
@@ -180,9 +225,9 @@
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtDebtorName" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="6"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="normalLabel">Deposit Update Only</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:CheckBox ID="chkDeposit" Checked="false" runat="server" CssClass="checkBox" TabIndex="7"></asp:CheckBox></td>        
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
