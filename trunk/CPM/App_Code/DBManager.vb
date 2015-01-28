@@ -602,4 +602,33 @@ Public Class DBManager
         Return taxCode
     End Function
 
+    Public Function getDebtorCategory(ByVal debtorId As String) As String
+
+        Dim selectSQL As String
+        Dim dm As New DBManager
+        Dim dt As New DataTable
+        Dim category As String
+
+        Try
+
+            selectSQL = "SELECT CATEGORY FROM DEBTOR WHERE DEBTORID = " + debtorId
+
+            dt = dm.execTable(selectSQL)
+
+            If dt.Rows.Count > 0 Then
+                If dt.Rows(0)("CATEGORY").Equals(System.DBNull.Value) Then
+                    Return "" 'If never setup
+                End If
+                category = dt.Rows(0)("CATEGORY")
+            Else
+                Throw New Exception("Missing Debtor Category")
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        Finally
+            dt = Nothing
+        End Try
+        Return category
+    End Function
 End Class
