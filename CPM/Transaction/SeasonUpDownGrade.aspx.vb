@@ -288,6 +288,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim sql As String
         Dim dt As New DataTable
         Dim dpbId As String = ""
+        Dim invNo As String = ""
 
 
         Try
@@ -404,10 +405,10 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
                 'changeSeason(ddNewPass.SelectedValue, dpbId, cn, trans)
-                changeSeason(ddOldPass.SelectedValue, dpbId, cn, trans)
+                invNo = changeSeason(ddOldPass.SelectedValue, dpbId, cn, trans)
 
             Else 'Indicate just used back the old pass but change to another season
-                changeSeason(ddOldPass.SelectedValue, dpbId, cn, trans)
+                invNo = changeSeason(ddOldPass.SelectedValue, dpbId, cn, trans)
 
 
             End If
@@ -420,13 +421,13 @@ Partial Class Transaction_SeasonUpDowngrade
             trans.Commit()
             'trans.Rollback()
 
-            'If dpId > 0 Then
-            '    PrintReceipt(dpId, hidDebtorId.Value, txtDeposit.Text, ddNewPass.SelectedItem.Text)
-            '    ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
-            'End If
+            If invNo.Length > 0 Then
+                PrintTaxInvoice(invNo, Trim(txtRemark.Text))
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
+            End If
 
 
-            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "alertUpdated();", True)
+            'ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "alertUpdated();", True)
 
             clearData()
 
@@ -442,7 +443,7 @@ Partial Class Transaction_SeasonUpDowngrade
     End Sub
 
 
-    Private Sub changeSeason(ByVal passid As String, ByVal dbpid As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
+    Private Function changeSeason(ByVal passid As String, ByVal dbpid As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
 
         Dim sql As String = ""
         Dim dt As New DataTable
@@ -452,6 +453,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim pcEnt As New CPM.PassCardMstrEntity
         Dim pcDao As New CPM.PassCardMstrDAO
         Dim depositFee As Double
+        Dim invNo As String = ""
 
         Try
 
@@ -488,14 +490,14 @@ Partial Class Transaction_SeasonUpDowngrade
                 'Check with Vincent
 
                 If total > 0 Then 'upgrade
-                    createTaxInvoice(Math.Abs(parkingFee), depositFee, cn, trans)
+                    invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, cn, trans)
                 ElseIf total < 0 Then
                     'downgrade
                     'pending
 
                 End If
 
-               
+
             Else ' No generated invoice
 
                 depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
@@ -625,13 +627,15 @@ Partial Class Transaction_SeasonUpDowngrade
 
             'End If
 
+            Return invNo
+
         Catch ex As Exception
             logger.Error(ex.Message)
             lblmsg.Text = ex.Message
             Throw ex
         End Try
 
-    End Sub
+    End Function
 
     Private Function createCreditNote(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByVal Desc As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
         Dim dpEnt As New CPM.DebtorPaymentEntity
@@ -1435,15 +1439,18 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dahDao As New CPM.DebtorAccountHeaderDAO
         Dim dadEnt As New CPM.DebtorAccountDetailEntity
         Dim dadDao As New CPM.DebtorAccountDetailDAO
+        Dim inv As String = ""
 
         Try
 
             Dim totalCharge As Double = amtChargeSeason + amtChargeDeposit
             Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))
 
+            inv = dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn)
+
             'Header
             dahEnt.setDebtorId(hidDebtorId.Value)
-            dahEnt.setInvoiceNo(dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceNo(inv)
             dahEnt.setInvoiceDate(Now.ToShortDateString)
             dahEnt.setInvoicePeriod(Trim(txtRemark.Text))
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -1485,10 +1492,10 @@ Partial Class Transaction_SeasonUpDowngrade
             'Tax Charges
             dadEnt.setDebtorAccountHeaderId(dahId)
             dadEnt.setMonths("")
-            dadEnt.setDetails("Tax : RM " & totalCharge * (dm.getCurrentTax() / 100))
+            dadEnt.setDetails("GST Amount")
             dadEnt.setUnitPrice(0)
             dadEnt.setQuantity(0)
-            dadEnt.setAmount(totalCharge * (dm.getCurrentTax() / 100))
+            dadEnt.setAmount(amtChargeSeason * (dm.getCurrentTax() / 100))
             dadEnt.setTaxCode("NA")
             dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
             dadEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -1509,7 +1516,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             clear()
 
-            Return dahEnt.getInvoiceNo
+            Return inv
 
         Catch ex As Exception
             lblmsg.Text = ex.Message
@@ -1525,6 +1532,77 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
     End Function
+
+    Private Sub PrintTaxInvoice(ByVal invNo As String, ByVal MIRemark As String)
+        Dim rptMgr As New ReportManager
+        Dim mySql As String = ""
+        Dim dt As New DataTable
+        Dim companyName As String = ""
+        Dim companyAddress As String = ""
+        Dim tel As String = ""
+        Dim fax As String = ""
+        Dim companyNo As String = ""
+        Dim searchModel As New CPM.DebtorAccountHeaderEntity
+        Dim sqlmap As New SQLMap
+        Dim dtPassBayNo As New DataTable
+
+
+        Dim hqInfoDao As New CPM.HQInfoDAO
+        Dim debtorDao As New CPM.DebtorDAO
+
+        Try
+
+            mySql = "SELECT COMPANYNAME,COMPANYNO,ADDRESS1,ADDRESS2,ADDRESS3,POSTCODE,TELEPHONE,FAX,(SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='STA' AND CODEABBR= STATE) AS STATE FROM HQINFO"
+            dt = dm.execTable(mySql)
+
+            If dt.Rows.Count > 0 Then
+                companyName = dt.Rows.Item(0).Item(hqInfoDao.COLUMN_CompanyName) & " " & dt.Rows.Item(0).Item(hqInfoDao.COLUMN_CompanyNo)
+                companyAddress = dt.Rows.Item(0).Item(hqInfoDao.COLUMN_Address1) & vbCrLf & dt.Rows.Item(0).Item(hqInfoDao.COLUMN_Address2) & vbCrLf & dt.Rows.Item(0).Item(hqInfoDao.COLUMN_Address3) & vbCrLf & dt.Rows.Item(0).Item(hqInfoDao.COLUMN_PostCode) & vbCrLf & dt.Rows.Item(0).Item(hqInfoDao.COLUMN_State)
+                tel = dt.Rows.Item(0).Item(hqInfoDao.COLUMN_Telephone)
+                fax = dt.Rows.Item(0).Item(hqInfoDao.COLUMN_Fax)
+                companyNo = dt.Rows.Item(0).Item(hqInfoDao.COLUMN_CompanyNo)
+            End If
+
+
+            searchModel.setInvoiceNo(invNo)
+
+            If dt.Rows.Count > 0 Then
+
+                rptMgr.setReportName("TaxInvoice.Rpt")
+                rptMgr.setParameterDiscrete("CompanyName", companyName)
+                rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)
+                rptMgr.setParameterDiscrete("TelephoneNo", tel)
+                rptMgr.setParameterDiscrete("Fax", fax)
+                rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
+                rptMgr.setParameterDiscrete("debtorid", hidDebtorId.Value)
+                rptMgr.setParameterDiscrete("invoiceno", invNo)
+                rptMgr.setParameterDiscrete("CompanyNo", companyNo)
+                rptMgr.setParameterDiscrete("MIRemark", MIRemark)
+
+                rptMgr.Logon()
+
+                hdPreview.Value = "1"
+                'set reportManager to session
+                Session("ReportManager") = rptMgr
+                lblmsg.Text = ""
+
+            End If
+
+
+
+        Catch ex As Exception
+            lblmsg.Text = ex.Message
+
+        Finally
+            hqInfoDao = Nothing
+            debtorDao = Nothing
+            dt = Nothing
+            rptMgr = Nothing
+
+
+        End Try
+
+    End Sub
 
     Protected Sub lnkProcess_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim selectSql As String
