@@ -258,9 +258,12 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>
         <td><asp:TextBox ID="txtHomeAddress1" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="10"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">Bank</td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:DropDownList ID="ddBankInd" runat="server" TabIndex="18" DataSourceID="dsBank" DataTextField="codedesc" DataValueField="codeabbr" CssClass="dropdownMedium"></asp:DropDownList><asp:SqlDataSource ID="dsBankInd" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"
+                                            SelectCommand="select codeabbr,codedesc,0 as seq from codemstr where codecat='BNK' union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq,codedesc">
+                                        </asp:SqlDataSource>
+		</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -276,9 +279,9 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>
         <td><asp:TextBox ID="txtHomeAddress2" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="11"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">Bank Account No</td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtBankAccountNoInd" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="20"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -294,9 +297,9 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>
         <td><asp:TextBox ID="txtHomeAddress3" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="12"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
+        <td class="normalLabel">Email Address</td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtEmailInd" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="26"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>

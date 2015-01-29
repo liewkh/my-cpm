@@ -80,6 +80,9 @@ Partial Class Maintenance_Debtor
         ddBank.SelectedIndex = 0
         txtBankAccountNo.Text = ""
         txtCompanyNo.Text = ""
+        ddBankInd.SelectedIndex = 0
+        txtEmailInd.Text = ""
+        txtBankAccountNoInd.Text = ""
         addMode()
     End Sub
 
@@ -238,6 +241,14 @@ Partial Class Maintenance_Debtor
                 Exit Sub
             End If
 
+            If txtEmailInd.Text <> "" Then
+                If Not Utility.Tools.EmailAddressCheck(Trim(txtEmailInd.Text)) Then
+                    lblmsg.Text = "Invalid email address."
+                    txtEmailInd.Focus()
+                    Exit Sub
+                End If
+            End If
+
         End If
 
 
@@ -296,6 +307,10 @@ Partial Class Maintenance_Debtor
                 debtorEnt.setBankType(ddBank.SelectedValue)
             End If
 
+            If ddBankInd.SelectedIndex > 0 Then
+                debtorEnt.setBankType(ddBankInd.SelectedValue)
+            End If
+
             If rbCompany.Checked = True Then
                 debtorEnt.setCategory(CategoryEnum.COMPANY)
                 debtorEnt.setName(Trim(txtCompanyName.Text.ToUpper))
@@ -326,6 +341,8 @@ Partial Class Maintenance_Debtor
                 debtorEnt.setAddress2(Trim(txtHomeAddress2.Text.ToUpper))
                 debtorEnt.setAddress3(Trim(txtHomeAddress3.Text.ToUpper))
                 debtorEnt.setState(ddState1.SelectedValue)
+                debtorEnt.setEmailAddress(Trim(txtEmailInd.Text))
+                debtorEnt.setBankAccNo(Trim(txtBankAccountNoInd.Text))
             End If
 
             If chkInitial.Checked = True Then
@@ -393,6 +410,14 @@ Partial Class Maintenance_Debtor
             If Trim(txtHomeAddress1.Text) = "" Then
                 lblmsg.Text = "Please enter a value for Address."
                 Exit Sub
+            End If
+
+            If txtEmailInd.Text <> "" Then
+                If Not Utility.Tools.EmailAddressCheck(Trim(txtEmailInd.Text)) Then
+                    lblmsg.Text = "Invalid email address."
+                    txtEmailInd.Focus()
+                    Exit Sub
+                End If
             End If
 
         End If
@@ -475,6 +500,10 @@ Partial Class Maintenance_Debtor
                 debtorEnt.setBankType(ddBank.SelectedValue)
             End If
 
+            If ddBankInd.SelectedIndex > 0 Then
+                debtorEnt.setBankType(ddBankInd.SelectedValue)
+            End If
+
             If chkInitial.Checked = True Then
                 debtorEnt.setInitialHalfMonth(ConstantGlobal.Yes)
             Else
@@ -512,6 +541,8 @@ Partial Class Maintenance_Debtor
                 debtorEnt.setAddress2(Trim(txtHomeAddress2.Text.ToUpper))
                 debtorEnt.setAddress3(Trim(txtHomeAddress3.Text.ToUpper))
                 debtorEnt.setState(ddState1.SelectedValue)
+                debtorEnt.setEmailAddress(Trim(txtEmailInd.Text))
+                debtorEnt.setBankAccNo(Trim(txtBankAccountNoInd.Text))
             End If
 
             debtorEnt.setLastUpdatedDatetime(Now)
@@ -641,6 +672,9 @@ Partial Class Maintenance_Debtor
                 txtHomeAddress3.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_Address3))
                 txtEmployerName.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_EmployerName))
                 ddState1.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_State))
+                txtEmailInd.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_EmailAddress))
+                txtBankAccountNoInd.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_BankAccNo))
+                ddBankInd.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_BankType))
             End If
 
             If gvDebtor.SelectedDataKey(debtorDao.COLUMN_InitialHalfMonth).Equals(ConstantGlobal.Yes) Then
