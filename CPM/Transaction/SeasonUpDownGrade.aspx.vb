@@ -1568,7 +1568,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             If dt.Rows.Count > 0 Then
 
-                rptMgr.setReportName("TaxInvoice.Rpt")
+                rptMgr.setReportName("Invoice.Rpt")
                 rptMgr.setParameterDiscrete("CompanyName", companyName)
                 rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)
                 rptMgr.setParameterDiscrete("TelephoneNo", tel)
@@ -1576,8 +1576,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
                 rptMgr.setParameterDiscrete("debtorid", hidDebtorId.Value)
                 rptMgr.setParameterDiscrete("invoiceno", invNo)
-                rptMgr.setParameterDiscrete("CompanyNo", companyNo)
-                rptMgr.setParameterDiscrete("MIRemark", MIRemark)
+                rptMgr.setParameterDiscrete("CompanyNo", companyNo)                
 
                 rptMgr.Logon()
 
