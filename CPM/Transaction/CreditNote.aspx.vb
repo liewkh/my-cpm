@@ -221,7 +221,7 @@ Partial Class Transaction_CreditNote
 
 
             Sql = "select dah.debtoraccountheaderid,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
-                  " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
+                  " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount) + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
                   " from debtoraccountheader dah where (dah.amount-isnull(dah.PaidAmount,0)) <> 0 and dah.status <> 'C' and dah.txntype = 'I'and dah.debtorid = " + gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString & _
                   " union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq"
 
