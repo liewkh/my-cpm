@@ -211,7 +211,7 @@ Public Class DBManager
         Return totalRecCount
     End Function
 
-    Public Function getNextRunningNo(ByVal debtorCategory As String, ByVal LocationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection) As String
+    Public Function getNextRunningNo(ByVal debtorCategory As String, ByVal LocationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection, Optional ByVal TaxInvoice As String = "") As String
         'Get the RunningNo
         Dim runningNo As Integer
         Dim selectSQL As String
@@ -289,6 +289,11 @@ Public Class DBManager
         Finally
             dt = Nothing
         End Try
+
+        If Not String.IsNullOrEmpty(TaxInvoice) Then
+            prefix = prefix.Substring(0, prefix.Length - 1) + TaxInvoice
+        End If
+
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
     End Function
 
