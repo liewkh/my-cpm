@@ -263,7 +263,7 @@ Partial Class Transaction_TaxInvoice
             End If
 
             dahEnt.setDebtorId(hidDebtorId.Value)
-            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "S"))
             dahEnt.setInvoiceDate(Now.ToShortDateString)
             dahEnt.setInvoicePeriod("")
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
