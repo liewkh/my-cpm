@@ -407,6 +407,8 @@ Partial Class Transaction_CreditNote
         Dim chkMoreThan1 As Integer = 0
         Dim invoiceNo As String = ""
         Dim invoiceDate As String = ""
+        Dim flgNotEnufFund As Boolean = False
+        Dim runningPayAmt As Double = 0
 
         Try
 
@@ -470,7 +472,7 @@ Partial Class Transaction_CreditNote
 
 
             'Pay less ok but not extra per invoice base
-            If Double.Parse(txtSelected.Text) < Val(txtPaymentAmount.Text) + Val(txtGSTAmount.Text) Then
+            If Double.Parse(txtSelected.Text) < Math.Round(Val(txtPaymentAmount.Text) + Val(txtGSTAmount.Text), 2) Then
                 lblmsg.Text = "Payment Amount cannot be more than Total Outstanding Amount!"
                 Exit Sub
             End If
@@ -547,12 +549,22 @@ Partial Class Transaction_CreditNote
 
 
                             invHistEnt.setInvoiceHistoryId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_InvoiceHistoryID).ToString)
+                            'If payAmt < Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
+                            '    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                            'Else
+                            '    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
+                            'End If
+
                             If payAmt < Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
-                                invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                                If payAmt < 0 Then
+                                    flgNotEnufFund = True
+                                    invHistEnt.setPaidAmount(0)
+                                Else
+                                    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                                End If
                             Else
                                 invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
                             End If
-
 
 
                             invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -561,34 +573,51 @@ Partial Class Transaction_CreditNote
 
 
 
+                            'payAmt -= Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                            runningPayAmt += payAmt
                             payAmt -= Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
 
-                            If payAmt > 0 Then
-                                totalActualPay += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
-                            Else
-                                totalActualPay += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt
-                            End If
+
+                            'If payAmt > 0 Then
+                            '    totalActualPay += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                            'Else
+                            '    totalActualPay += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt
+                            'End If
 
                             'Get the latest PaidAmount from header
                             selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
                             dtHeader = dm.execTableInTrans(selectSql, cn, trans)
 
                             dahEnt.setDebtorAccountHeaderId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString)
+                            'If payAmt < 0 Then
+                            '    'Issue reported double charged
+                            '    'dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
+                            '    If chkMoreThan1 > 1 Then
+                            '        dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
+                            '        strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & CStr(invHistEnt.getPaidAmount) & "|"
+                            '    Else
+                            '        dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + totalActualPay)
+                            '        strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                            '    End If
+                            '    'strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                            'Else
+                            '    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
+                            '    strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString & "|"
+                            'End If
+
                             If payAmt < 0 Then
-                                'Issue reported double charged
-                                'dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
-                                If chkMoreThan1 > 1 Then
-                                    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
-                                    strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & CStr(invHistEnt.getPaidAmount) & "|"
-                                Else
-                                    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + totalActualPay)
-                                    strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                                If flgNotEnufFund Then
+                                    Continue For
                                 End If
-                                'strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & totalActualPay & "|"
+                                'dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + runningPayAmt)
+                                dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt))
+                                'strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt) & "|"
+                                strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt) & "|"
                             Else
                                 dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
                                 strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString & "|"
                             End If
+
 
                             dahEnt.setLastUpdatedDatetime(Now)
                             dahDao.updateDB(dahEnt, cn, trans)
