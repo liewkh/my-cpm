@@ -323,7 +323,12 @@ Partial Class Enquiry_InvDebEnq
                 If e.ToString.Split("|")(1).Equals(TxnTypeEnum.DEBITNOTE) Then
                     rptMgr.setReportName("DebitNote.Rpt")
                 Else
-                    rptMgr.setReportName("Invoice.Rpt")
+                    If e.ToString.Split("|")(0).Contains("S") Then
+                        rptMgr.setReportName("TaxInvoice.Rpt")
+                        rptMgr.setParameterDiscrete("MIRemark", e.ToString.Split("|")(2).ToString())
+                    Else
+                        rptMgr.setReportName("Invoice.Rpt")
+                    End If
                     'rptMgr.setParameterDiscrete("PassBay", strPassBay)
                 End If
 
