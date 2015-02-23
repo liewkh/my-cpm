@@ -139,7 +139,7 @@
   <dynamic-mapped-statement name="Search-DebtorInvoice">
     <part type="static">
       select dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,dah.amount,(dah.amount-isnull(dah.PaidAmount,0)) as OSamount,
-      cancellationremark as status,dah.debtorid,dah.status as statuscode,
+      cancellationremark as status,dah.debtorid,dah.status as statuscode,MIRemark,
       (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DAH.TXNTYPE) AS TXNTYPEDESC,DAH.TXNTYPE
       from debtoraccountheader dah
       WHERE 1=1

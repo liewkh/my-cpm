@@ -305,7 +305,7 @@
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorInv" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,INVOICEPERIOD,AMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,STATUSCODE,TXNTYPEDESC"
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,INVOICEPERIOD,AMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,STATUSCODE,TXNTYPEDESC,MIREMARK"
                                             DataSourceID="dsDebtorInv">
                                             <Columns>
                                                 <asp:BoundField DataField="INVOICEDATE" HeaderText="Invoice Date" SortExpression="INVOICEDATE"
@@ -324,7 +324,7 @@
                                                     NullDisplayText="N/A" />
                                                 <asp:TemplateField HeaderText="Print" SortExpression="Print"> 
                                                     <ItemTemplate> 
-                                                     <asp:Button ID="btnPrint" Text="Print" CommandName="Print" CssClass="buttonMedium"  CommandArgument =  '<%# DataBinder.Eval(Container.DataItem, "INVOICENO") & "|" & DataBinder.Eval(Container.DataItem, "TXNTYPE") %>' runat="server"></asp:Button> 
+                                                     <asp:Button ID="btnPrint" Text="Print" CommandName="Print" CssClass="buttonMedium"  CommandArgument =  '<%# DataBinder.Eval(Container.DataItem, "INVOICENO") & "|" & DataBinder.Eval(Container.DataItem, "TXNTYPE") & "|" & DataBinder.Eval(Container.DataItem, "MIREMARK") %>' runat="server"></asp:Button> 
                                                     </ItemTemplate> 
                                                 </asp:TemplateField>             
                                             </Columns>
