@@ -194,7 +194,7 @@
 
   <dynamic-mapped-statement name="Search-DebtorInvoiceReceiptSingle">
     <part type="static">
-      select left(dah.invoiceperiod,11) as month,ih.invoicehistoryid,
+      select datename(month,ih.month) as month,ih.invoicehistoryid,
       isnull(ih.PaidAmount,0) as PaidAmount,
       (ih.amount-isnull(ih.PaidAmount,0)) as OSamount,
       dah.debtoraccountheaderid,dah.invoicedate,dah.invoiceno,dah.invoiceperiod,
