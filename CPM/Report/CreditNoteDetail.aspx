@@ -186,7 +186,7 @@
                         <td class="normalLabel">Date From <font color="#FF0000">*</font></td>
                         <td class="hSpace">&nbsp;</td>
                         <td class="normalLabel"><asp:TextBox ID="txtFrom" runat="server" CssClass="textBoxSmall" MaxLength="12" TabIndex="4"></asp:TextBox>
-                            <rjs:PopCalendar ID="popCalendar1" RequiredDate="True" From-Date="" To-Today = "true" runat="server" Control="txtFrom" InvalidDateMessage="Invalid Date Range Selection"
+                            <rjs:PopCalendar ID="popCalendar1" RequiredDate="True" From-Date="" To-Today = "false" runat="server" Control="txtFrom" InvalidDateMessage="Invalid Date Range Selection"
                                 Shadow="True" ShowWeekend="True" Move="True" Format="dd mm yyyy" Separator="/" Fade="0.5" ToolTip="Click For Calendar: ([Format])" />
                         </td>
                         <td class="hSpace">&nbsp;</td>
