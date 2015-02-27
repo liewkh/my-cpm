@@ -390,7 +390,7 @@ function AssignValue(Value)
            Shadow="True" ShowWeekend="True" Move="True"
            Format="dd mm yyyy" Fade="0.5"
            ToolTip="Click For Calendar: ([Format])"    
-           To-Today="True" Separator="/"         
+           To-Today="False" Separator="/"         
           />
         </td>
 		<td class="hSpace">&nbsp;</td>
