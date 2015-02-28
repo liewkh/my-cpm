@@ -401,6 +401,81 @@
 		<td class="hSpace">&nbsp;</td>
 	</tr>
 	
+	<div id="div1" runat="server" visible="false">
+	<tr class="vSpace">
+		<td class="normalLabel">Invoice <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td nowrap><asp:DropDownList ID="ddInvoice2" AutoPostBack ="True" OnSelectedIndexChanged="ddInvoice2_SelectedIndexChanged" runat="server" TabIndex="5" DataSourceID="dsInvoice" DataTextField="InvoiceNo" DataValueField="DebtorAccountHeaderId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
+		</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>
+	
+	                <tr>
+                        <td colspan="15" align="left" style="width: 92px">
+                            <asp:Label ID="lblRecCount2" runat="server" CssClass="errorMsg"></asp:Label></td>
+                    </tr> 
+                    
+	
+	                <tr>
+                        <td colspan="15">
+                            <!-- Spreadsheet Header -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td bgcolor="white">
+                                        <asp:GridView ID="gvDebtorInv" runat="server" AllowSorting="True" ShowHeader="true"  
+                                            AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,INVOICEHISTORYID,TXNTYPEDESC"
+                                            DataSourceID="dsDebtorInv">
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="Select?" SortExpression="Pay" ItemStyle-HorizontalAlign="Center"  > 
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID="chkSelect" runat="server" />
+                                                 </ItemTemplate>
+                                                 <ItemStyle Width="5%" />
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="INVOICEDATE" HeaderText="Invoice Date" SortExpression="INVOICEDATE"
+                                                    NullDisplayText="N/A" DataFormatString="{0:dd/MM/yyyy}" htmlencode="false" />
+                                                <asp:BoundField DataField="MONTH" HeaderText="Month" SortExpression="Month"
+                                                    NullDisplayText="N/A" DataFormatString="{0:dd/MM/yyyy}" />
+                                                <asp:BoundField DataField="TXNTYPEDESC" HeaderText="Type" SortExpression="TXNTYPEDESC"
+                                                    NullDisplayText="N/A" />                                                          
+                                                <asp:BoundField DataField="INVOICENO" HeaderText="Invoice/Debit No" SortExpression="INVOICENO"
+                                                    NullDisplayText="N/A" />
+                                                <asp:BoundField DataField="INVOICEPERIOD" HeaderText="Invoice Period" SortExpression="INVOICEPERIOD"
+                                                    NullDisplayText="N/A" />
+                                                <asp:BoundField DataField="AMOUNT" HeaderText="Invoice Amount" SortExpression="AMOUNT"
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />
+                                                <asp:BoundField DataField="PAIDAMOUNT" HeaderText="Paid Amount" SortExpression="PAIDAMOUNT"
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                               
+                                                <asp:BoundField DataField="OSAMOUNT" HeaderText="O/S Amount" SortExpression="OSAMOUNT"
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                      
+                                            </Columns>
+                                            <RowStyle CssClass="grid_row1" />
+                                            <SelectedRowStyle CssClass="tb-highlight" />
+                                            <HeaderStyle CssClass="grid_header" HorizontalAlign="Left" VerticalAlign="Middle" />
+                                            <AlternatingRowStyle CssClass="grid_row2" />
+                                            <PagerStyle Font-Bold="True" Font-Underline="True" />
+                                        </asp:GridView>
+                                        <asp:SqlDataSource ID="dsDebtorInv" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"
+                                            ProviderName="System.Data.SqlClient"></asp:SqlDataSource>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> 
+                    	
+	</div>
+	
     <tr>
 		<td colspan="15" height="17"></td>
     </tr>	
