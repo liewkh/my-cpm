@@ -273,6 +273,9 @@ Partial Class Transaction_SeasonUpDowngrade
         'bindPass()
         txtEffectiveFrom.Text = ""
         'chkDeposit.Checked = FALSE
+        ddInvoice2.ClearSelection()
+        div1.Visible = False
+
     End Sub
 
     Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -289,6 +292,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dt As New DataTable
         Dim dpbId As String = ""
         Dim invNo As String = ""
+        Dim totalKnockOff As Double = 0
 
 
         Try
@@ -329,6 +333,34 @@ Partial Class Transaction_SeasonUpDowngrade
                 Exit Sub
             End If
 
+            If div1.Visible = True Then
+                If ddInvoice2.SelectedIndex = 0 Then
+                    lblmsg.Text = "Require an invoice to knock off the value."
+                    Exit Sub
+                End If
+
+
+                For Each row As GridViewRow In gvDebtorInv.Rows
+                    Dim chk As CheckBox
+
+                    chk = row.FindControl("chkSelect")
+                    If Not chk Is Nothing Then
+
+                        If chk.Checked Then
+                            If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("MONTH").ToString) Then
+                                totalKnockOff += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                            End If
+                        End If
+                    End If
+                Next
+
+                If totalKnockOff = 0 Then
+                    lblmsg.Text = "Please select an amount to knock off."
+                    Exit Sub
+                End If
+
+            End If
+
 
             sql = "SELECT * FROM DEBTORPASSBAY WHERE DEBTORID = " & hidDebtorId.Value & _
                 " AND STATUS = 'A' AND PASSCARDMSTRID = " & ddOldPass.SelectedValue
@@ -345,7 +377,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
             If ddNewPass.SelectedIndex > 0 Then 'Indicate Change The Pass Card as well
-               
+
 
                 Dim chkFirtUseSql As String = ""
 
@@ -493,8 +525,10 @@ Partial Class Transaction_SeasonUpDowngrade
                     invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, cn, trans)
                 ElseIf total < 0 Then
                     'downgrade
-                    'pending
-
+                    'To create CreditNote
+                    receiptNo = createCreditNote(Math.Abs(total), 0, "Knock Off Amount : RM " & Math.Abs(total).ToString, cn, trans, ddInvoice2.SelectedValue)
+                    'Write Deposit Infomation
+                    writeDepositInfo("1", Math.Abs(total), cn, trans)
                 End If
 
 
@@ -505,6 +539,8 @@ Partial Class Transaction_SeasonUpDowngrade
                 'If Not chkDeposit.Checked Then
 
                 '    If depositFee <> 0 Then '
+
+                writeDepositInfo("2", 0, cn, trans)
 
                 If depositFee > 0 Then
                     'receiptNo = createDebitNote(0, Math.Abs(depositFee), cn, trans)
@@ -637,7 +673,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
     End Function
 
-    Private Function createCreditNote(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByVal Desc As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
+    Private Function createCreditNote(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByVal Desc As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction, Optional ByVal dahId As String = "") As String
         Dim dpEnt As New CPM.DebtorPaymentEntity
         Dim dpDao As New CPM.DebtorPaymentDAO
         Dim payAmt As Double = 0
@@ -668,6 +704,10 @@ Partial Class Transaction_SeasonUpDowngrade
 
             searchModel.setDebtorId(hidDebtorId.Value)
             searchModel.setStatus(InvoiceStatusEnum.OUTSTANDING)
+
+            If Not String.IsNullOrEmpty(dahId) Then
+                searchModel.setDebtorAccountHeaderId(dahId)
+            End If
 
             Dim strSQL As String = sqlmap.getMappedStatement("Debtor/Search-DebtorInvoiceReceipt", searchModel)
 
@@ -1347,6 +1387,9 @@ Partial Class Transaction_SeasonUpDowngrade
 
             strSQL = ""
             dt.Dispose()
+
+            checkDownOrUp()
+
         Catch ex As Exception
 
         End Try
@@ -1390,6 +1433,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 hdNewSeasonAmount.value = dt.Rows(0).Item("AMOUNT").ToString
             End If
 
+            checkDownOrUp()
 
         Catch ex As Exception
             logger.Debug(ex.Message)
@@ -1399,6 +1443,64 @@ Partial Class Transaction_SeasonUpDowngrade
             dt = Nothing
 
         End Try
+    End Sub
+
+    Private Sub checkDownOrUp()
+        Dim sql As String = ""
+        Dim dt As New DataTable
+        Dim depositFee As Double        
+        Try
+
+            If Not String.IsNullOrEmpty(txtEffectiveFrom.Text) Then
+                sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
+                       "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
+                       "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & Now.Year & _
+                        CDate(txtEffectiveFrom.Text).ToString("MM") & "01' " & _
+                        " and IH.debtorid =" & hidDebtorId.Value & _
+                        " and IHD.PassCardMstrId in (" & ddOldPass.SelectedValue & ")"
+
+                dt = dm.execTable(sql)
+
+                If dt.Rows(0).Item("CNT") > 0 Then 'Invoice Generated
+                    Dim monthCharged As Integer = dt.Rows(0).Item("CNT")
+                    Dim parkingFee As Double
+
+                    Dim total As Double
+                    parkingFee = monthCharged * (Val(hdNewSeasonAmount.Value) - Val(hdOldSeasonAmount.Value))
+                    depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
+                    total = parkingFee '+ depositFee New Requirement remove deposit
+
+                    If total < 0 Then
+                        'downgrade
+                        sql = "select dah.debtoraccountheaderid,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
+                              " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount) + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
+                              " from debtoraccountheader dah where (dah.amount-isnull(dah.PaidAmount,0)) <> 0 and dah.status <> 'C'and dah.txntype = 'I'and dah.debtorid = " + hidDebtorId.Value & _
+                              " union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq,invoiceno"
+
+                        dsInvoice.SelectCommand = sql
+                        dsInvoice.DataBind()
+
+                        div1.Visible = True
+                    Else
+                        div1.Visible = False
+                    End If
+
+                Else ' No generated invoice
+
+                    depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
+
+                    If depositFee > 0 Then
+                        MsgBox("Season Upgrade : Please generate invoice manually!")                        
+                    ElseIf depositFee < 0 Then
+                        MsgBox("Season Downgrade : Please generate invoice manually!")                        
+                    End If                    
+                End If
+            End If
+
+        Catch ex As Exception
+
+        End Try
+
     End Sub
 
     Private Sub logSeasonHistory(ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
@@ -1738,5 +1840,108 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
         End Try
+    End Sub
+
+    Protected Sub ddInvoice2_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorEnq.SelectedIndexChanged
+        Dim searchModel As New CPM.DebtorAccountHeaderEntity
+        Dim sqlmap As New SQLMap
+        Dim total As Double
+        Dim dt As DataTable
+
+        Try
+
+            If Not String.IsNullOrEmpty(ddOldPass.SelectedValue) And Not String.IsNullOrEmpty(ddNewPass.SelectedValue) And ddInvoice2.SelectedIndex > 0 Then
+                lblmsg.Text = ""
+
+                searchModel.setDebtorId(hidDebtorId.Value)
+                searchModel.setStatus(InvoiceStatusEnum.OUTSTANDING)
+                searchModel.setDebtorAccountHeaderId(ddInvoice2.SelectedValue)
+
+                Dim strSQL As String = sqlmap.getMappedStatement("Debtor/Search-DebtorInvoiceReceipt", searchModel)
+
+                ViewState("strSQL") = strSQL
+
+                dsDebtorInv.SelectCommand = ViewState("strSQL")
+                gvDebtorInv.DataBind()
+
+                gvDebtorInv.PageIndex = 0
+
+                If gvDebtorInv.Rows.Count = 0 Then
+                    lblRecCount2.Text = ConstantGlobal.No_Record_Found
+                    SearchMode()
+                    lblmsg.Text = "No Invoice for the selected debtor."
+                Else
+                    lblRecCount2.Text = dm.getGridViewRecordCount(dsDebtorInv).ToString + " " + "Record Found"
+
+                    For Each row As GridViewRow In gvDebtorInv.Rows
+                        total += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                    Next
+
+
+                End If
+            End If
+
+        Catch ex As Exception
+            lblmsg.Text = ex.Message
+
+        Finally
+            searchModel = Nothing
+            sqlmap = Nothing
+
+        End Try
+
+    End Sub
+
+    Private Sub writeDepositInfo(ByVal txnType As String, ByVal balance As Double, ByRef cn As SqlConnection, ByRef trans As SqlTransaction)
+
+        Dim downgradeEnt As New CPM.DowngradeDetailsEntity
+        Dim downgradeDao As New CPM.DowngradeDetailsDAO
+        Dim dt As New DataTable
+        Dim sql As String = ""
+
+        Try
+
+            downgradeEnt.setDebtorId(hidDebtorId.Value)
+            downgradeEnt.setLocationInfoId(ddLocation.SelectedValue)
+            downgradeEnt.setSerialNo(ddOldPass.SelectedValue)
+            downgradeEnt.setFromSeason(ddFromSeasonType.SelectedValue)
+            downgradeEnt.setToSeason(ddToSeasonType.SelectedValue)
+
+            sql = "SELECT DEPOSIT,AMOUNT FROM SEASONTYPEMSTR WHERE SEASONTYPEMSTRID = " & ddFromSeasonType.SelectedValue
+            dt = dm.execTable(sql)
+
+            If dt.Rows.Count > 0 Then
+                downgradeEnt.setFromSeasonAmount(dt.Rows(0).Item("AMOUNT").ToString)
+                downgradeEnt.setFromDepositAmount(dt.Rows(0).Item("DEPOSIT").ToString)
+            End If
+
+            sql = "SELECT DEPOSIT,AMOUNT FROM SEASONTYPEMSTR WHERE SEASONTYPEMSTRID = " & ddToSeasonType.SelectedValue
+            dt = dm.execTable(sql)
+
+            If dt.Rows.Count > 0 Then
+                downgradeEnt.setToSeasonAmount(dt.Rows(0).Item("AMOUNT").ToString)
+                downgradeEnt.setToDepositAmount(dt.Rows(0).Item("DEPOSIT").ToString)
+            End If
+
+
+            downgradeEnt.setBalanceAmount(balance)
+            downgradeEnt.setTxnType(txnType)
+
+
+            downgradeEnt.setTransactionDate(DateTime.Now)
+            downgradeEnt.setLastUpdatedBy(lp.getUserMstrId)
+            downgradeEnt.setLastUpdatedDatetime(Now)
+
+            downgradeDao.insertDB(downgradeEnt, cn, trans)
+
+        Catch ex As Exception
+            logger.Error(ex.Message)
+            lblmsg.Text = ex.Message
+            Throw ex
+        Finally
+            downgradeEnt = Nothing
+            downgradeDao = Nothing
+        End Try
+
     End Sub
 End Class
