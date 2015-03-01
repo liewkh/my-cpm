@@ -526,9 +526,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 ElseIf total < 0 Then
                     'downgrade
                     'To create CreditNote
-                    receiptNo = createCreditNote(Math.Abs(total), 0, "Knock Off Amount : RM " & Math.Abs(total).ToString, cn, trans, ddInvoice2.SelectedValue)
-                    'Write Deposit Infomation
-                    writeDepositInfo("1", Math.Abs(total), cn, trans)
+                    receiptNo = createCreditNote(Math.Abs(total), 0, "Knock Off Amount : RM " & Math.Abs(total).ToString, cn, trans, ddInvoice2.SelectedValue)                   
                 End If
 
 
@@ -727,9 +725,9 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
             'Pay less ok but not extra per invoice base
-            If payAmt > invAmt Then
-                Throw New Exception("Credit Note Amount Amount cannot be more than Total Outstanding Amount!")
-            End If
+            'If payAmt > invAmt Then
+            '    Throw New Exception("Credit Note Amount Amount cannot be more than Total Outstanding Amount!")
+            'End If
 
             'Split payment for which invoice if happen
             Dim splitHeaderId As String() = hidDebtorAccountHeaderId.Split(",")
@@ -858,6 +856,9 @@ Partial Class Transaction_SeasonUpDowngrade
             'Throw New Exception("Test")
 
             'trans.Commit()
+            'Write Information for the remaining cant knock off value
+            writeDepositInfo("1", Math.Abs(payAmt), cn, trans)
+
 
             PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount)
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
