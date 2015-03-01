@@ -452,7 +452,7 @@ Partial Class Transaction_ManualTaxInvoice
                 rptMgr.setParameterDiscrete("debtorid", hidDebtorId.Value)
                 rptMgr.setParameterDiscrete("invoiceno", invNo)
                 rptMgr.setParameterDiscrete("CompanyNo", companyNo)
-                rptMgr.setParameterDiscrete("MIRemark", MIRemark)
+                'rptMgr.setParameterDiscrete("MIRemark", MIRemark)
 
                 rptMgr.Logon()
 
