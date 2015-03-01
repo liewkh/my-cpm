@@ -266,15 +266,15 @@ Partial Class Transaction_ManualTaxInvoice
             End If
 
             dahEnt.setDebtorId(hidDebtorId.Value)
-            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "S"))
-            dahEnt.setInvoiceDate(Now.ToShortDateString)
+            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceDate(txtTaxInvoiceDate.Text)
             dahEnt.setInvoicePeriod("")
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.INVOICE)
-            dahEnt.setMIRemark(Trim(txtDescription.Text))
+            dahEnt.setMIRemark("")
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
@@ -441,7 +441,7 @@ Partial Class Transaction_ManualTaxInvoice
 
             If dt.Rows.Count > 0 Then
 
-                rptMgr.setReportName("TaxInvoice.Rpt")
+                rptMgr.setReportName("Invoice.Rpt")
                 rptMgr.setParameterDiscrete("CompanyName", companyName)
                 rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)
                 rptMgr.setParameterDiscrete("TelephoneNo", tel)
