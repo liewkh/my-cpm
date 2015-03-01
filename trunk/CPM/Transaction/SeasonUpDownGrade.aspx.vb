@@ -842,6 +842,7 @@ Partial Class Transaction_SeasonUpDowngrade
             dpEnt.setDebtorId(hidDebtorId.Value)
             dpEnt.setInvoiceHistoryIdAndAmount(strInvHistoryId)
             dpEnt.setPaymentFor("")
+            dpEnt.setGSTAmount(0)
             dpEnt.setDebtorAccountHeaderId(hidDebtorAccountHeaderId)
             dpEnt.setPaymentDate(txtTransactionDate.Text)
             dpEnt.setDescription(Desc)
