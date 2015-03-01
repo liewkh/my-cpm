@@ -119,6 +119,7 @@ Partial Class Transaction_ManualTaxInvoice
         txtAmount.Text = ""
         txtQty.Text = ""
         txtDescription.Text = ""
+        txtInvoicePeriod.Text = ""
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -268,7 +269,7 @@ Partial Class Transaction_ManualTaxInvoice
             dahEnt.setDebtorId(hidDebtorId.Value)
             dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn))
             dahEnt.setInvoiceDate(txtTaxInvoiceDate.Text)
-            dahEnt.setInvoicePeriod("")
+            dahEnt.setInvoicePeriod(Trim(txtInvoicePeriod.Text))
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
@@ -347,6 +348,7 @@ Partial Class Transaction_ManualTaxInvoice
             txtAmount.Text = ""
             txtQty.Text = ""
             txtDescription.Text = ""
+            txtInvoicePeriod.Text = ""
             gvMisc.DataSource = Nothing
             gvMisc.DataBind()
             btnConfirm.Visible = False
