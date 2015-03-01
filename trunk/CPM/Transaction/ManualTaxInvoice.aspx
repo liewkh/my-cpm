@@ -156,6 +156,26 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 	</tr>
+	
+	<tr class="vSpace">
+	    <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="normalLabel">Invoice Period</td>
+        <td class="hSpace">&nbsp;</td>
+      	<td class="normalLabel">
+		<asp:TextBox ID="txtInvoicePeriod" runat="server" Enabled="true" MaxLength="50" TabIndex="13"></asp:TextBox> 
+        </td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
 
 
 	<tr>
