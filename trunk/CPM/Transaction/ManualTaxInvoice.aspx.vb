@@ -119,7 +119,6 @@ Partial Class Transaction_ManualTaxInvoice
         txtAmount.Text = ""
         txtQty.Text = ""
         txtDescription.Text = ""
-        txtInvoicePeriod.Text = ""
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -129,6 +128,7 @@ Partial Class Transaction_ManualTaxInvoice
     Protected Sub btnClear_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         clear()
         txtDebtorName.Text = ""
+        txtInvoicePeriod.Text = ""
         ViewState("strSQL") = Nothing
         bindData()
     End Sub
