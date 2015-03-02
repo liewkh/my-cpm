@@ -686,7 +686,8 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dtHeader As New DataTable
         Dim dtInvHist As New DataTable
         Dim hidDebtorAccountHeaderId As String = ""
-        Dim total As Long = amtChargeSeason + amtChargeDeposit
+        Dim total As Double = amtChargeSeason + amtChargeDeposit
+        Dim knockOffAmt As Double = amtChargeSeason
 
         Try
 
@@ -747,8 +748,10 @@ Partial Class Transaction_SeasonUpDowngrade
                     If payAmt < Val(dt.Rows(z).Item("OSAMOUNT").ToString) Then
                         invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
                     Else
-                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))
+                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))                        
                     End If
+
+                    knockOffAmt -= Val(dt.Rows(z).Item("OSAMOUNT"))
 
 
 
@@ -857,7 +860,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             'trans.Commit()
             'Write Information for the remaining cant knock off value
-            writeDepositInfo("1", Math.Abs(payAmt), cn, trans)
+            writeDepositInfo("1", Math.Abs(knockOffAmt), cn, trans)
 
 
             PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount)
