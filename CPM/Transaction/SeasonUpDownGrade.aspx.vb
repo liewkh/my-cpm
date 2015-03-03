@@ -687,7 +687,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dtInvHist As New DataTable
         Dim hidDebtorAccountHeaderId As String = ""
         Dim total As Double = amtChargeSeason + amtChargeDeposit
-        Dim knockOffAmt As Double = amtChargeSeason
+        Dim knockOffAmt As Double = amtChargeSeason + (amtChargeSeason * (dm.getCurrentTax() / 100))
 
         Try
 
