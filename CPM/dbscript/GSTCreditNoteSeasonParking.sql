@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteSeasonParking]    Script Date: 01/15/2015 14:43:17 ******/
+/****** Object:  View [dbo].[GSTCreditNoteSeasonParking]    Script Date: 03/03/2015 14:59:32 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -9,72 +9,78 @@ GO
 CREATE VIEW [dbo].[GSTCreditNoteSeasonParking]
 as
 --SEASON PARKING RECEIVABLE
-SELECT Year(dah.InvoiceDate) as "Years",
-datepart(m, dah.InvoiceDate) as "Months",
+SELECT Year(dp.paymentdate) as "Years",
+datepart(m, dp.paymentdate) as "Months",
 li.LocationInfoId, 
 'SEASON PARKING RECEIVABLE' as AccountName,
 '1-2302' as AccountCode,
-       0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
+       0 AS "DebitAmount",sum(dp.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,14 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
-debtor d,debtoraccountheader dah,debtoraccountdetail dad
+debtor d
 where dp.debtorid = d.debtorid
 and d.locationinfoid = li.locationinfoid
-and dp.TxnType = 'CN'
-and dah.debtoraccountheaderid = dad.debtoraccountheaderid
-and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
-and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('1','4')
-and dah.status <> 'C'
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+and dp.debtorpaymentid in
+(
+select distinct dp.debtorpaymentid from debtorpayment dp
+left join debtoraccountdetail dad
+on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
+where dp.status <> 'C'
+and dp.txntype = 'CN'
+and dad.xref in ('1','4'))
+GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
 
 union
 
 --SEASON PARKING CHARGES
-SELECT Year(dah.InvoiceDate) as "Years",
-datepart(m, dah.InvoiceDate) as "Months",
+SELECT Year(dp.paymentdate) as "Years",
+datepart(m, dp.paymentdate) as "Months",
 li.LocationInfoId, 
 'SEASON PARKING CHARGES' as AccountName,
 '4-1100' as AccountCode,
-       sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
+       sum(dp.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,15 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
-debtor d,debtoraccountheader dah,debtoraccountdetail dad
+debtor d
 where dp.debtorid = d.debtorid
 and d.locationinfoid = li.locationinfoid
-and dp.TxnType = 'CN'
-and dah.debtoraccountheaderid = dad.debtoraccountheaderid
-and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
-and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('1')
-and dah.status <> 'C'
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+and dp.debtorpaymentid in
+(
+select distinct dp.debtorpaymentid from debtorpayment dp
+left join debtoraccountdetail dad
+on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
+where dp.status <> 'C'
+and dp.txntype = 'CN'
+and dad.xref in ('1'))
+GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
 
 
 union
 
 --GST OUTPUT TAX
-SELECT Year(dah.InvoiceDate) as "Years",
-datepart(m, dah.InvoiceDate) as "Months",
+SELECT Year(dp.paymentdate) as "Years",
+datepart(m, dp.paymentdate) as "Months",
 li.LocationInfoId, 
 'GST OUTPUT TAX' as AccountName,
 '2-9950' as AccountCode,
-       sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
+       sum(dp.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,16 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
-debtor d,debtoraccountheader dah,debtoraccountdetail dad
+debtor d
 where dp.debtorid = d.debtorid
 and d.locationinfoid = li.locationinfoid
-and dp.TxnType = 'CN'
-and dah.debtoraccountheaderid = dad.debtoraccountheaderid
-and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
-and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('4')
-and dah.status <> 'C'
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+and dp.debtorpaymentid in
+(
+select distinct dp.debtorpaymentid from debtorpayment dp
+left join debtoraccountdetail dad
+on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
+where dp.status <> 'C'
+and dp.txntype = 'CN'
+and dad.xref in ('4'))
+GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
