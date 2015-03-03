@@ -1551,7 +1551,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Try
 
             Dim totalCharge As Double = amtChargeSeason + amtChargeDeposit
-            Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))
+            Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))            
 
             inv = dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn)
 
@@ -1563,7 +1563,8 @@ Partial Class Transaction_SeasonUpDowngrade
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
-            dahEnt.setAmount(totalCharge)
+            'Different Season + Deposit * GST
+            dahEnt.setAmount(amtChargeSeason + amtChargeDeposit + (amtChargeSeason * (dm.getCurrentTax() / 100)))
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.INVOICE)
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
@@ -1613,7 +1614,7 @@ Partial Class Transaction_SeasonUpDowngrade
             invEnt.setDebtorAccountHeaderId(dahId)
             invEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             invEnt.setMonth(txtTransactionDate.Text)
-            invEnt.setAmount(totalChargeWithGst)
+            invEnt.setAmount(amtChargeSeason + amtChargeDeposit + (amtChargeSeason * (dm.getCurrentTax() / 100)))
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
             invEnt.setLastUpdatedDatetime(Now)            
             invDao.insertDB(invEnt, cn, trans)
@@ -1683,7 +1684,13 @@ Partial Class Transaction_SeasonUpDowngrade
                 rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
                 rptMgr.setParameterDiscrete("debtorid", hidDebtorId.Value)
                 rptMgr.setParameterDiscrete("invoiceno", invNo)
-                rptMgr.setParameterDiscrete("CompanyNo", companyNo)                
+                rptMgr.setParameterDiscrete("CompanyNo", companyNo)
+
+                If String.IsNullOrEmpty(ddNewPass.SelectedValue) Then
+                    rptMgr.setParameterDiscrete("PassBay", ddOldPass.SelectedItem.Text)
+                Else
+                    rptMgr.setParameterDiscrete("PassBay", ddNewPass.SelectedItem.Text)
+                End If
 
                 rptMgr.Logon()
 
