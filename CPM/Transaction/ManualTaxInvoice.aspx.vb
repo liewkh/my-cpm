@@ -201,8 +201,9 @@ Partial Class Transaction_ManualTaxInvoice
         rbCompany.Enabled = False
         rbIndividual.Enabled = False
 
-        Sql = "select 'ZR','ZR' as type " & _
+        Sql = "select 'ZRL','ZRL' as type " & _
                       " union select 'SR','SR' as type " & _
+                      " union select 'OS','OS' as type " & _
                       " union select '0',CodeDesc as type from codemstr where codecat = 'DEFAULT'"
 
         dsType.SelectCommand = Sql

@@ -28,7 +28,8 @@ Public Class ConstantGlobal
 
     'For GST
     Public Shared StandardRated As String = "SR"
-    Public Shared ZeroRated As String = "ZR"
+    Public Shared ZeroRated As String = "ZRL"
+    Public Shared OutOfScope As String = "OS"
 
     Public Shared NotAvailable As String = "NA"
 
