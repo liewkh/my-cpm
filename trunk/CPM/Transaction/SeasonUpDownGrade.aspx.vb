@@ -526,7 +526,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 ElseIf total < 0 Then
                     'downgrade
                     'To create CreditNote
-                    receiptNo = createCreditNote(Math.Abs(total), 0, "Knock Off Amount : RM " & Math.Abs(total).ToString, cn, trans, ddInvoice2.SelectedValue)                   
+                    receiptNo = createCreditNote(Math.Abs(total), 0, cn, trans, ddInvoice2.SelectedValue)
                 End If
 
 
@@ -671,7 +671,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
     End Function
 
-    Private Function createCreditNote(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByVal Desc As String, ByRef cn As SqlConnection, ByRef trans As SqlTransaction, Optional ByVal dahId As String = "") As String
+    Private Function createCreditNote(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByRef cn As SqlConnection, ByRef trans As SqlTransaction, Optional ByVal dahId As String = "") As String
         Dim dpEnt As New CPM.DebtorPaymentEntity
         Dim dpDao As New CPM.DebtorPaymentDAO
         Dim payAmt As Double = 0
@@ -687,7 +687,8 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dtInvHist As New DataTable
         Dim hidDebtorAccountHeaderId As String = ""
         Dim total As Double = amtChargeSeason + amtChargeDeposit
-        Dim knockOffAmt As Double = amtChargeSeason + (amtChargeSeason * (dm.getCurrentTax() / 100))
+        Dim amtChargeSeasonWithGST As Double = amtChargeSeason + (amtChargeSeason * (dm.getCurrentTax() / 100))
+        Dim amtPaid As Double = 0
 
         Try
 
@@ -739,20 +740,21 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
             For z As Integer = 0 To dt.Rows.Count - 1
-                If Not String.IsNullOrEmpty(dt.Rows(z).Item("OSAMOUNT").ToString) And payAmt > 0 Then
+                If Not String.IsNullOrEmpty(dt.Rows(z).Item("OSAMOUNT").ToString) And amtChargeSeasonWithGST > 0 Then
                     selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM INVOICEHISTORY WHERE INVOICEHISTORYID = " & dt.Rows(z).Item(invHistDao.COLUMN_InvoiceHistoryID).ToString
                     dtInvHist = dm.execTableInTrans(selectSql, cn, trans)
 
 
                     invHistEnt.setInvoiceHistoryId(dt.Rows(z).Item(invHistDao.COLUMN_InvoiceHistoryID).ToString)
-                    If payAmt < Val(dt.Rows(z).Item("OSAMOUNT").ToString) Then
-                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                    If amtChargeSeasonWithGST < Val(dt.Rows(z).Item("OSAMOUNT").ToString) Then
+                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + amtChargeSeasonWithGST)
+                        amtPaid += amtChargeSeasonWithGST
+                        amtChargeSeasonWithGST -= amtChargeSeasonWithGST
                     Else
-                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))                        
+                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))
+                        amtPaid += Val(dt.Rows(z).Item("OSAMOUNT").ToString)
+                        amtChargeSeasonWithGST -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
                     End If
-
-                    knockOffAmt -= Val(dt.Rows(z).Item("OSAMOUNT"))
-
 
 
                     invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -761,14 +763,14 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
 
-                    payAmt -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
+                    'payAmt -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
 
                     'Get the latest PaidAmount from header
                     selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
                     dtHeader = dm.execTableInTrans(selectSql, cn, trans)
 
                     dahEnt.setDebtorAccountHeaderId(dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString)
-                    If payAmt < 0 Then
+                    If amtChargeSeasonWithGST <= 0.0 Then
                         dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
                         strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & invHistEnt.getPaidAmount & "|"
                     Else
@@ -789,66 +791,68 @@ Partial Class Transaction_SeasonUpDowngrade
                     End If
 
                     paymentFor += dt.Rows(z).Item("MONTH").ToString & ","
-                    hidDebtorAccountHeaderId = hidDebtorAccountHeaderId & "," & dt.Rows(z).Item("DEBTORACCOUNTHEADERID").ToString
+                    hidDebtorAccountHeaderId = dt.Rows(z).Item("DEBTORACCOUNTHEADERID").ToString
 
                 End If
             Next
 
 
             'The additional extra will put into last invoice
-            If payAmt > 0 Then
-                Dim iSql
-                Dim dtiSql As DataTable
+            'If amtChargeSeasonWithGST > 0 Then
+            '    Dim iSql
+            '    Dim dtiSql As DataTable
 
-                iSql = "select * from invoicehistory ih where (ih.amount-isnull(ih.PaidAmount,0)) > 0 and ih.status = '" & InvoiceStatusEnum.OUTSTANDING & "'"
-                dtiSql = dm.execTableInTrans(iSql, cn, trans)
+            '    iSql = "select * from invoicehistory ih where (ih.amount-isnull(ih.PaidAmount,0)) > 0 and ih.status = '" & InvoiceStatusEnum.OUTSTANDING & "'"
+            '    dtiSql = dm.execTableInTrans(iSql, cn, trans)
 
-                invHistEnt.setInvoiceHistoryId(dtiSql.Rows(0).Item(invHistDao.COLUMN_InvoiceHistoryID))
-                invHistEnt.setPaidAmount(payAmt)
-                invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
-                invHistEnt.setLastUpdatedDatetime(Now)
-                invHistDao.updateDB(invHistEnt, cn, trans)
+            '    invHistEnt.setInvoiceHistoryId(dtiSql.Rows(0).Item(invHistDao.COLUMN_InvoiceHistoryID))
+            '    invHistEnt.setPaidAmount(payAmt)
+            '    invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
+            '    invHistEnt.setLastUpdatedDatetime(Now)
+            '    invHistDao.updateDB(invHistEnt, cn, trans)
 
-                strInvHistoryId = strInvHistoryId & dtiSql.Rows(0).Item(invHistDao.COLUMN_InvoiceHistoryID) & "-" & invHistEnt.getPaidAmount & "|"
+            '    strInvHistoryId = strInvHistoryId & dtiSql.Rows(0).Item(invHistDao.COLUMN_InvoiceHistoryID) & "-" & invHistEnt.getPaidAmount & "|"
 
-                'Get the latest PaidAmount from header
-                iSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
-                dtHeader = dm.execTableInTrans(iSql, cn, trans)
+            '    'Get the latest PaidAmount from header
+            '    iSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
+            '    dtHeader = dm.execTableInTrans(iSql, cn, trans)
 
-                dahEnt.setDebtorAccountHeaderId(dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId))
-                dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
-                dahEnt.setLastUpdatedDatetime(Now)
-                dahDao.updateDB(dahEnt, cn, trans)
-
-
-
-                selectSql = "SELECT AMOUNT,ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
-                dtHeader = dm.execTableInTrans(selectSql, cn, trans)
-                If dtHeader.Rows(0).Item(dahDao.COLUMN_Amount).Equals(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount)) Then
-                    updateSql = "UPDATE DEBTORACCOUNTHEADER SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
-                    dtHeader = dm.execTableInTrans(updateSql, cn, trans)
-                    updateSql = "UPDATE INVOICEHISTORY SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
-                    dtHeader = dm.execTableInTrans(updateSql, cn, trans)
-                End If
+            '    dahEnt.setDebtorAccountHeaderId(dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId))
+            '    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+            '    dahEnt.setLastUpdatedDatetime(Now)
+            '    dahDao.updateDB(dahEnt, cn, trans)
 
 
-            End If
+
+            '    selectSql = "SELECT AMOUNT,ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
+            '    dtHeader = dm.execTableInTrans(selectSql, cn, trans)
+            '    If dtHeader.Rows(0).Item(dahDao.COLUMN_Amount).Equals(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount)) Then
+            '        updateSql = "UPDATE DEBTORACCOUNTHEADER SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
+            '        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+            '        updateSql = "UPDATE INVOICEHISTORY SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dtiSql.Rows(0).Item(invHistDao.COLUMN_DebtorAccountHeaderId)
+            '        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+            '    End If
+
+
+            'End If
 
 
             paymentFor = Mid(paymentFor, 1, paymentFor.Length)
             strInvHistoryId = Mid(strInvHistoryId, 1, strInvHistoryId.Length)
 
-            dpEnt.setAmount(total)
+            dpEnt.setAmount(amtPaid - (amtChargeSeason * (dm.getCurrentTax() / 100)))
             dpEnt.setLastUpdatedBy(lp.getUserMstrId)
             dpEnt.setDebtorId(hidDebtorId.Value)
             dpEnt.setInvoiceHistoryIdAndAmount(strInvHistoryId)
             dpEnt.setPaymentFor("")
-            dpEnt.setGSTAmount(0)
+            dpEnt.setGSTAmount(amtChargeSeason * (dm.getCurrentTax() / 100))
             dpEnt.setDebtorAccountHeaderId(hidDebtorAccountHeaderId)
             dpEnt.setPaymentDate(txtTransactionDate.Text)
-            dpEnt.setDescription(Desc)
+            dpEnt.setDescription("Knock Off Amount : RM " & Math.Abs(amtPaid).ToString)
             dpEnt.setTxnType(TxnTypeEnum.CREDITNOTE)
             dpEnt.setStatus(ReceiptStatusEnum._NEW)
+            dpEnt.setInvoiceNo(ddInvoice2.SelectedItem.Text.Split("|")(1).ToString())
+            dpEnt.setInvoiceDate(ddInvoice2.SelectedItem.Text.Split("|")(0).ToString())
 
             dpEnt.setReceiptNo(dm.getCRNoteNextRunningNo(hidLocationInfoId.Value, trans, cn))
 
@@ -860,7 +864,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             'trans.Commit()
             'Write Information for the remaining cant knock off value
-            writeDepositInfo("1", Math.Abs(knockOffAmt), cn, trans)
+            writeDepositInfo("1", Math.Abs(amtChargeSeasonWithGST), cn, trans)
 
 
             PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount)
