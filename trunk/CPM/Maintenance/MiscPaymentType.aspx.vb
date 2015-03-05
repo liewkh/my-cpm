@@ -32,6 +32,7 @@ Partial Class Maintenance_MiscPaymentType
             ddTaxCode.Items.Insert(0, New ListItem("---Please Choose One---", "0"))
             ddTaxCode.Items.Insert(1, New ListItem("Standard Rated", ConstantGlobal.StandardRated))
             ddTaxCode.Items.Insert(2, New ListItem("Zero Rated", ConstantGlobal.ZeroRated))
+            ddTaxCode.Items.Insert(2, New ListItem("Out Of Scope", ConstantGlobal.OutOfScope))
 
         End If
 
