@@ -291,7 +291,7 @@ Public Class DBManager
         End Try
 
         If Not String.IsNullOrEmpty(TaxInvoice) Then
-            prefix = prefix.Substring(0, prefix.Length - 1) + TaxInvoice
+            prefix = prefix.Substring(0, prefix.Length - 1) + TaxInvoice + debtorCategory
         End If
 
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
