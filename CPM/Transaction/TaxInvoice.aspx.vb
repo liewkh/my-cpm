@@ -199,7 +199,7 @@ Partial Class Transaction_TaxInvoice
         rbIndividual.Enabled = False
 
         Sql = "select 0 as MISCPAYMENTTYPEMSTRID,codedesc as PAYMENTCODE,codedesc as PAYMENTDESC,0 as Amount from codemstr where codecat = 'DEFAULT' union "
-        Sql = Sql + "Select MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,AMOUNT FROM MISCPAYMENTTYPEMSTR Where LocationInfoId = " & lp.getDefaultLocationInfoId & " and Active = 'Y'"
+        Sql = Sql + "Select MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,AMOUNT FROM MISCPAYMENTTYPEMSTR Where LocationInfoId = " & ddLocation.SelectedValue & " and Active = 'Y'"
 
         dsMiscPaymentType.SelectCommand = Sql
         dsMiscPaymentType.DataBind()
