@@ -1680,7 +1680,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             If dt.Rows.Count > 0 Then
 
-                rptMgr.setReportName("Invoice.Rpt")
+                rptMgr.setReportName("SeasonInvoice.Rpt")
                 rptMgr.setParameterDiscrete("CompanyName", companyName)
                 rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)
                 rptMgr.setParameterDiscrete("TelephoneNo", tel)
@@ -1691,9 +1691,9 @@ Partial Class Transaction_SeasonUpDowngrade
                 rptMgr.setParameterDiscrete("CompanyNo", companyNo)
 
                 If Not String.IsNullOrEmpty(ddOldPass.SelectedValue) Then
-                    rptMgr.setParameterDiscrete("PassBay", ddOldPass.SelectedItem.Text)
+                    rptMgr.setParameterDiscrete("PassCard", ddOldPass.SelectedItem.Text)
                 Else
-                    rptMgr.setParameterDiscrete("PassBay", ddNewPass.SelectedItem.Text)
+                    rptMgr.setParameterDiscrete("PassCard", ddNewPass.SelectedItem.Text)
                 End If
 
                 rptMgr.Logon()

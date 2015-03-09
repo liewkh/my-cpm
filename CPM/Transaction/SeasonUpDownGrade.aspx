@@ -388,9 +388,9 @@
         <td class="hSpace">&nbsp;</td>
       	<td><asp:TextBox ID="txtProcessedBy" runat="server" CssClass="textBoxMediumDisabled" MaxLength="200" TabIndex="13"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="normalLabel">Remark</td>
+		<td class="normalLabel">Period</td>
 		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="13"></asp:TextBox></td>
+        <td><asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxLarge" MaxLength="20" TabIndex="13"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
