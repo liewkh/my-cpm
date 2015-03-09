@@ -454,7 +454,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                             &nbsp;</td>
                         <td height="22" colspan="11" align="right">
                             <asp:Button ID="btnConfirm" runat="server" Text="Confirm" CssClass="buttonMedium" CausesValidation="false"
-                                TabIndex="15" OnClick="btnConfirm_Click" />
+                                TabIndex="15" OnClick="btnConfirm_Click" OnClientClick="return confirm('Please double check fees and GST amount before Clicking OK to proceed!')" />
                             <asp:Button ID="btnDataBack" runat="server" Text="Back" CssClass="buttonMedium" CausesValidation="false"
                                 TabIndex="16" OnClick="btnDataBack_Click" />    
                         </td>
