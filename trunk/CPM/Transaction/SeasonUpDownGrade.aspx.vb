@@ -522,7 +522,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 'Check with Vincent
 
                 If total > 0 Then 'upgrade
-                    invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, cn, trans)
+                    invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, monthCharged, (Val(hdNewSeasonAmount.Value) - Val(hdOldSeasonAmount.Value)), cn, trans)
                 ElseIf total < 0 Then
                     'downgrade
                     'To create CreditNote
@@ -1542,7 +1542,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
     End Sub
 
-    Private Function createTaxInvoice(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
+    Private Function createTaxInvoice(ByVal amtChargeSeason As Double, ByVal amtChargeDeposit As Double, ByVal qty As Integer, ByVal unitPrice As Double, ByRef cn As SqlConnection, ByRef trans As SqlTransaction) As String
 
         Dim invEnt As New CPM.InvoiceHistoryEntity
         Dim invDao As New CPM.InvoiceHistoryDAO
@@ -1555,7 +1555,7 @@ Partial Class Transaction_SeasonUpDowngrade
         Try
 
             Dim totalCharge As Double = amtChargeSeason + amtChargeDeposit
-            Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))            
+            Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))
 
             inv = dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn)
 
@@ -1577,10 +1577,10 @@ Partial Class Transaction_SeasonUpDowngrade
             dadEnt.setDebtorAccountHeaderId(dahId)
             dadEnt.setMonths("")
             dadEnt.setDetails("Additional Season Parking Fee : RM " & amtChargeSeason)
-            dadEnt.setUnitPrice(0)
-            dadEnt.setQuantity(0)
+            dadEnt.setUnitPrice(Math.Abs(unitPrice))
+            dadEnt.setQuantity(qty)
             dadEnt.setAmount(amtChargeSeason)
-            dadEnt.setTaxCode("SR")
+            dadEnt.setTaxCode(ConstantGlobal.StandardRated)
             dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
             dadEnt.setLastUpdatedBy(lp.getUserMstrId)
             dadEnt.setLastUpdatedDatetime(Now)
@@ -1590,10 +1590,10 @@ Partial Class Transaction_SeasonUpDowngrade
             dadEnt.setDebtorAccountHeaderId(dahId)
             dadEnt.setMonths("")
             dadEnt.setDetails("Deposit : RM " & amtChargeDeposit)
-            dadEnt.setUnitPrice(0)
-            dadEnt.setQuantity(0)
+            dadEnt.setUnitPrice(amtChargeDeposit)
+            dadEnt.setQuantity(1)
             dadEnt.setAmount(amtChargeDeposit)
-            dadEnt.setTaxCode("ZR")
+            dadEnt.setTaxCode(ConstantGlobal.OutOfScope)
             dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASONDEPOSIT)
             dadEnt.setLastUpdatedBy(lp.getUserMstrId)
             dadEnt.setLastUpdatedDatetime(Now)
@@ -1608,7 +1608,7 @@ Partial Class Transaction_SeasonUpDowngrade
             dadEnt.setUnitPrice(0)
             dadEnt.setQuantity(0)
             dadEnt.setAmount(amtChargeSeason * (dm.getCurrentTax() / 100))
-            dadEnt.setTaxCode("NA")
+            dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
             dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYGST)
             dadEnt.setLastUpdatedBy(lp.getUserMstrId)
             dadEnt.setLastUpdatedDatetime(Now)
@@ -1620,7 +1620,7 @@ Partial Class Transaction_SeasonUpDowngrade
             invEnt.setMonth(txtTransactionDate.Text)
             invEnt.setAmount(amtChargeSeason + amtChargeDeposit + (amtChargeSeason * (dm.getCurrentTax() / 100)))
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
-            invEnt.setLastUpdatedDatetime(Now)            
+            invEnt.setLastUpdatedDatetime(Now)
             invDao.insertDB(invEnt, cn, trans)
 
 
@@ -1690,7 +1690,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 rptMgr.setParameterDiscrete("invoiceno", invNo)
                 rptMgr.setParameterDiscrete("CompanyNo", companyNo)
 
-                If String.IsNullOrEmpty(ddNewPass.SelectedValue) Then
+                If Not String.IsNullOrEmpty(ddOldPass.SelectedValue) Then
                     rptMgr.setParameterDiscrete("PassBay", ddOldPass.SelectedItem.Text)
                 Else
                     rptMgr.setParameterDiscrete("PassBay", ddNewPass.SelectedItem.Text)
@@ -1941,8 +1941,19 @@ Partial Class Transaction_SeasonUpDowngrade
 
 
             downgradeEnt.setBalanceAmount(balance)
-            downgradeEnt.setTxnType(txnType)
 
+            If txnType = 1 Then
+                If balance <= 0 Then
+                    downgradeEnt.setTxnType("FK") 'Fully Knock Off
+                ElseIf balance > 0 Then 'OS 50 knock off 100
+                    downgradeEnt.setTxnType("PK") 'Partial Knock Off
+                Else
+                    downgradeEnt.setTxnType("NK") 'No Knock Off
+                End If
+            Else
+                downgradeEnt.setTxnType("NK") 'No Knock Off
+            End If
+            
 
             downgradeEnt.setTransactionDate(DateTime.Now)
             downgradeEnt.setLastUpdatedBy(lp.getUserMstrId)
