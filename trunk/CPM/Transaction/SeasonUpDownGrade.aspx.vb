@@ -1575,10 +1575,10 @@ Partial Class Transaction_SeasonUpDowngrade
 
             'Season Charges
             dadEnt.setDebtorAccountHeaderId(dahId)
-            dadEnt.setMonths("")
+            dadEnt.setMonths(qty)
             dadEnt.setDetails("Additional Season Parking Fee : RM " & amtChargeSeason)
             dadEnt.setUnitPrice(Math.Abs(unitPrice))
-            dadEnt.setQuantity(qty)
+            dadEnt.setQuantity(1)
             dadEnt.setAmount(amtChargeSeason)
             dadEnt.setTaxCode(ConstantGlobal.StandardRated)
             dadEnt.setxRef(TxnTypeEnum.INVOICEENTRYSEASON)
@@ -1588,7 +1588,7 @@ Partial Class Transaction_SeasonUpDowngrade
 
             'Deposit Charges
             dadEnt.setDebtorAccountHeaderId(dahId)
-            dadEnt.setMonths("")
+            dadEnt.setMonths(1)
             dadEnt.setDetails("Deposit : RM " & amtChargeDeposit)
             dadEnt.setUnitPrice(amtChargeDeposit)
             dadEnt.setQuantity(1)

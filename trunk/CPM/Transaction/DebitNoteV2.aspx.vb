@@ -215,7 +215,7 @@ Partial Class Transaction_DebitNoteV2
 
             Sql = "select dah.invoiceno as invoice1,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
                " dah.invoiceperiod + ' | ' + CONVERT(varchar(100),dah.amount) + ' | ' + CONVERT(varchar(100),dah.amount-isnull(dah.PaidAmount,0)) as invoiceno,'' as seq " & _
-               " from debtoraccountheader dah where (dah.amount-isnull(dah.PaidAmount,0)) <> 0 and dah.status <> 'C'and dah.txntype = 'I'and dah.debtorid = " + gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString & _
+               " from debtoraccountheader dah where dah.invoicedate >dateadd(mm,-6,getdate()) and dah.status <> 'C'and dah.txntype = 'I'and dah.debtorid = " + gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString & _
                " union all select codeabbr,codedesc,seq from codemstr where codecat = 'DEFAULT' order by seq,invoiceno"
 
             dsInvoice.SelectCommand = Sql
@@ -226,8 +226,7 @@ Partial Class Transaction_DebitNoteV2
 
             Sql = "select '0' as SeasonTypeMstrId,CodeDesc as Description from codemstr where codecat = 'DEFAULT' " & _
                   " union select SeasonTypeMstrId,SeasonTypeDesc from seasontypemstr where locationinfoid = " + ddLocation.SelectedValue & _
-                  " and Active = 'Y' union select MiscPaymentTypeMstrId,PaymentDesc from miscPaymentTypeMstr where locationinfoid = " + ddLocation.SelectedValue & _
-                  " and PaymentDesc like '%DEPOSIT%' and Active = 'Y' order by SeasonTypeMstrId"
+                  " and Active = 'Y' union select 9999,'DEPOSIT'order by SeasonTypeMstrId"
 
             dsDescription.SelectCommand = Sql
             dsDescription.DataBind()
