@@ -13,6 +13,8 @@ Public Class TxnTypeEnum
     Public Const MANUALTAXINVOICE As String = "3"
     Public Const INVOICEENTRYGST As String = "4"
     Public Const MANUALTAXINVOICEGST As String = "5"
+    Public Const DEBITNOTEINVOICEGST As String = "6"
+
 
 
 End Class
