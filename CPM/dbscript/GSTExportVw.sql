@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTExportVw]    Script Date: 01/15/2015 14:44:31 ******/
+/****** Object:  View [dbo].[GSTExportVw]    Script Date: 03/10/2015 22:36:52 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -147,3 +147,46 @@ CreditAmount as "Credit Amount",
 dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
 from  GSTPaymentEntryMiscSR
 
+union
+
+--GSTInvoiceEntryForDepositOS
+Select AccountCode as "A/C Code", 
+AccountName as "A/C Name",
+dbo.fxGetLocationCode(LocationInfoId) + '_OI_OS as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
+DebitAmount as "Debit Amount",
+CreditAmount as "Credit Amount",
+dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
+from GSTInvoiceEntryForDepositOS
+
+union
+
+--GSTCreditNoteForDepositOS
+Select AccountCode as "A/C Code", 
+AccountName as "A/C Name",
+dbo.fxGetLocationCode(LocationInfoId) + '_OI_OS as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
+DebitAmount as "Debit Amount",
+CreditAmount as "Credit Amount",
+dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
+from GSTCreditNoteForDepositOS
+
+union
+
+--GSTCreditNoteForDepositOS
+Select AccountCode as "A/C Code", 
+AccountName as "A/C Name",
+'Payment - ' + dbo.fxGetLocationCode(LocationInfoId) + '_OI_OS as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
+DebitAmount as "Debit Amount",
+CreditAmount as "Credit Amount",
+dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
+from GSTPaymentForOS
+
+union
+
+--GSTDNEntryForSeason
+Select AccountCode as "A/C Code", 
+AccountName as "A/C Name",
+'DN - ' + dbo.fxGetLocationCode(LocationInfoId) + '_Billing as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
+DebitAmount as "Debit Amount",
+CreditAmount as "Credit Amount",
+dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
+from GSTDNEntryForSeason
