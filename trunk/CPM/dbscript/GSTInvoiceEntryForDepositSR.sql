@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTInvoiceEntryForDepositSR]    Script Date: 01/18/2015 19:44:36 ******/
+/****** Object:  View [dbo].[GSTInvoiceEntryForDepositSR]    Script Date: 03/10/2015 22:58:12 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -23,7 +23,8 @@ and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
 and dad.xref in ('3','5')
 and dah.status <> 'C'
-and (dad.TaxCode <> 'ZR')
+and (dad.TaxCode <> 'ZRL')
+and (dad.TaxCode <> 'OS')
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
 union

@@ -26,7 +26,7 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
-and dad.taxcode = 'ZR'
+and dad.taxcode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
 union
@@ -50,5 +50,5 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
-and dad.taxcode = 'ZR'
+and dad.taxcode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)

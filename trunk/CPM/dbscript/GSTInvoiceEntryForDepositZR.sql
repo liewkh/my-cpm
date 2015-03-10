@@ -23,7 +23,7 @@ and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
 and dad.xref in ('3')
 and dah.status <> 'C'
-and dad.TaxCode = 'ZR'
+and dad.TaxCode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
 union
@@ -43,5 +43,5 @@ and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
 and dad.xref in ('3')
 and dah.status <> 'C'
-and dad.TaxCode = 'ZR'
+and dad.TaxCode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
