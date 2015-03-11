@@ -381,11 +381,11 @@ Namespace Utility
             End Select
             Select Case Sen
                 Case ""
-                    Sen = "and Sen Zero Only."
+                    Sen = "and Cent Zero Only."
                 Case "One"
                     Sen = "and One Sen Only."
                 Case Else
-                    Sen = " and " & Sen & " Sen Only"
+                    Sen = " and " & Sen & " Cent Only"
             End Select
             SpellNumber = Dollars & Sen
         End Function
