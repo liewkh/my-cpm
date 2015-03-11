@@ -867,7 +867,7 @@ Partial Class Transaction_SeasonUpDowngrade
             writeDepositInfo("1", Math.Abs(amtChargeSeasonWithGST), cn, trans)
 
 
-            PrintReceipt(dpId, hidDebtorId.Value, dpEnt.getAmount)
+            PrintReceipt(dpId, hidDebtorId.Value, amtPaid)
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "PopUp", "checkToPopUpViewer();", True)
 
 
