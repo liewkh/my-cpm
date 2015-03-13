@@ -1557,20 +1557,27 @@ Partial Class Transaction_SeasonUpDowngrade
             Dim totalCharge As Double = amtChargeSeason + amtChargeDeposit
             Dim totalChargeWithGst As Double = totalCharge + (totalCharge * (dm.getCurrentTax() / 100))
 
-            inv = dm.getNextRunningNo(dm.getDebtorCategory(hidDebtorId.Value), hidLocationInfoId.Value, trans, cn)
+            inv = dm.getDebitNoteNextRunningNo(hidLocationInfoId.Value, trans, cn)
 
             'Header
             dahEnt.setDebtorId(hidDebtorId.Value)
             dahEnt.setInvoiceNo(inv)
             dahEnt.setInvoiceDate(Now.ToShortDateString)
-            dahEnt.setInvoicePeriod(Trim(txtRemark.Text))
+            dahEnt.setInvoicePeriod(txtEffectiveFrom.Text)
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             'Different Season + Deposit * GST
             dahEnt.setAmount(amtChargeSeason + amtChargeDeposit + (amtChargeSeason * (dm.getCurrentTax() / 100)))
             dahEnt.setBatchNo("")
-            dahEnt.setTxnType(TxnTypeEnum.INVOICE)
+            dahEnt.setTxnType(TxnTypeEnum.DEBITNOTE)
+
+            If Not String.IsNullOrEmpty(ddOldPass.SelectedValue) Then
+                dahEnt.setPassCardNo(ddOldPass.SelectedItem.Text)
+            Else                
+                dahEnt.setPassCardNo(ddNewPass.SelectedItem.Text)
+            End If
+
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
             'Season Charges
