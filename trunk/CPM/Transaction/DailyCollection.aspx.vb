@@ -351,6 +351,8 @@ Partial Class Transaction_DailyCollection
 
             If Trim(txtTotalGST.Text) <> "" Then
                 dailyEnt.setGstAmount(txtTotalGST.Text)
+            Else
+                dailyEnt.setGstAmount(0)
             End If
 
          
