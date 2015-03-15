@@ -2,6 +2,9 @@
 
 <%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral,PublicKeyToken=31bf3856ad364e35"
     Namespace="System.Web.UI" TagPrefix="asp" %>
+    
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+ 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
@@ -593,6 +596,11 @@
                             &nbsp;</td>
                     </tr>
                     
+
+        <ajax:MaskedEditExtender ID="MaskedEditExtender1" runat="server" TargetControlID="txtComInvoicePrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>
+                    
                     <tr>
                         <td class="normalLabel">
                             Individual Invoice No</td>
@@ -627,6 +635,10 @@
                             &nbsp;</td>
                     </tr>
                     
+                    <ajax:MaskedEditExtender ID="MaskedEditExtender2" runat="server" TargetControlID="txtIndInvoicePrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>
+                    
                     <tr>
                         <td class="normalLabel">
                             Receipt No</td>
@@ -659,7 +671,11 @@
                             &nbsp;</td>
                         <td class="hSpace" style="width: 13px">
                             &nbsp;</td>
-                    </tr>                    
+                    </tr>
+                    
+                     <ajax:MaskedEditExtender ID="MaskedEditExtender3" runat="server" TargetControlID="txtReceiptPrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>                    
 
                     <tr>
                         <td class="normalLabel">
@@ -695,6 +711,10 @@
                             &nbsp;</td>
                     </tr>   
                     
+                     <ajax:MaskedEditExtender ID="MaskedEditExtender4" runat="server" TargetControlID="txtDebitNotePrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>  
+                    
                     <tr>
                         <td class="normalLabel">
                             Credit Note No</td>
@@ -727,7 +747,11 @@
                             &nbsp;</td>
                         <td class="hSpace" style="width: 13px">
                             &nbsp;</td>
-                    </tr>   
+                    </tr>  
+                    
+                     <ajax:MaskedEditExtender ID="MaskedEditExtender5" runat="server" TargetControlID="txtCreditNotePrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>   
                     
                     <tr>
                         <td class="normalLabel">
@@ -762,6 +786,10 @@
                         <td class="hSpace" style="width: 13px">
                             &nbsp;</td>
                     </tr>
+                    
+                     <ajax:MaskedEditExtender ID="MaskedEditExtender6" runat="server" TargetControlID="txtDailyCollectionPrefix"
+        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        </ajax:MaskedEditExtender>  
                     
                     <tr>
                         <td class="normalLabel">
