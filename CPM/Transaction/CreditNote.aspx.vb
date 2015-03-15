@@ -210,6 +210,7 @@ Partial Class Transaction_CreditNote
     End Sub
 
     Protected Sub ddInvoice_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        clearInvoice()
         DataMode()
     End Sub
 
@@ -264,7 +265,12 @@ Partial Class Transaction_CreditNote
                     If chk.Checked Then
                         If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("INVOICENO").ToString) Then
                             total += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
-                            gstAmount = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").ToString)
+
+                            '                            gstAmount = Val(gvDebtorInv.DataKeys(row.RowIndex)("GSTAMOUNT").ToString)
+
+                            If gvDebtorInv.DataKeys(row.RowIndex)("INVOICENO").ToString().Substring(4, 1).Contains("S") Or gvDebtorInv.DataKeys(row.RowIndex)("TXNTYPE").ToString = TxnTypeEnum.INVOICE Then
+                                gstAmount += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) - Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) / (1 + dm.getCurrentTax() / 100)
+                            End If
 
                             hidDebtorAccountHeaderId.Value = hidDebtorAccountHeaderId.Value & "," & gvDebtorInv.DataKeys(row.RowIndex)("DEBTORACCOUNTHEADERID").ToString
                             Dim s As String = hidDebtorAccountHeaderId.Value.ToLower
@@ -285,10 +291,10 @@ Partial Class Transaction_CreditNote
                 End If
             Next
 
-            lblGSTAmount.Text = String.Format("{0:n2}", gstAmount)
-            txtPaymentAmount.Text = String.Format("{0:n2}", total - gstAmount)
-            txtGSTAmount.Text = String.Format("{0:n2}", gstAmount)
-            txtselected.text = String.Format("{0:n2}", total)
+            lblGSTAmount.Text = roundingAdjustment(String.Format("{0:n2}", gstAmount))
+            txtPaymentAmount.Text = roundingAdjustment(String.Format("{0:n2}", total - gstAmount))
+            txtGSTAmount.Text = roundingAdjustment(String.Format("{0:n2}", gstAmount))
+            txtSelected.Text = roundingAdjustment(String.Format("{0:n2}", total))
 
         Catch ex As Exception
             lblmsg.Text = ex.Message
@@ -385,6 +391,7 @@ Partial Class Transaction_CreditNote
         txtPaymentAmount.Text = ""
         txtSelected.Text = ""
         txtGSTAmount.Text = ""
+        lblGSTAmount.Text = ""
     End Sub
 
     Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -478,10 +485,10 @@ Partial Class Transaction_CreditNote
             End If
 
             'GST Amount Pay cannot greater than the GST AMOUNT
-            If gstAmt < Val(txtGSTAmount.Text) Then
-                lblmsg.Text = "Payment GST Amount cannot be more than GST Amount!"
-                Exit Sub
-            End If
+            'If gstAmt < Val(txtGSTAmount.Text) Then
+            '    lblmsg.Text = "Payment GST Amount cannot be more than GST Amount!"
+            '    Exit Sub
+            'End If
 
 
 
@@ -865,5 +872,29 @@ Partial Class Transaction_CreditNote
         Dim uniqueItems As String() = New String(noDupsArrList.Count - 1) {}
         noDupsArrList.CopyTo(uniqueItems)
         Return uniqueItems
+    End Function
+
+    Private Function roundingAdjustment(ByVal TaxAmount As Double) As Double
+        Dim ModAmount As Double = 0
+        Dim AddUpAmount As Double = 0
+        Dim NewTaxAmount As Double = 0
+
+        Try
+            ModAmount = TaxAmount Mod 0.05
+            If ModAmount > 0.02 Then
+                AddUpAmount = 0.05 - ModAmount
+                NewTaxAmount = TaxAmount + AddUpAmount
+            Else
+                'NewTaxAmount = TaxAmount.ToString.Substring(0, TaxAmount.ToString.LastIndexOf(".") + 2)
+                NewTaxAmount = TaxAmount - ModAmount
+            End If
+
+            Return NewTaxAmount
+
+        Catch ex As Exception
+            Throw ex
+
+        End Try
+
     End Function
 End Class

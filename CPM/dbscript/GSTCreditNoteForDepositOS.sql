@@ -1,3 +1,9 @@
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 CREATE VIEW [dbo].[GSTCreditNoteForDepositOS]
 as
 --SEASON PARKING RECEIVABLE
@@ -13,7 +19,6 @@ from debtorpayment dp, locationinfo li,
 debtor d
 where dp.debtorid = d.debtorid
 and d.locationinfoid = li.locationinfoid
-and dp.TxnType = 'CN'
 and d.debtorid = dp.debtorid
 and dp.debtorpaymentid in
 (
@@ -21,7 +26,7 @@ select distinct dp.debtorpaymentid from debtorpayment dp
 left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
-and dp.txntype = 'CN'
+and dp.txntype = 'R'
 and dad.xref in ('3')
 and dad.TaxCode = 'OS'
 )
@@ -43,7 +48,6 @@ from debtorpayment dp, locationinfo li,
 debtor d
 where dp.debtorid = d.debtorid
 and d.locationinfoid = li.locationinfoid
-and dp.TxnType = 'CN'
 and d.debtorid = dp.debtorid
 and dp.debtorpaymentid in
 (
@@ -51,12 +55,15 @@ select distinct dp.debtorpaymentid from debtorpayment dp
 left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
-and dp.txntype = 'CN'
+and dp.txntype = 'R'
 and dad.xref in ('3')
 and dad.TaxCode = 'OS'
 )
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
+GO
 
-
-
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
 

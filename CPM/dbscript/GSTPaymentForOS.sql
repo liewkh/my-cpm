@@ -1,18 +1,18 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTPaymentForOS]    Script Date: 03/10/2015 23:56:41 ******/
+/****** Object:  View [dbo].[GSTPaymentEntryMiscOS]    Script Date: 03/15/2015 23:33:55 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE VIEW [dbo].[GSTPaymentForOS]
+CREATE VIEW [dbo].[GSTPaymentEntryMiscOS]
 as
 --SEASON PARKING RECEIVABLE
 SELECT Year(dp.PaymentDate) as "Years",
 datepart(m, dp.PaymentDate) as "Months",
 li.LocationInfoId, 
-'BANK - ' + dbo.fxGetBank(li.locationinfoid) as AccountName,
-'1-2203' as AccountCode,
+'BANK - ' + dp.BankCode as AccountName,
+dbo.fxGetBankAccountCode(dp.BankCode) as AccountCode,
        0 AS "DebitAmount",sum(dp.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,38 as seq,
        'DAD' as Source
@@ -32,7 +32,7 @@ and dp.txntype = 'R'
 and dad.xref in ('3')
 and dad.TaxCode = 'OS'
 )
-GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
+GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate),dp.BankCode
 
 
 

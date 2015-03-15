@@ -211,7 +211,7 @@ Public Class DBManager
         Return totalRecCount
     End Function
 
-    Public Function getNextRunningNo(ByVal debtorCategory As String, ByVal LocationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection, Optional ByVal TaxInvoice As String = "") As String
+    Public Function getNextRunningNo(ByVal debtorCategory As String, ByVal LocationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection, Optional ByVal TaxInvoice As String = "", Optional ByVal TaxCode As String = "") As String
         'Get the RunningNo
         Dim runningNo As Integer
         Dim selectSQL As String
@@ -290,8 +290,8 @@ Public Class DBManager
             dt = Nothing
         End Try
 
-        If Not String.IsNullOrEmpty(TaxInvoice) Then
-            prefix = prefix.Substring(0, prefix.Length - 1) + TaxInvoice + debtorCategory
+        If Not String.IsNullOrEmpty(TaxInvoice) And Not String.IsNullOrEmpty(TaxCode) Then
+            prefix = prefix.Substring(0, prefix.Length - 1) + TaxCode.Substring(0, 1) + TaxInvoice + debtorCategory
         End If
 
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
@@ -445,15 +445,13 @@ Public Class DBManager
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
     End Function
 
-    Public Function getDebitNoteNextRunningNo(ByVal locationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection) As String
+    Public Function getDebitNoteNextRunningNo(ByVal locationInfoId As String, ByRef trans As SqlTransaction, ByRef cn As SqlConnection, Optional ByVal taxCode As String = "") As String
         'Get the RunningNo
         Dim runningNo As Integer
         Dim selectSQL As String
         Dim prefix As String = ""
         Dim dm As New DBManager
         Dim dt As New DataTable
-
-
 
         'Update the RunningNo to the next increment
         Try
@@ -493,6 +491,11 @@ Public Class DBManager
         Finally
             dt = Nothing
         End Try
+
+        If Not String.IsNullOrEmpty(taxCode) Then
+            prefix = prefix.Substring(0, 4) + taxCode.Substring(0, 1) + prefix.Substring(4, 2)
+        End If
+
         Return prefix & runningNo.ToString.PadLeft(7, "0"c)
     End Function
 

@@ -201,13 +201,13 @@ Partial Class Transaction_ManualTaxInvoice
         rbCompany.Enabled = False
         rbIndividual.Enabled = False
 
-        Sql = "select 'ZRL','ZRL' as type " & _
-                      " union select 'SR','SR' as type " & _
-                      " union select 'OS','OS' as type " & _
-                      " union select '0',CodeDesc as type from codemstr where codecat = 'DEFAULT'"
+        'Sql = "select 'ZRL','ZRL' as type " & _
+        '              " union select 'SR','SR' as type " & _
+        '              " union select 'OS','OS' as type " & _
+        '              " union select '0',CodeDesc as type from codemstr where codecat = 'DEFAULT'"
 
-        dsType.SelectCommand = Sql
-        dsType.DataBind()
+        'dsType.SelectCommand = Sql
+        'dsType.DataBind()
 
     End Sub
 
@@ -268,7 +268,7 @@ Partial Class Transaction_ManualTaxInvoice
             End If
 
             dahEnt.setDebtorId(hidDebtorId.Value)
-            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "M", Request.Params("TaxCode")))
             dahEnt.setInvoiceDate(txtTaxInvoiceDate.Text)
             dahEnt.setInvoicePeriod(Trim(txtInvoicePeriod.Text))
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -344,7 +344,6 @@ Partial Class Transaction_ManualTaxInvoice
             'Clear the screen
             ddLocation.SelectedIndex = 0
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
-            ddType.SelectedIndex = 0
             lblmsg.Text = ""
             txtAmount.Text = ""
             txtQty.Text = ""
@@ -522,6 +521,10 @@ Partial Class Transaction_ManualTaxInvoice
                 Exit Sub
             End If
 
+            If String.IsNullOrEmpty(Request.Params("TaxCode")) Then
+                lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                Exit Sub
+            End If
 
             If ViewState("CurrentTable") Is Nothing Then                
                 dt.Columns.Add("QTY")
@@ -535,7 +538,19 @@ Partial Class Transaction_ManualTaxInvoice
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(txtDescription.Text)
-                dr("TAXCODE") = ddType.SelectedValue
+
+                Select Case Request.Params("TaxCode")
+                    Case ConstantGlobal.OutOfScope
+                        dr("TAXCODE") = ConstantGlobal.OutOfScope
+                    Case ConstantGlobal.ZeroRated
+                        dr("TAXCODE") = ConstantGlobal.ZeroRated
+                    Case ConstantGlobal.StandardRated
+                        dr("TAXCODE") = ConstantGlobal.StandardRated
+                    Case Else
+                        lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                        Exit Sub
+                End Select
+
                 dt.Rows.Add(dr)
 
                 ViewState("CurrentTable") = dt
@@ -548,7 +563,19 @@ Partial Class Transaction_ManualTaxInvoice
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(txtDescription.Text)
-                dr("TAXCODE") = ddType.SelectedValue
+
+                Select Case Request.Params("TaxCode")
+                    Case ConstantGlobal.OutOfScope
+                        dr("TAXCODE") = ConstantGlobal.OutOfScope
+                    Case ConstantGlobal.ZeroRated
+                        dr("TAXCODE") = ConstantGlobal.ZeroRated
+                    Case ConstantGlobal.StandardRated
+                        dr("TAXCODE") = ConstantGlobal.StandardRated
+                    Case Else
+                        lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                        Exit Sub
+                End Select
+
                 dt.Rows.Add(dr)
 
                 ViewState("CurrentTable") = dt
@@ -566,8 +593,6 @@ Partial Class Transaction_ManualTaxInvoice
                 calcSubtotal()
                 clear()
             End If
-
-            ddType.SelectedIndex = 0
 
         Catch ex As Exception
             trans.Rollback()

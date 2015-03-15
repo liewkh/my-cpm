@@ -199,7 +199,8 @@ Partial Class Transaction_TaxInvoice
         rbIndividual.Enabled = False
 
         Sql = "select 0 as MISCPAYMENTTYPEMSTRID,codedesc as PAYMENTCODE,codedesc as PAYMENTDESC,0 as Amount from codemstr where codecat = 'DEFAULT' union "
-        Sql = Sql + "Select MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,AMOUNT FROM MISCPAYMENTTYPEMSTR Where LocationInfoId = " & ddLocation.SelectedValue & " and Active = 'Y'"
+        Sql = Sql + "Select MISCPAYMENTTYPEMSTRID,PAYMENTCODE,PAYMENTDESC,AMOUNT FROM MISCPAYMENTTYPEMSTR Where LocationInfoId = " & ddLocation.SelectedValue & " and Active = 'Y' and TaxCode = '" + Request.Params("TaxCode") + "'"
+
 
         dsMiscPaymentType.SelectCommand = Sql
         dsMiscPaymentType.DataBind()
@@ -263,9 +264,9 @@ Partial Class Transaction_TaxInvoice
             End If
 
             dahEnt.setDebtorId(hidDebtorId.Value)
-            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "S"))
+            dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "S", Request.Params("TaxCode")))
             dahEnt.setInvoiceDate(Now.ToShortDateString)
-            dahEnt.setInvoicePeriod("")
+            dahEnt.setInvoicePeriod(ConstantGlobal.NotAvailable)
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)            

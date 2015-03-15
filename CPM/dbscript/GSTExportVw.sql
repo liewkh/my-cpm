@@ -4,7 +4,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[GSTExportVw]
+ALTER VIEW [dbo].[GSTExportVw]
 as
 --GSTDailyCollection
 Select AccountCode as "A/C Code", 
@@ -114,14 +114,14 @@ from [GSTPaymentEntry]
 
 union
 
---[GSTPaymentEntryMisc]
+--[GSTPaymentEntryDeposit]
 Select AccountCode as "A/C Code", 
 AccountName as "A/C Name",
 'PayDep - ' + dbo.fxGetLocationCode(LocationInfoId) + '_Collection as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
 DebitAmount as "Debit Amount",
 CreditAmount as "Credit Amount",
 dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
-from  GSTPaymentEntryMisc
+from  GSTPaymentEntryDeposit
 
 union
 
@@ -176,7 +176,7 @@ AccountName as "A/C Name",
 DebitAmount as "Debit Amount",
 CreditAmount as "Credit Amount",
 dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
-from GSTPaymentForOS
+from GSTPaymentEntryMiscOS
 
 union
 
@@ -197,7 +197,6 @@ SELECT     AccountCode AS [A/C Code], AccountName AS [A/C Name], 'DN - ' + dbo.f
                       DebitAmount AS [Debit Amount], CreditAmount AS [Credit Amount], dbo.fxGetLocationCode(LocationInfoId) AS Job, LocationInfoId, seq, Source, Years, 
                       Months
 FROM         dbo.GSTDNEntryForDeposit
-
 GO
 
 SET ANSI_NULLS OFF

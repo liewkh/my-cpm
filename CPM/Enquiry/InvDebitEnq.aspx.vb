@@ -319,18 +319,23 @@ Partial Class Enquiry_InvDebEnq
             dt = dm.execTable(mySql)
             If dt.Rows.Count > 0 Then
 
+                If String.IsNullOrEmpty(e.ToString.Split("|")(3).ToString()) Then 'PasscardNo
 
-                If e.ToString.Split("|")(1).Equals(TxnTypeEnum.DEBITNOTE) Then
-                    rptMgr.setReportName("DebitNoteGST.Rpt")
-                Else
-                    If e.ToString.Split("|")(0).Contains("S") Then
-                        rptMgr.setReportName("TaxInvoice.Rpt")
-                        rptMgr.setParameterDiscrete("MIRemark", e.ToString.Split("|")(2).ToString())
+                    If e.ToString.Split("|")(1).Equals(TxnTypeEnum.DEBITNOTE) Then
+                        rptMgr.setReportName("DebitNoteGST.Rpt")
                     Else
-                        rptMgr.setReportName("Invoice.Rpt")
+                        If e.ToString.Split("|")(0).Contains("S") Then
+                            rptMgr.setReportName("TaxInvoice.Rpt")
+                            rptMgr.setParameterDiscrete("MIRemark", e.ToString.Split("|")(2).ToString())
+                        Else
+                            rptMgr.setReportName("Invoice.Rpt")
+                        End If
+                        'rptMgr.setParameterDiscrete("PassBay", strPassBay)
                     End If
-                    'rptMgr.setParameterDiscrete("PassBay", strPassBay)
+                Else
+                    rptMgr.setReportName("SeasonInvoice.Rpt")
                 End If
+
 
                 rptMgr.setParameterDiscrete("CompanyName", companyName)
                 rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)

@@ -1,18 +1,16 @@
-USE [CPM]
-GO
-/****** Object:  View [dbo].[GSTPaymentEntryMisc]    Script Date: 02/07/2015 13:32:03 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[GSTPaymentEntryMisc]
+CREATE VIEW [dbo].[GSTPaymentEntryDeposit]
 as
 SELECT Year(dp.PaymentDate) as "Years",
 datepart(m, dp.PaymentDate) as "Months",
 li.LocationInfoId, 
-'BANK - ' + dbo.fxGetBank(li.locationinfoid) as AccountName,
-dbo.fxGetAccountCode(li.locationinfoid) as AccountCode,
+'BANK - ' + dp.BankCode as AccountName,
+dbo.fxGetBankAccountCode(dp.BankCode) as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,27 as seq,
        'GSTPaymentEntryMisc-27' as Source
@@ -34,7 +32,7 @@ on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'R'
 and dad.xref in ('2'))
-GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
+GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate),dp.BankCode
 
 union
 
@@ -66,3 +64,10 @@ where dp.status <> 'C'
 and dp.txntype = 'R'
 and dad.xref in ('2'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
+GO
+
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+

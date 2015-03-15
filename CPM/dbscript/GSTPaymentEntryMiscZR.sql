@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTPaymentEntryMiscZR]    Script Date: 01/18/2015 19:46:06 ******/
+/****** Object:  View [dbo].[GSTPaymentEntryMiscZR]    Script Date: 03/15/2015 23:19:25 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -11,8 +11,8 @@ as
 SELECT Year(dah.InvoiceDate) as "Years",
 datepart(m, dah.InvoiceDate) as "Months",
 li.LocationInfoId, 
-'BANK - ' + dbo.fxGetBank(li.locationinfoid) as AccountName,
-dbo.fxGetAccountCode(li.locationinfoid) as AccountCode,
+'BANK - ' + dp.BankCode as AccountName,
+dbo.fxGetBankAccountCode(dp.BankCode) as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,29 as seq,
        'GSTPaymentEntryMiscZR-29' as Source
@@ -27,7 +27,7 @@ and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
 and dad.taxcode = 'ZRL'
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate),dp.BankCode
 
 union
 

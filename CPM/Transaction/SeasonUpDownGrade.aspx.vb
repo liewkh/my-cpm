@@ -739,64 +739,74 @@ Partial Class Transaction_SeasonUpDowngrade
             Dim strInvHistoryId As String = ""
 
 
-            For z As Integer = 0 To dt.Rows.Count - 1
-                If Not String.IsNullOrEmpty(dt.Rows(z).Item("OSAMOUNT").ToString) And amtChargeSeasonWithGST > 0 Then
-                    selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM INVOICEHISTORY WHERE INVOICEHISTORYID = " & dt.Rows(z).Item(invHistDao.COLUMN_InvoiceHistoryID).ToString
-                    dtInvHist = dm.execTableInTrans(selectSql, cn, trans)
+            For Each row As GridViewRow In gvDebtorInv.Rows
+                Dim chk As CheckBox
 
 
-                    invHistEnt.setInvoiceHistoryId(dt.Rows(z).Item(invHistDao.COLUMN_InvoiceHistoryID).ToString)
-                    If amtChargeSeasonWithGST < Val(dt.Rows(z).Item("OSAMOUNT").ToString) Then
-                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + amtChargeSeasonWithGST)
-                        amtPaid += amtChargeSeasonWithGST
-                        amtChargeSeasonWithGST -= amtChargeSeasonWithGST
-                    Else
-                        invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))
-                        amtPaid += Val(dt.Rows(z).Item("OSAMOUNT").ToString)
-                        amtChargeSeasonWithGST -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
+                chk = row.FindControl("chkSelect")
+                If Not chk Is Nothing Then
+                    If chk.Checked Then
+                        If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
+                            If Not String.IsNullOrEmpty(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) And amtChargeSeasonWithGST > 0 Then
+                                selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM INVOICEHISTORY WHERE INVOICEHISTORYID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_InvoiceHistoryID).ToString
+                                dtInvHist = dm.execTableInTrans(selectSql, cn, trans)
+
+
+                                invHistEnt.setInvoiceHistoryId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_InvoiceHistoryID).ToString)
+                                If amtChargeSeasonWithGST < Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
+                                    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + amtChargeSeasonWithGST)
+                                    amtPaid += amtChargeSeasonWithGST
+                                    amtChargeSeasonWithGST -= amtChargeSeasonWithGST
+                                Else
+                                    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
+                                    amtPaid += Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                                    amtChargeSeasonWithGST -= Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString)
+                                End If
+
+
+                                invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
+                                invHistEnt.setLastUpdatedDatetime(Now)
+                                invHistDao.updateDB(invHistEnt, cn, trans)
+
+
+
+                                'payAmt -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
+
+                                'Get the latest PaidAmount from header
+                                selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
+                                dtHeader = dm.execTableInTrans(selectSql, cn, trans)
+
+                                dahEnt.setDebtorAccountHeaderId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString)
+                                If amtChargeSeasonWithGST <= 0.0 Then
+                                    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
+                                    strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & invHistEnt.getPaidAmount & "|"
+                                Else
+                                    dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
+                                    strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString & "|"
+                                End If
+
+                                dahEnt.setLastUpdatedDatetime(Now)
+                                dahDao.updateDB(dahEnt, cn, trans)
+
+                                selectSql = "SELECT AMOUNT,ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
+                                dtHeader = dm.execTableInTrans(selectSql, cn, trans)
+                                If dtHeader.Rows(0).Item(dahDao.COLUMN_Amount).Equals(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount)) Then
+                                    updateSql = "UPDATE DEBTORACCOUNTHEADER SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
+                                    dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+                                    updateSql = "UPDATE INVOICEHISTORY SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
+                                    dtHeader = dm.execTableInTrans(updateSql, cn, trans)
+                                End If
+
+                                paymentFor += gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_Month).ToString & ","
+                                hidDebtorAccountHeaderId = gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
+
+                            End If
+                        End If
+
                     End If
-
-
-                    invHistEnt.setLastUpdatedBy(lp.getUserMstrId)
-                    invHistEnt.setLastUpdatedDatetime(Now)
-                    invHistDao.updateDB(invHistEnt, cn, trans)
-
-
-
-                    'payAmt -= Val(dt.Rows(z).Item("OSAMOUNT").ToString)
-
-                    'Get the latest PaidAmount from header
-                    selectSql = "SELECT ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
-                    dtHeader = dm.execTableInTrans(selectSql, cn, trans)
-
-                    dahEnt.setDebtorAccountHeaderId(dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString)
-                    If amtChargeSeasonWithGST <= 0.0 Then
-                        dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + invHistEnt.getPaidAmount)
-                        strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & invHistEnt.getPaidAmount & "|"
-                    Else
-                        dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(dt.Rows(z).Item("OSAMOUNT").ToString))
-                        strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & dt.Rows(z).Item("OSAMOUNT").ToString & "|"
-                    End If
-
-                    dahEnt.setLastUpdatedDatetime(Now)
-                    dahDao.updateDB(dahEnt, cn, trans)
-
-                    selectSql = "SELECT AMOUNT,ISNULL(PAIDAMOUNT,0) AS PAIDAMOUNT FROM DEBTORACCOUNTHEADER WHERE DEBTORACCOUNTHEADERID = " & dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
-                    dtHeader = dm.execTableInTrans(selectSql, cn, trans)
-                    If dtHeader.Rows(0).Item(dahDao.COLUMN_Amount).Equals(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount)) Then
-                        updateSql = "UPDATE DEBTORACCOUNTHEADER SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
-                        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
-                        updateSql = "UPDATE INVOICEHISTORY SET STATUS = '" & InvoiceStatusEnum.PAID & "' WHERE DEBTORACCOUNTHEADERID = " & dt.Rows(z).Item(invHistDao.COLUMN_DebtorAccountHeaderId).ToString
-                        dtHeader = dm.execTableInTrans(updateSql, cn, trans)
-                    End If
-
-                    paymentFor += dt.Rows(z).Item("MONTH").ToString & ","
-                    hidDebtorAccountHeaderId = dt.Rows(z).Item("DEBTORACCOUNTHEADERID").ToString
-
                 End If
+
             Next
-
-
             'The additional extra will put into last invoice
             'If amtChargeSeasonWithGST > 0 Then
             '    Dim iSql

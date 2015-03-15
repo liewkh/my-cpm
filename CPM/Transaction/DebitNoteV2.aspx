@@ -293,24 +293,6 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 	</tr>
 	
   
-  	<tr class="vSpace">
-		<td class="normalLabel">Sales Type <font color="#FF0000">*</font></td>
-		<td class="hSpace">&nbsp;</td>
-		<td nowrap><asp:DropDownList ID="ddType"  runat="server" TabIndex="5" DataSourceID="dsType" DataTextField="Type" DataValueField="Type" CssClass="dropdownSmall"></asp:DropDownList><asp:SqlDataSource ID="dsType" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>		
-		</td>        
-        <td class="hSpace">&nbsp;</td>       
-        <td class="hSpace">&nbsp;</td>       
-        <td class="hSpace">&nbsp;</td>
-      	<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-    	<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>		
-	</tr>
-
    <tr class="vSpace">
 		<td class="normalLabel">Qty <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>

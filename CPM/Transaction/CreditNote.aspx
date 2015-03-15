@@ -306,7 +306,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorInv" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,GSTAMOUNT,INVOICEHISTORYID"                                            
+                                            CellSpacing="1" DataKeyNames="INVOICEDATE,INVOICENO,MONTH,INVOICEPERIOD,AMOUNT,PAIDAMOUNT,STATUS,DEBTORACCOUNTHEADERID,OSAMOUNT,GSTAMOUNT,INVOICEHISTORYID,TXNTYPE"                                            
                                             DataSourceID="dsDebtorInv">
                                             <Columns>                       
                                                 <asp:TemplateField HeaderText="Pay?" SortExpression="Pay" ItemStyle-HorizontalAlign="Center"  > 
@@ -329,7 +329,9 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                                 <asp:BoundField DataField="PAIDAMOUNT" HeaderText="Paid Amount" SortExpression="PAIDAMOUNT"
                                                     NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                               
                                                 <asp:BoundField DataField="OSAMOUNT" HeaderText="O/S Amount" SortExpression="OSAMOUNT"
-                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" />                                                                      
+                                                    NullDisplayText="N/A" DataFormatString="{0:F2}" /> 
+                                                <asp:BoundField DataField="TXNTYPE" HeaderText="Txn Type" SortExpression="TXNTYPE"
+                                                    NullDisplayText="N/A" visible="False"/>                                                                         
                                             </Columns>
                                             <RowStyle CssClass="grid_row1" />
                                             <SelectedRowStyle CssClass="tb-highlight" />

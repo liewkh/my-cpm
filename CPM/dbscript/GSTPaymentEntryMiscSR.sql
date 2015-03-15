@@ -1,6 +1,4 @@
-USE [CPM]
-GO
-/****** Object:  View [dbo].[GSTPaymentEntryMiscSR]    Script Date: 03/06/2015 21:08:23 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -12,8 +10,9 @@ as
 SELECT Year(dah.InvoiceDate) as "Years",
 datepart(m, dah.InvoiceDate) as "Months",
 li.LocationInfoId, 
-'SEASON PARKING RECEIVABLE' as AccountName,
-'1-2302' as AccountCode,
+--'SEASON PARKING RECEIVABLE' as AccountName,
+'BANK ' + dp.BankCode as AccountName,
+dbo.fxGetBankAccountCode(dp.BankCode) as AccountCode,
        sum(dad.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,31 as seq,
        'GSTPaymentEntryMiscSR-31' as Source
@@ -28,7 +27,7 @@ and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3','5')
 and dah.status <> 'C'
 and dad.taxcode in ('SR','NA')
-GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate),dp.BankCode
 
 union
 
@@ -36,8 +35,9 @@ union
 SELECT Year(dah.InvoiceDate) as "Years",
 datepart(m, dah.InvoiceDate) as "Months",
 li.LocationInfoId, 
-'OTHER INCOME' as AccountName,
-'4-2100' as AccountCode,
+--'OTHER INCOME' as AccountName,
+'SEASON PARKING RECEIVABLE' as AccountName,
+'1-2302' as AccountCode,
        0 AS "DebitAmount",sum(dad.amount) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,32 as seq,
        'GSTPaymentEntryMiscSR-32' as Source
@@ -76,3 +76,10 @@ and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('5')
 and dah.status <> 'C'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+GO
+
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+

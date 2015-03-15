@@ -204,13 +204,6 @@ Partial Class Transaction_DebitNoteV2
             rbCompany.Enabled = False
             rbIndividual.Enabled = False
 
-            Sql = "select 'ZRL','ZRL' as type " & _
-                          " union select 'SR','SR' as type " & _
-                          " union select 'OS','OS' as type " & _
-                          " union select '0',CodeDesc as type from codemstr where codecat = 'DEFAULT'"
-
-            dsType.SelectCommand = Sql
-            dsType.DataBind()
 
 
             Sql = "select dah.invoiceno as invoice1,CONVERT(VARCHAR(19),dah.invoicedate,103) + ' | ' + dah.invoiceno + ' | ' + " & _
@@ -223,10 +216,14 @@ Partial Class Transaction_DebitNoteV2
 
             '''''''''''''''''''''''
 
-
-            Sql = "select '0' as SeasonTypeMstrId,CodeDesc as Description from codemstr where codecat = 'DEFAULT' " & _
-                  " union select SeasonTypeMstrId,SeasonTypeDesc from seasontypemstr where locationinfoid = " + ddLocation.SelectedValue & _
-                  " and Active = 'Y' union select 9999,'DEPOSIT'order by SeasonTypeMstrId"
+            If Request.Params("TaxCode").Contains(ConstantGlobal.OutOfScope) Or Request.Params("TaxCode").Contains(ConstantGlobal.ZeroRated) Then
+                Sql = "select '0' as SeasonTypeMstrId,CodeDesc as Description from codemstr where codecat = 'DEFAULT' " & _
+                      " union select 9999,'DEPOSIT'order by SeasonTypeMstrId"
+            ElseIf Request.Params("TaxCode").Contains(ConstantGlobal.StandardRated) Then
+                Sql = "select '0' as SeasonTypeMstrId,CodeDesc as Description from codemstr where codecat = 'DEFAULT' " & _
+                                      " union select SeasonTypeMstrId,SeasonTypeDesc from seasontypemstr where locationinfoid = " + ddLocation.SelectedValue & _
+                                      " and Active = 'Y' order by SeasonTypeMstrId"
+            End If
 
             dsDescription.SelectCommand = Sql
             dsDescription.DataBind()
@@ -310,7 +307,7 @@ Partial Class Transaction_DebitNoteV2
 
             dahEnt.setDebtorId(hidDebtorId.Value)
             dahEnt.setReferenceOldInvoice(ddInvoice.SelectedValue)
-            dahEnt.setInvoiceNo(dm.getDebitNoteNextRunningNo(hidLocationInfoId.Value, trans, cn))
+            dahEnt.setInvoiceNo(dm.getDebitNoteNextRunningNo(hidLocationInfoId.Value, trans, cn, Request.Params("TaxCode")))
             dahEnt.setInvoiceDate(txtDebitNoteDate.Text)
             dahEnt.setInvoicePeriod("")
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
@@ -386,7 +383,6 @@ Partial Class Transaction_DebitNoteV2
             'Clear the screen
             ddLocation.SelectedIndex = 0
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
-            ddType.SelectedIndex = 0
             lblmsg.Text = ""
             txtAmount.Text = ""
             txtQty.Text = ""
@@ -573,6 +569,10 @@ Partial Class Transaction_DebitNoteV2
                 Exit Sub
             End If
 
+            If String.IsNullOrEmpty(Request.Params("TaxCode")) Then
+                lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                Exit Sub
+            End If
 
             If ViewState("CurrentTable") Is Nothing Then
                 dt.Columns.Add("QTY")
@@ -586,7 +586,19 @@ Partial Class Transaction_DebitNoteV2
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
-                dr("TAXCODE") = ddType.SelectedValue
+
+                Select Case Request.Params("TaxCode")
+                    Case ConstantGlobal.OutOfScope
+                        dr("TAXCODE") = ConstantGlobal.OutOfScope
+                    Case ConstantGlobal.ZeroRated
+                        dr("TAXCODE") = ConstantGlobal.ZeroRated
+                    Case ConstantGlobal.StandardRated
+                        dr("TAXCODE") = ConstantGlobal.StandardRated
+                    Case Else
+                        lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                        Exit Sub
+                End Select
+
                 dt.Rows.Add(dr)
 
                 ViewState("CurrentTable") = dt
@@ -599,7 +611,19 @@ Partial Class Transaction_DebitNoteV2
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
-                dr("TAXCODE") = ddType.SelectedValue
+
+                Select Case Request.Params("TaxCode")
+                    Case ConstantGlobal.OutOfScope
+                        dr("TAXCODE") = ConstantGlobal.OutOfScope
+                    Case ConstantGlobal.ZeroRated
+                        dr("TAXCODE") = ConstantGlobal.ZeroRated
+                    Case ConstantGlobal.StandardRated
+                        dr("TAXCODE") = ConstantGlobal.StandardRated
+                    Case Else
+                        lblmsg.Text = "Empty TaxCode is not Allowed. Please contact Administrator!"
+                        Exit Sub
+                End Select
+
                 dt.Rows.Add(dr)
 
                 ViewState("CurrentTable") = dt
@@ -617,8 +641,6 @@ Partial Class Transaction_DebitNoteV2
                 calcSubtotal()
                 clear()
             End If
-
-            ddType.SelectedIndex = 0
 
         Catch ex As Exception
             trans.Rollback()
