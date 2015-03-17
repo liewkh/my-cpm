@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteSeasonParking]    Script Date: 03/03/2015 14:59:32 ******/
+/****** Object:  View [dbo].[GSTCreditNoteSeasonParking]    Script Date: 04/17/2015 23:24:39 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -29,7 +29,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
-and dad.xref in ('1','4'))
+and dad.xref in ('1','4','6','7'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
 
 union
@@ -55,7 +55,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
-and dad.xref in ('1'))
+and dad.xref in ('1','6'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
 
 
@@ -67,7 +67,7 @@ datepart(m, dp.paymentdate) as "Months",
 li.LocationInfoId, 
 'GST OUTPUT TAX' as AccountName,
 '2-9950' as AccountCode,
-       sum(isnull(dp.gstamount,0)) AS "DebitAmount",0 AS "CreditAmount",
+       sum(isnull(dp.GstAmount,0)) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,16 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
@@ -82,5 +82,5 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
-and dad.xref in ('4'))
+and dad.xref in ('4','7'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)

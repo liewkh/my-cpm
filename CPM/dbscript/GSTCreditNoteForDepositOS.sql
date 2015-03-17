@@ -26,7 +26,7 @@ select distinct dp.debtorpaymentid from debtorpayment dp
 left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
-and dp.txntype = 'R'
+and dp.txntype = 'CN'
 and dad.xref in ('3')
 and dad.TaxCode = 'OS'
 )
@@ -55,7 +55,7 @@ select distinct dp.debtorpaymentid from debtorpayment dp
 left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
-and dp.txntype = 'R'
+and dp.txntype = 'CN'
 and dad.xref in ('3')
 and dad.TaxCode = 'OS'
 )

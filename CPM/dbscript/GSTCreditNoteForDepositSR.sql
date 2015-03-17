@@ -1,6 +1,4 @@
-USE [CPM]
-GO
-/****** Object:  View [dbo].[GSTCreditNoteForDepositSR]    Script Date: 03/15/2015 15:49:57 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -14,7 +12,7 @@ datepart(m, dp.PaymentDate) as "Months",
 li.LocationInfoId, 
 'SEASON PARKING RECEIVABLE' as AccountName,
 '1-2302' as AccountCode,
-       0 AS "DebitAmount",sum(dp.amount) AS "CreditAmount",
+       0 AS "DebitAmount",sum(dp.amount+ isnull(dp.gstamount,0)) AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,21 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
@@ -30,7 +28,7 @@ on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
 and dad.xref in ('3','5')
-and dad.TaxCode <> 'ZRL'
+and dad.TaxCode = 'SR'
 )
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
 
@@ -38,12 +36,12 @@ GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.Paym
 
 union
 
---OTHER INCOME
+--SEASON PARKING CHARGES
 SELECT Year(dp.PaymentDate) as "Years",
 datepart(m, dp.PaymentDate) as "Months",
 li.LocationInfoId, 
-'OTHER INCOME' as AccountName,
-'4-2100' as AccountCode,
+'SEASON PARKING CHARGES' as AccountName,
+'4-1100' as AccountCode,
        sum(dp.amount) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,22 as seq,
        'DAD' as Source
@@ -72,7 +70,7 @@ datepart(m, dp.PaymentDate) as "Months",
 li.LocationInfoId, 
 'GST OUTPUT TAX' as AccountName,
 '2-9950' as AccountCode,
-       sum(dp.amount) AS "DebitAmount",0 AS "CreditAmount",
+       sum(isnull(dp.GstAmount,0)) AS "DebitAmount",0 AS "CreditAmount",
 dbo.fxGetLocationCode(li.locationinfoid) as LocationCode,23 as seq,
        'DAD' as Source
 from debtorpayment dp, locationinfo li,
@@ -90,6 +88,10 @@ and dp.txntype = 'CN'
 and dad.xref in ('5')
 )
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
+GO
 
-
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
 

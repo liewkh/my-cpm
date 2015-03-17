@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 03/03/2015 15:29:21 ******/
+/****** Object:  View [dbo].[GSTCreditNoteEntryForDeposit]    Script Date: 04/17/2015 23:39:03 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -29,7 +29,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
-and dad.xref in ('2'))
+and dad.xref in ('2','8'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)
 
 union
@@ -53,5 +53,5 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'CN'
-and dad.xref in ('2'))
+and dad.xref in ('2','8'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.paymentdate), Month(dp.paymentdate)

@@ -24,7 +24,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'R'
-and dad.xref in ('1','4'))
+and dad.xref in ('1','4','6','7'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate),dp.BankCode
 
 union
@@ -50,7 +50,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'R'
-and dad.xref in ('1','4'))
+and dad.xref in ('1','4','6','7'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
 
 --union

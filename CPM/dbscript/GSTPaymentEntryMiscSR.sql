@@ -26,6 +26,7 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3','5')
 and dah.status <> 'C'
+and dah.txntype = 'R'
 and dad.taxcode in ('SR','NA')
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate),dp.BankCode
 
@@ -51,6 +52,7 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
+and dah.txntype = 'R'
 and dad.taxcode in ('SR','NA')
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 
@@ -74,6 +76,7 @@ and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('5')
+and dah.txntype = 'R'
 and dah.status <> 'C'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
 GO

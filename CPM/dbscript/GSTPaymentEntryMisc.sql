@@ -22,7 +22,7 @@ and dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('2')
+and dad.xref in ('2','8')
 and dah.status <> 'C'
 and dp.debtoraccountheaderid in
 (
@@ -31,7 +31,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'R'
-and dad.xref in ('2'))
+and dad.xref in ('2','8'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate),dp.BankCode
 
 union
@@ -53,7 +53,7 @@ and dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
-and dad.xref in ('2')
+and dad.xref in ('2','8')
 and dah.status <> 'C'
 and dp.debtoraccountheaderid in
 (
@@ -62,7 +62,7 @@ left join debtoraccountdetail dad
 on convert(varchar(200),dad.debtoraccountheaderid) = dp.debtoraccountheaderid
 where dp.status <> 'C'
 and dp.txntype = 'R'
-and dad.xref in ('2'))
+and dad.xref in ('2','8'))
 GROUP BY li.LocationInfoId, li.LocationName, Year(dp.PaymentDate), Month(dp.PaymentDate)
 GO
 

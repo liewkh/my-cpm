@@ -1,6 +1,4 @@
-USE [CPM]
-GO
-/****** Object:  View [dbo].[GSTDNEntryForDeposit]    Script Date: 03/13/2015 14:47:51 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -21,7 +19,7 @@ FROM debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
-and dad.xref in ('2')
+and dad.xref in ('8')
 and dah.status <> 'C'
 and dah.txntype = 'DN'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
@@ -41,7 +39,14 @@ from debtoraccountheader dah,debtoraccountdetail dad,debtor d,locationinfo li
 where dah.debtoraccountheaderid = dad.debtoraccountheaderid
 and d.debtorid = dah.debtorid
 and d.locationinfoid = li.locationinfoid
-and dad.xref in ('2')
+and dad.xref in ('8')
 and dah.status <> 'C'
 and dah.txntype = 'DN'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)
+GO
+
+SET ANSI_NULLS OFF
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+

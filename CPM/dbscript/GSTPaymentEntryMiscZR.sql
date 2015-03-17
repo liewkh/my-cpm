@@ -1,6 +1,6 @@
 USE [CPM]
 GO
-/****** Object:  View [dbo].[GSTPaymentEntryMiscZR]    Script Date: 03/15/2015 23:19:25 ******/
+/****** Object:  View [dbo].[GSTPaymentEntryMiscZR]    Script Date: 04/17/2015 21:44:29 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -26,6 +26,7 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
+and dah.txntype = 'R'
 and dad.taxcode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate),dp.BankCode
 
@@ -50,5 +51,6 @@ and d.debtorid = dp.debtorid
 and convert(varchar(200),dah.debtoraccountheaderid) = dp.debtoraccountheaderid
 and dad.xref in ('3')
 and dah.status <> 'C'
+and dah.txntype = 'R'
 and dad.taxcode = 'ZRL'
 GROUP BY li.LocationInfoId, li.LocationName, Year(dah.InvoiceDate), Month(dah.InvoiceDate)

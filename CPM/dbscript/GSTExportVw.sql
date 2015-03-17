@@ -1,10 +1,12 @@
-
+USE [CPM]
+GO
+/****** Object:  View [dbo].[GSTExportVw]    Script Date: 04/17/2015 21:31:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-ALTER VIEW [dbo].[GSTExportVw]
+CREATE VIEW [dbo].[GSTExportVw]
 as
 --GSTDailyCollection
 Select AccountCode as "A/C Code", 
@@ -161,7 +163,7 @@ union
 --GSTCreditNoteForDepositOS
 Select AccountCode as "A/C Code", 
 AccountName as "A/C Name",
-dbo.fxGetLocationCode(LocationInfoId) + '_OI_OS as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
+'CN - ' + dbo.fxGetLocationCode(LocationInfoId) + '_OI_OS as ' + SUBSTRING('JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC ', (Months * 4) - 3, 3) + '''' + RIGHT("Years", 2) as Memo,
 DebitAmount as "Debit Amount",
 CreditAmount as "Credit Amount",
 dbo.fxGetLocationCode(LocationInfoId) as "Job",LocationInfoId,Seq,Source,Years,Months
@@ -197,10 +199,3 @@ SELECT     AccountCode AS [A/C Code], AccountName AS [A/C Name], 'DN - ' + dbo.f
                       DebitAmount AS [Debit Amount], CreditAmount AS [Credit Amount], dbo.fxGetLocationCode(LocationInfoId) AS Job, LocationInfoId, seq, Source, Years, 
                       Months
 FROM         dbo.GSTDNEntryForDeposit
-GO
-
-SET ANSI_NULLS OFF
-GO
-SET QUOTED_IDENTIFIER OFF
-GO
-
