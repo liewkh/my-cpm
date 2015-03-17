@@ -336,7 +336,13 @@ Partial Class Transaction_DebitNoteV2
                 dadEnt.setTaxCode(row.Item("TAXCODE"))
                 dadEnt.setLastUpdatedBy(lp.getUserMstrId)
                 dadEnt.setLastUpdatedDatetime(Now)
-                dadEnt.setxRef(TxnTypeEnum.DEBITNOTEINVOICEGST)
+                If Request.Params("TaxCode").Contains(ConstantGlobal.StandardRated) Then
+                    dadEnt.setxRef(TxnTypeEnum.DEBITNOTESR)
+                ElseIf Request.Params("TaxCode").Contains(ConstantGlobal.OutOfScope) Then
+                    dadEnt.setxRef(TxnTypeEnum.DEBITNOTEOS)
+                ElseIf Request.Params("TaxCode").Contains(ConstantGlobal.ZeroRated) Then
+                    dadEnt.setxRef(TxnTypeEnum.DEBITNOTEZRL)
+                End If
                 dadDao.insertDB(dadEnt, cn, trans)
             Next row
 
@@ -369,7 +375,7 @@ Partial Class Transaction_DebitNoteV2
                 dadEnt.setTaxCode(ConstantGlobal.NotAvailable)
                 dadEnt.setLastUpdatedBy(lp.getUserMstrId)
                 dadEnt.setLastUpdatedDatetime(Now)
-                dadEnt.setxRef(TxnTypeEnum.DEBITNOTEINVOICEGST)
+                dadEnt.setxRef(TxnTypeEnum.DEBITNOTESRGST)
                 dadDao.insertDB(dadEnt, cn, trans)
             End If
 
