@@ -311,7 +311,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 	</tr>
 	   	  	
     <tr class="vSpace">
-		<td class="normalLabel">Amount <font color="#FF0000">*</font></td>
+		<td class="normalLabel">Amount (Excluding GST)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtAmount" runat="server" CssClass="textBoxExtraSmall" TabIndex="11" Enabled="true"   MaxLength="10"></asp:TextBox></td>        
         <td class="hSpace">&nbsp;</td>       
