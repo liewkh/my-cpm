@@ -522,11 +522,14 @@ Partial Class Transaction_SeasonUpDowngrade
                 'Check with Vincent
 
                 If total > 0 Then 'upgrade
-                    invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, monthCharged, (Val(hdNewSeasonAmount.Value) - Val(hdOldSeasonAmount.Value)), cn, trans)
+                    'Remove unable to handle at the moment
+                    'invNo = createTaxInvoice(Math.Abs(parkingFee), depositFee, monthCharged, (Val(hdNewSeasonAmount.Value) - Val(hdOldSeasonAmount.Value)), cn, trans)
                 ElseIf total < 0 Then
                     'downgrade
                     'To create CreditNote
-                    receiptNo = createCreditNote(Math.Abs(total), 0, cn, trans, ddInvoice2.SelectedValue)
+                    'Remove uable to hadle at the moment
+                    'receiptNo = createCreditNote(Math.Abs(total), 0, cn, trans, ddInvoice2.SelectedValue)
+                    writeDepositInfo("1", Math.Abs(parkingFee), cn, trans)
                 End If
 
 
@@ -1407,7 +1410,7 @@ Partial Class Transaction_SeasonUpDowngrade
             strSQL = ""
             dt.Dispose()
 
-            checkDownOrUp()
+            'checkDownOrUp()
 
         Catch ex As Exception
 
@@ -1452,7 +1455,7 @@ Partial Class Transaction_SeasonUpDowngrade
                 hdNewSeasonAmount.value = dt.Rows(0).Item("AMOUNT").ToString
             End If
 
-            checkDownOrUp()
+            '            checkDownOrUp()
 
         Catch ex As Exception
             logger.Debug(ex.Message)
