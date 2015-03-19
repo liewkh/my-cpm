@@ -139,7 +139,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
         <td class="normalLabel">Debit Note Date <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
       	<td class="normalLabel">
-		<asp:TextBox ID="txtDebitNoteDate" runat="server" CssClass="dateBox" Enabled="true" MaxLength="12" TabIndex="2"></asp:TextBox> 
+		<asp:TextBox ID="txtDebitNoteDate" runat="server" CssClass="dateBox" Enabled="false" MaxLength="12" TabIndex="2"></asp:TextBox> 
         <rjs:PopCalendar id="popCalendar1" runat="server"
            Control="txtTaxInvoiceDate" To-Today="true" 
            Shadow="True" ShowWeekend="True" Move="True"
