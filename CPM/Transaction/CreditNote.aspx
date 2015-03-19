@@ -406,13 +406,51 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 	</tr>
-
 	
+	<tr>
+		<td class="normalLabel">Quantity<font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtQty" runat="server" CssClass="textBoxSmall" MaxLength="10" TabIndex="11"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+
+    <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender2" runat="server" TargetControlID="txtQty" ValidChars="1234567890" />
+
+   <tr>
+		<td class="normalLabel">Unit Price<font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtUnitPrice" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="12"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+
+	<ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender3" runat="server" TargetControlID="txtUnitPrice" ValidChars="1234567890." />
     
     <tr>
 		<td class="normalLabel">Credit Fees Amount (RM)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtPaymentAmount" runat="server" MaxLength="200" TabIndex="12"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtPaymentAmount" runat="server" MaxLength="200" TabIndex="13"></asp:TextBox></td>
         <td class="hSpace">&nbsp;</td>			
 		<td class="hSpace">&nbsp;</td>		
 		<td class="hSpace">&nbsp;</td>
@@ -430,7 +468,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
     <tr>
 		<td class="normalLabel">Credit GST Amount (RM) <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtGSTAmount" runat="server"  MaxLength="200" TabIndex="13"></asp:TextBox></td>
+		<td><asp:TextBox ID="txtGSTAmount" runat="server"  MaxLength="200" TabIndex="14"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>

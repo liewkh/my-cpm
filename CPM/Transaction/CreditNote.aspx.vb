@@ -126,6 +126,8 @@ Partial Class Transaction_CreditNote
         txtSelected.text = ""
         txtDescription.Text = ""
         txtPaymentAmount.Text = ""
+        txtQty.text = 0
+        txtUnitPrice.Text = 0
         gvDebtorEnq.DataSource = Nothing
         gvDebtorInv.DataSource = Nothing
         ddInvoice.Items.Clear()
@@ -390,6 +392,8 @@ Partial Class Transaction_CreditNote
         txtDescription.Text = ""
         txtPaymentAmount.Text = ""
         txtSelected.Text = ""
+        txtQty.Text = 0
+        txtUnitPrice.Text = 0
         txtGSTAmount.Text = ""
         lblGSTAmount.Text = ""
     End Sub
@@ -437,6 +441,16 @@ Partial Class Transaction_CreditNote
 
             If Trim(txtDescription.Text) = "" Then
                 lblmsg.Text = "Please enter description."
+                Exit Sub
+            End If
+
+            If Trim(txtQty.Text) = 0 Or String.IsNullOrEmpty(txtQty.Text) Then
+                lblmsg.Text = "Please enter Qty."
+                Exit Sub
+            End If
+
+            If Trim(txtUnitPrice.Text) = 0 Or String.IsNullOrEmpty(txtUnitPrice.Text) Then
+                lblmsg.Text = "Please enter Unit Price."
                 Exit Sub
             End If
 
@@ -677,6 +691,8 @@ Partial Class Transaction_CreditNote
             dpEnt.setGSTAmount(txtGSTAmount.Text)
             dpEnt.setInvoiceNo(invoiceNo)
             dpEnt.setInvoiceDate(CDate(invoiceDate))
+            dpEnt.setQty(Trim(txtQty.Text))
+            dpEnt.setUnitPrice(Trim(txtUnitPrice.Text))
 
             dpEnt.setReceiptNo(dm.getCRNoteNextRunningNo(hidLocationInfoId.Value, trans, cn))
 
