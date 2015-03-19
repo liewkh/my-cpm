@@ -331,8 +331,25 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 	<tr class="vSpace">
 		<td class="normalLabel">Description <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td nowrap><asp:DropDownList ID="ddDescription" AutoPostBack ="True" runat="server" TabIndex="5" DataSourceID="dsDescription" DataTextField="Description" DataValueField="SeasonTypeMstrId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsDescription" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
+		<td nowrap><asp:DropDownList ID="ddDescription" AutoPostBack ="True" runat="server" TabIndex="12" DataSourceID="dsDescription" DataTextField="Description" DataValueField="SeasonTypeMstrId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsDescription" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
 		</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>
+	
+	<tr class="vSpace">
+		<td class="normalLabel">Remark <font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="13"></asp:TextBox></td>
         <td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>

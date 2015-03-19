@@ -285,18 +285,23 @@ Partial Class Transaction_DebitNoteV2
         Dim txtTotalGSTAmount As Double = 0
 
         Try
-
-            If ddInvoice.SelectedIndex = 0 Then
-                lblmsg.Text = "Invoice is a Required field."
-                Exit Sub
-            End If
-
             cn = New SqlConnection(dm.getDBConn)
             If Not cn.State = ConnectionState.Open Then
                 cn.Open()
             End If
 
             trans = cn.BeginTransaction
+
+            If ddInvoice.SelectedIndex = 0 Then
+                lblmsg.Text = "Invoice is a Required field."
+                Exit Sub
+            End If
+
+            If String.IsNullOrEmpty(txtRemark.Text) Then
+                lblmsg.Text = "Remark is a Required field."
+                Exit Sub
+            End If
+
 
             'rcpNo = dm.getReceiptNextRunningNo(ddLocation.SelectedValue, trans, cn)
             If rbCompany.Checked = True Then
@@ -315,7 +320,7 @@ Partial Class Transaction_DebitNoteV2
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.DEBITNOTE)
-            dahEnt.setMIRemark("")
+            dahEnt.setMIRemark(Trim(txtRemark.Text))
 
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
