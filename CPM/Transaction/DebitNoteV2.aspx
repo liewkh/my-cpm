@@ -326,12 +326,30 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>		
 	</tr>
+	
+	 <tr class="vSpace">
+		<td class="normalLabel">Month(s)<font color="#FF0000">*</font></td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtMonth" runat="server" CssClass="textBoxExtraSmall" TabIndex="12" Enabled="true" Value="0"  MaxLength="10"></asp:TextBox></td>        
+        <td class="hSpace">&nbsp;</td>       
+        <td class="hSpace">&nbsp;</td>       
+        <td class="hSpace">&nbsp;</td>
+      	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+    	<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>		
+	</tr>
 
+<ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender2" runat="server" TargetControlID="txtMonth" ValidChars="1234567890" />
 
 	<tr class="vSpace">
 		<td class="normalLabel">Description <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td nowrap><asp:DropDownList ID="ddDescription" AutoPostBack ="True" runat="server" TabIndex="12" DataSourceID="dsDescription" DataTextField="Description" DataValueField="SeasonTypeMstrId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsDescription" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
+		<td nowrap><asp:DropDownList ID="ddDescription" AutoPostBack ="True" runat="server" TabIndex="13" DataSourceID="dsDescription" DataTextField="Description" DataValueField="SeasonTypeMstrId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsDescription" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
 		</td>
         <td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
@@ -413,6 +431,8 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                                         NullDisplayText="N/A" />
                                     <asp:BoundField DataField="AMOUNT" HeaderText="Amount" SortExpression="Amount"
                                         NullDisplayText="N/A" DataFormatString="{0:F2}" />
+                                    <asp:BoundField DataField="MONTH" HeaderText="Month(s)" SortExpression="Month"
+                                        NullDisplayText="N/A" />                                        
                                     <asp:BoundField DataField="TOTAL" HeaderText="TOTAL" SortExpression="Total"
                                         NullDisplayText="N/A" DataFormatString="{0:F2}" />           
                                 </Columns>

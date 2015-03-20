@@ -116,8 +116,9 @@ Partial Class Transaction_DebitNoteV2
     Private Sub clear()
         lblmsg.Text = ""
         lblRecCount.Text = ""
-        txtAmount.Text = ""
-        txtQty.Text = ""
+        txtAmount.Text = 0
+        txtQty.Text = 0
+        txtMonth.Text = 0
         ddDescription.SelectedIndex = 0
     End Sub
 
@@ -259,8 +260,9 @@ Partial Class Transaction_DebitNoteV2
     Private Sub clearInvoice()
 
         lblmsg.Text = ""
-        txtAmount.Text = ""
-        txtQty.Text = ""
+        txtAmount.Text = 0
+        txtQty.Text = 0
+        txtMonth.Text = 0
         ddDescription.SelectedIndex = 0
         gvMisc.DataSource = Nothing
         gvMisc.DataBind()
@@ -303,6 +305,9 @@ Partial Class Transaction_DebitNoteV2
             End If
 
 
+            
+
+
             'rcpNo = dm.getReceiptNextRunningNo(ddLocation.SelectedValue, trans, cn)
             If rbCompany.Checked = True Then
                 debtorCategory = CategoryEnum.COMPANY
@@ -319,6 +324,7 @@ Partial Class Transaction_DebitNoteV2
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
             dahEnt.setBatchNo("")
+
             dahEnt.setTxnType(TxnTypeEnum.DEBITNOTE)
             dahEnt.setMIRemark(Trim(txtRemark.Text))
 
@@ -333,7 +339,7 @@ Partial Class Transaction_DebitNoteV2
 
                 txtTotalAmount += Val(row.Item("TOTAL"))
                 dadEnt.setDebtorAccountHeaderId(dahId)
-                dadEnt.setMonths("")
+                dadEnt.setMonths(row.Item("MONTH"))
                 dadEnt.setDetails(row.Item("DESCRIPTION"))
                 dadEnt.setUnitPrice(row.Item("AMOUNT"))
                 dadEnt.setQuantity(row.Item("QTY"))
@@ -395,8 +401,9 @@ Partial Class Transaction_DebitNoteV2
             ddLocation.SelectedIndex = 0
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
             lblmsg.Text = ""
-            txtAmount.Text = ""
-            txtQty.Text = ""
+            txtAmount.Text = 0
+            txtMonth.Text = 0
+            txtQty.Text = 0
             ddDescription.SelectedIndex = 0
             gvMisc.DataSource = Nothing
             gvMisc.DataBind()
@@ -565,8 +572,18 @@ Partial Class Transaction_DebitNoteV2
                 Exit Sub
             End If
 
-            If String.IsNullOrEmpty(txtQty.Text) Then
-                lblMsg.Text = "Qty is a Required field."
+            If String.IsNullOrEmpty(txtQty.Text) Or Val(Trim(txtQty.Text)) = 0 Then
+                lblmsg.Text = "Qty is a Required field."
+                Exit Sub
+            End If
+
+            If String.IsNullOrEmpty(txtMonth.Text) Or Val(Trim(txtMonth.Text)) = 0 Then
+                lblmsg.Text = "Month(s) is a Required field."
+                Exit Sub
+            End If
+
+            If Not Utility.Tools.NumericValidation(txtMonth.Text) Then
+                lblmsg.Text = "Please enter numeric value for Month(s)."
                 Exit Sub
             End If
 
@@ -591,12 +608,14 @@ Partial Class Transaction_DebitNoteV2
                 dt.Columns.Add("TOTAL")
                 dt.Columns.Add("DESCRIPTION")
                 dt.Columns.Add("TAXCODE")
+                dt.Columns.Add("MONTH")
 
                 dr = dt.NewRow
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
+                dr("MONTH") = Trim(txtMonth.Text)
 
                 Select Case Request.Params("TaxCode")
                     Case ConstantGlobal.OutOfScope
@@ -622,6 +641,7 @@ Partial Class Transaction_DebitNoteV2
                 dr("AMOUNT") = Trim(txtAmount.Text)
                 dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
+                dr("MONTH") = Trim(txtMonth.Text)
 
                 Select Case Request.Params("TaxCode")
                     Case ConstantGlobal.OutOfScope
