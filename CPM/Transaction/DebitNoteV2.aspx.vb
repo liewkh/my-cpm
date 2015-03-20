@@ -577,6 +577,11 @@ Partial Class Transaction_DebitNoteV2
                 Exit Sub
             End If
 
+            If String.IsNullOrEmpty(txtAmount.Text) Or Val(Trim(txtAmount.Text)) = 0 Then
+                lblmsg.Text = "Amount is a Required field."
+                Exit Sub
+            End If
+
             If String.IsNullOrEmpty(txtMonth.Text) Or Val(Trim(txtMonth.Text)) = 0 Then
                 lblmsg.Text = "Month(s) is a Required field."
                 Exit Sub
@@ -587,10 +592,7 @@ Partial Class Transaction_DebitNoteV2
                 Exit Sub
             End If
 
-            If String.IsNullOrEmpty(txtAmount.Text) Then
-                lblmsg.Text = "Amount is a Required field."
-                Exit Sub
-            End If
+         
 
             If ddDescription.SelectedIndex = 0 Then
                 lblmsg.Text = "Description is a Required field."
