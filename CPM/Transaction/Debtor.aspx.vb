@@ -80,7 +80,13 @@ Partial Class Maintenance_Debtor
         ddBank.SelectedIndex = 0
         txtBankAccountNo.Text = ""
         txtCompanyNo.Text = ""
-        ddBankInd.SelectedIndex = 0
+
+        If rbCompany.Checked = True Then
+            ddBank.SelectedIndex = 0
+        Else
+            ddBankInd.SelectedIndex = 0
+        End If
+
         txtEmailInd.Text = ""
         txtBankAccountNoInd.Text = ""
         addMode()
