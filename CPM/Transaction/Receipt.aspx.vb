@@ -709,7 +709,7 @@ Partial Class Transaction_Receipt
             dpEnt.setRefNo(txtNo.Text)
             dpEnt.setInvoiceHistoryIdAndAmount(strInvHistoryId)
             dpEnt.setPaymentFor(paymentFor)
-            dpEnt.setDebtorAccountHeaderId(hidDebtorAccountHeaderId.Value)
+            dpEnt.setDebtorAccountHeaderId(ddInvoice.SelectedValue)
             dpEnt.setPaymentDate(txtPaymentDate.Text)
             dpEnt.setDescription(Trim(txtDescription.Text))
             dpEnt.setPaymentType(ddPaymentType.SelectedValue)

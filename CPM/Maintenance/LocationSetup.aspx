@@ -598,7 +598,7 @@
                     
 
         <ajax:MaskedEditExtender ID="MaskedEditExtender1" runat="server" TargetControlID="txtComInvoicePrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>
                     
                     <tr>
@@ -636,7 +636,7 @@
                     </tr>
                     
                     <ajax:MaskedEditExtender ID="MaskedEditExtender2" runat="server" TargetControlID="txtIndInvoicePrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>
                     
                     <tr>
@@ -674,7 +674,7 @@
                     </tr>
                     
                      <ajax:MaskedEditExtender ID="MaskedEditExtender3" runat="server" TargetControlID="txtReceiptPrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>                    
 
                     <tr>
@@ -712,7 +712,7 @@
                     </tr>   
                     
                      <ajax:MaskedEditExtender ID="MaskedEditExtender4" runat="server" TargetControlID="txtDebitNotePrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>  
                     
                     <tr>
@@ -750,7 +750,7 @@
                     </tr>  
                     
                      <ajax:MaskedEditExtender ID="MaskedEditExtender5" runat="server" TargetControlID="txtCreditNotePrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>   
                     
                     <tr>
@@ -788,7 +788,7 @@
                     </tr>
                     
                      <ajax:MaskedEditExtender ID="MaskedEditExtender6" runat="server" TargetControlID="txtDailyCollectionPrefix"
-        Mask="LLL-LL" MaskType="None" InputDirection="LeftToRight"  PromptCharacter="_" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
+        Mask="AAA-AA" MaskType="None" InputDirection="RightToLeft"  Filtered="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" ClearMaskOnLostFocus = "False" MessageValidatorTip="true"  >
         </ajax:MaskedEditExtender>  
                     
                     <tr>

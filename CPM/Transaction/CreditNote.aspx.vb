@@ -682,7 +682,7 @@ Partial Class Transaction_CreditNote
             dpEnt.setDebtorId(hidDebtorId.Value)
             dpEnt.setInvoiceHistoryIdAndAmount(strInvHistoryId)
             dpEnt.setPaymentFor(paymentFor)
-            dpEnt.setDebtorAccountHeaderId(hidDebtorAccountHeaderId.Value)
+            dpEnt.setDebtorAccountHeaderId(ddInvoice.SelectedValue)
             dpEnt.setPaymentDate(txtPaymentDate.Text)
             dpEnt.setDescription(Trim(txtDescription.Text))
             'dpEnt.setPaymentType(PaymentTypeEnum.CREDITNOTE)
