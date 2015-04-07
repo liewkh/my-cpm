@@ -42,6 +42,7 @@ Public Class DBManager
         Try
             cn = New SqlConnection(getDBConn())
             cmd_select = New SqlCommand()
+            cmd_select.CommandTimeout = 0
             If Not cn.State = ConnectionState.Open Then
                 cn.Open()
             End If

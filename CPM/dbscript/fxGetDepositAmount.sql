@@ -1,11 +1,11 @@
 USE [CPM]
 GO
-/****** Object:  UserDefinedFunction [dbo].[fxGetDepositAmount]    Script Date: 03/13/2015 14:45:48 ******/
+/****** Object:  UserDefinedFunction [dbo].[fxGetDepositAmount]    Script Date: 04/07/2015 17:00:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE FUNCTION [dbo].[fxGetDepositAmount] (@debtorAccountHeaderId bigint)
+ALTER FUNCTION [dbo].[fxGetDepositAmount] (@debtorAccountHeaderId nvarchar)
 RETURNS numeric(18,2)
 AS
 BEGIN
