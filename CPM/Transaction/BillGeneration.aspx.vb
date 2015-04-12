@@ -231,7 +231,13 @@ Partial Class Transaction_BillGeneration
                 searchModel.setMonthto(ddYear.SelectedValue & nextMonth & "01")
                 searchModel.setInvoicingFrequency(ddInvFreq.SelectedValue)
 
-                Dim strSQL As String = sqlmap.getMappedStatement("BillGeneration/Generate-Invoice", searchModel)
+                Dim strSQL As String = ""
+
+                If searchModel.getInvoicingFrequency.Equals(1) Then
+                    strSQL = sqlmap.getMappedStatement("BillGeneration/Generate-InvoiceMonthly", searchModel)
+                Else
+                    sqlmap.getMappedStatement("BillGeneration/Generate-Invoice", searchModel)
+                End If
 
                 dt = dm.execTableInTrans(strSQL, cn, trans)
 
@@ -247,7 +253,7 @@ Partial Class Transaction_BillGeneration
                     If Not (trans.Connection.State = ConnectionState.Open) Then
                         trans = cn.BeginTransaction
                     End If
-                    noOfInvoice += 1                   
+                    noOfInvoice += 1
                     retValue = invMgr.createInvoice(lp.getUserMstrId, ddDebtor.SelectedValue.ToString, ddMonth.SelectedValue.ToString, array, BatchNo, RptYear, cn, trans)
                     trans.Commit()
                     array.Clear()

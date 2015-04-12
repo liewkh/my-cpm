@@ -54,7 +54,36 @@
     <part type="dynamic" prepend="AND" skip="0">
       d.LocationInfoId =  #LocationInfoId#
     </part>
-  </dynamic-mapped-statement>  
+  </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Generate-InvoiceMonthly">
+    <part type="static">
+      select dbp.passcardmstrid from debtorpassbay dbp,debtor d
+      where dbp.debtorid = d.debtorid
+      and dbp.status = 'A'
+      and dbp.passcardmstrid not in
+      (select ihd.passcardmstrid from invoicehistorydetail ihd,invoicehistory ih,debtoraccountheader dah
+      where ihd.debtoraccountheaderid = ih.debtoraccountheaderid
+      and dah.debtorid = D.DebtorId
+      and dah.debtoraccountheaderid =  ih.debtoraccountheaderid
+      and ihd.debtoraccountheaderid = ih.debtoraccountheaderid
+    </part>
+    <part type="dynamic" prepend="AND" >
+      IH.month = #MonthFrom#)
+    </part>    
+    <part type="dynamic" prepend="AND" skip="0">
+      dbp.DebtorId =  #DebtorId#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.InvoicingFrequency =  #InvoicingFrequency#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.Category =  #Category#
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.LocationInfoId =  #LocationInfoId#
+    </part>
+  </dynamic-mapped-statement>
 
 
 

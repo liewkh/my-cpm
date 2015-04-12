@@ -131,7 +131,7 @@ Public Class InvoiceManager
             sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
                   "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
                   "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & RptYear & _
-                   whichMonth & "01' AND IH.month <= '" & RptYear & nextMonth & "01'" & _
+                   whichMonth & "01' AND IH.month < '" & RptYear & nextMonth & "01'" & _
                    " and IH.debtorid =" & debtorId & _
                    " and IHD.PassCardMstrId in (" & passStr & ")"
 
@@ -386,7 +386,7 @@ Public Class InvoiceManager
             sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
                   "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
                   "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & RptYear & _
-                   whichMonth & "01' AND IH.month <= '" & RptYear & nextMonth & "01'" & _
+                   whichMonth & "01' AND IH.month < '" & RptYear & nextMonth & "01'" & _
                    " and IH.debtorid =" & debtorId & _
                    " and IHD.PassCardMstrId in (" & passStr & ")"
 
@@ -753,7 +753,7 @@ Public Class InvoiceManager
             sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
                   "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
                   "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & _
-                   whichMonth & "01' AND IH.month <= '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & nextMonth & "01'" & _
+                   whichMonth & "01' AND IH.month < '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & nextMonth & "01'" & _
                    " and IH.debtorid =" & debtorId & _
                    " and IHD.PassCardMstrId in (" & passStr & ")"
 
@@ -1028,7 +1028,7 @@ Public Class InvoiceManager
             sql = "select count(IH.InvoiceHistoryId) as CNT from InvoiceHistory IH,InvoiceHistoryDetail IHD,DebtorAccountHeader dah " & _
                   "where IH.DebtorAccountHeaderId =  dah.DebtorAccountHeaderId " & _
                   "and ihd.DebtorAccountHeaderId = dah.DebtorAccountHeaderId And IH.month >= '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & _
-                   Now.AddMonths(1).ToString("MMM") & "01' AND IH.month <= '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & nextMonth & "01'" & _
+                   Now.AddMonths(1).ToString("MMM") & "01' AND IH.month < '" & DatePart(DateInterval.Year, DateAdd(DateInterval.Month, +1, Today)) & nextMonth & "01'" & _
                    " and IH.debtorid =" & debtorId & _
                    " and IHD.PassCardMstrId in (" & passStr & ")"
 
