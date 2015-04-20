@@ -631,7 +631,7 @@ Partial Class Transaction_ParkingCancellation
                 End If
 
                 sql = "Select DEBTORID,NAME AS DEBTOR,0 as Seq From Debtor Where Status = '" & DebtorStatusEnum.ACTIVE & "'" & _
-                      "And LocationInfoId = " & lp.getDefaultLocationInfoId & " And Category='" + category + "' UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'" & _
+                      "And LocationInfoId = " & ddLocation.SelectedValue & " And Category='" + category + "' UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'" & _
                       "ORDER BY SEQ,DEBTOR"
 
                 dsDebtor.SelectCommand = sql
