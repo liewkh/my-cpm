@@ -121,6 +121,7 @@ Partial Class Transaction_ParkingCancellation
         rbCompany.Checked = True
         rbIndividual.Checked = False        
         gvDebtorEnq.DataSource = Nothing
+        ddTransferee.SelectedIndex = 0
 
     End Sub
 
@@ -232,6 +233,7 @@ Partial Class Transaction_ParkingCancellation
         txtOutstanding.Text = 0
         txtUnused.Text = 0
         txtRemark.Text = ""
+        ddTransferee.SelectedIndex = 0
 
     End Sub
 
@@ -267,6 +269,10 @@ Partial Class Transaction_ParkingCancellation
             If ddReason.SelectedValue = "TF" Then
                 If ddTransferee.SelectedIndex = 0 Then
                     lblmsg.Text = "Transferee is a required field."
+                    Exit Sub
+                End If
+                If ddTransferee.SelectedValue = hidDebtorId.Value Then
+                    lblmsg.Text = "Same Debtor's selection is not allowed."
                     Exit Sub
                 End If
             End If
@@ -631,7 +637,7 @@ Partial Class Transaction_ParkingCancellation
                 End If
 
                 sql = "Select DEBTORID,NAME AS DEBTOR,0 as Seq From Debtor Where Status = '" & DebtorStatusEnum.ACTIVE & "'" & _
-                      "And LocationInfoId = " & ddLocation.SelectedValue & " And Category='" + category + "' UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'" & _
+                      "And LocationInfoId = " & ddLocation.SelectedValue & " UNION ALL SELECT CODEMSTRID,CODEDESC,SEQ FROM CODEMSTR WHERE CODECAT = 'ALL'" & _
                       "ORDER BY SEQ,DEBTOR"
 
                 dsDebtor.SelectCommand = sql
