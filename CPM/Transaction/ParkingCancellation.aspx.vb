@@ -225,15 +225,25 @@ Partial Class Transaction_ParkingCancellation
     End Sub
 
     Private Sub clearData()
-        ddReason.SelectedIndex = 0
-        ddPassCondition.SelectedIndex = 0
-        ddDeposit.selectedindex = 0
-        txtCancellationDate.Text = Utility.DataTypeUtils.formatDateString(Now)
-        lblPassDeposit.Text = ""
-        txtOutstanding.Text = 0
-        txtUnused.Text = 0
-        txtRemark.Text = ""
-        ddTransferee.SelectedIndex = 0
+        Try
+
+            ddReason.SelectedIndex = 0
+            ddPassCondition.SelectedIndex = 0
+            ddDeposit.SelectedIndex = 0
+            txtCancellationDate.Text = Utility.DataTypeUtils.formatDateString(Now)
+            lblPassDeposit.Text = ""
+            txtOutstanding.Text = 0
+            txtUnused.Text = 0
+            txtRemark.Text = ""
+            ddTransferee.SelectedIndex = 0
+            If ddReason.SelectedValue <> "TF" Then
+                transferree.Visible = False
+            End If
+
+        Catch ex As Exception
+            logger.Debug("Error resume")
+        End Try
+        
 
     End Sub
 
