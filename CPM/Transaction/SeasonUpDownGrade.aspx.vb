@@ -545,10 +545,10 @@ Partial Class Transaction_SeasonUpDowngrade
 
                 If depositFee > 0 Then
                     'receiptNo = createDebitNote(0, Math.Abs(depositFee), cn, trans)
-                    MsgBox("Season Upgrade : Please generate invoice manually!")
+                    lblmsg.Text = "Season Upgrade : Please generate invoice manually!"
                 ElseIf depositFee < 0 Then
                     'receiptNo = createCreditNote(0, Math.Abs(depositFee), "Refund Deposit : RM " & Math.Abs(depositFee).ToString, cn, trans)
-                    MsgBox("Season Downgrade : Please generate invoice manually!")
+                    lblmsg.Text = "Season Downgrade : Please generate invoice manually!"
                 End If
 
             End If
@@ -1512,9 +1512,9 @@ Partial Class Transaction_SeasonUpDowngrade
                     depositFee = Val(hdNewDeposit.Value) - Val(hdOldDeposit.Value)
 
                     If depositFee > 0 Then
-                        MsgBox("Season Upgrade : Please generate invoice manually!")                        
+                        lblmsg.Text = "Season Upgrade : Please generate invoice manually!"
                     ElseIf depositFee < 0 Then
-                        MsgBox("Season Downgrade : Please generate invoice manually!")                        
+                        lblmsg.Text = "Season Downgrade : Please generate invoice manually!"
                     End If                    
                 End If
             End If
