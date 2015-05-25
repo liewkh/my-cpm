@@ -236,7 +236,7 @@ Partial Class Transaction_BillGeneration
                 If searchModel.getInvoicingFrequency.Equals(1) Then
                     strSQL = sqlmap.getMappedStatement("BillGeneration/Generate-InvoiceMonthly", searchModel)
                 Else
-                    sqlmap.getMappedStatement("BillGeneration/Generate-Invoice", searchModel)
+                    strSQL = sqlmap.getMappedStatement("BillGeneration/Generate-Invoice", searchModel)
                 End If
 
                 dt = dm.execTableInTrans(strSQL, cn, trans)
