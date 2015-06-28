@@ -536,7 +536,7 @@ Partial Class Transaction_ManualTaxInvoice
                 dr = dt.NewRow                
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text)
                 dr("DESCRIPTION") = Trim(txtDescription.Text)
 
                 Select Case Request.Params("TaxCode")
@@ -561,7 +561,7 @@ Partial Class Transaction_ManualTaxInvoice
                 dr = dt.NewRow                
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text)
                 dr("DESCRIPTION") = Trim(txtDescription.Text)
 
                 Select Case Request.Params("TaxCode")

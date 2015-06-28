@@ -614,8 +614,8 @@ Partial Class Transaction_DebitNoteV2
 
                 dr = dt.NewRow
                 dr("QTY") = Trim(txtQty.Text)
-                dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text) * CInt(txtMonth.Text)
+                dr("AMOUNT") = Trim(txtAmount.Text)                
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text * txtMonth.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
                 dr("MONTH") = Trim(txtMonth.Text)
 
@@ -641,7 +641,7 @@ Partial Class Transaction_DebitNoteV2
                 dr = dt.NewRow
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text) * CInt(txtMonth.Text)
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text * txtMonth.Text)
                 dr("DESCRIPTION") = Trim(ddDescription.SelectedItem.Text)
                 dr("MONTH") = Trim(txtMonth.Text)
 

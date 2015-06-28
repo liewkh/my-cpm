@@ -525,7 +525,7 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)                
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text)
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
@@ -539,7 +539,7 @@ Partial Class Transaction_TaxInvoice
                 dr("MISCPAYMENTTYPEMSTRID") = ddMiscPaymentType.SelectedValue
                 dr("QTY") = Trim(txtQty.Text)
                 dr("AMOUNT") = Trim(txtAmount.Text)
-                dr("TOTAL") = CInt(txtQty.Text) * CInt(txtAmount.Text)            
+                dr("TOTAL") = String.Format("{0:n2}", txtQty.Text * txtAmount.Text)
                 dr("DESCRIPTION") = hdPaymentTypeDesc.Value
                 dr("TAXCODE") = hdTaxCode.Value
                 dt.Rows.Add(dr)
