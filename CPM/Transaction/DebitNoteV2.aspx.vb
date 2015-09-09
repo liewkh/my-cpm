@@ -334,7 +334,7 @@ Partial Class Transaction_DebitNoteV2
 
                 If row.Item("TAXCODE").Equals(ConstantGlobal.StandardRated) Then
                     'Get the GST value and apply to chargeble item gn Standard Rated(SR)
-                    txtTotalGSTAmount += Val(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
+                    txtTotalGSTAmount += CDbl(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
                 End If
 
                 txtTotalAmount += Val(row.Item("TOTAL"))
@@ -457,7 +457,7 @@ Partial Class Transaction_DebitNoteV2
         Dim subTotal As Double
 
         For Each row As DataRow In dt.Rows
-            subTotal += Val(row.Item("TOTAL"))
+            subTotal += CDbl(row.Item("TOTAL"))
         Next row
 
         txtSubTotal.Text = String.Format("{0:n2}", subTotal)
