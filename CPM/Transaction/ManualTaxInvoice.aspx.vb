@@ -284,7 +284,7 @@ Partial Class Transaction_ManualTaxInvoice
 
                 If row.Item("TAXCODE").Equals(ConstantGlobal.StandardRated) Then
                     'Get the GST value and apply to chargeble item gn Standard Rated(SR)
-                    txtTotalGSTAmount += Val(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
+                    txtTotalGSTAmount += CDbl(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
                 End If
 
                 txtTotalAmount += Val(row.Item("TOTAL"))
