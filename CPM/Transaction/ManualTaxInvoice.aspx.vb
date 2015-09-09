@@ -401,7 +401,7 @@ Partial Class Transaction_ManualTaxInvoice
         Dim subTotal As Double
 
         For Each row As DataRow In dt.Rows
-            subTotal += Val(row.Item("TOTAL"))
+            subTotal += CDbl(row.Item("TOTAL"))            
         Next row
 
         txtSubTotal.Text = String.Format("{0:n2}", subTotal)
