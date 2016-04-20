@@ -37,14 +37,32 @@ Partial Class Transaction_Receipt
                 SpecialDays.AddHolidays(popCalendar1)
                 SpecialDays.AddSpecialDays(popCalendar1)
 
-                Dim dt As New DataTable
+                Dim dtPaymentDate As New DataTable
+                Dim dtBankInDate As New DataTable
 
                 sql = "select getDate()"
-                dt = dm.execTable(sql)
+                dtPaymentDate = dm.execTable(sql)
 
-                txtPaymentDate.Text = Utility.DataTypeUtils.formatDateString(dt.Rows.Item(0)(0).ToString())
+                txtPaymentDate.Text = Utility.DataTypeUtils.formatDateString(dtPaymentDate.Rows.Item(0)(0).ToString())
+
+                Dim searchModel As New CPM.CodeMstrEntity
+                Dim sqlmap As New SQLMap
+
+                searchModel.setCodeCat(CodeCatEnum.BANKINDATE)
+                searchModel.setCodeAbbr(Trim(txtPaymentDate.Text.ToUpper))
+                searchModel.setActive(ConstantGlobal.Yes)
+
+                Dim strSQL As String = sqlmap.getMappedStatement("SetupMstr/Search-CodeMstr", searchModel)
+                dtBankInDate = dm.execTable(strSQL)
+
+                If dtBankInDate.Rows.Count > 0 Then
+                    txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
+                Else
+                    txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
+                End If
 
                 txtNoPrint.Text = 3
+
             End If
             ddLocation.SelectedValue = lp.getDefaultLocationInfoId
             ddBankCode.SelectedValue = lp.getDefaultBankCode
@@ -56,11 +74,13 @@ Partial Class Transaction_Receipt
                 divPrint.Visible = False
                 lblHeader1.Text = "Manual Receipt"
                 txtPaymentDate.Enabled = True
+                txtBankInDate.Enabled = True
                 popCalendar1.Enabled = True
             Else
                 divPrint.Visible = True
                 lblHeader1.Text = "Receipt"
                 txtPaymentDate.Enabled = False
+                txtBankInDate.Enabled = False
                 popCalendar1.Enabled = False
             End If
 
@@ -488,6 +508,16 @@ Partial Class Transaction_Receipt
                 End If
             End If
 
+            If Trim(txtPaymentDate.Text) = "" Then
+                lblmsg.Text = "Please enter Payment Date"
+                Exit Sub
+            End If
+
+            If Trim(txtBankInDate.Text) = "" Then
+                lblmsg.Text = "Please enter Bank In Date"
+                Exit Sub
+            End If
+
 
             payAmt = txtPaymentAmount.Text
             Dim str As String = ""
@@ -711,9 +741,10 @@ Partial Class Transaction_Receipt
             dpEnt.setPaymentFor(paymentFor)
             dpEnt.setDebtorAccountHeaderId(ddInvoice.SelectedValue)
             dpEnt.setPaymentDate(txtPaymentDate.Text)
+            dpEnt.setBankInDate(txtBankInDate.Text)
             dpEnt.setDescription(Trim(txtDescription.Text))
             dpEnt.setPaymentType(ddPaymentType.SelectedValue)
-            dpEnt.setStatus(ReceiptStatusEnum._NEW)
+            dpEnt.setStatus(ReceiptStatusEnum._NEW)            
             dpEnt.setTxnType(TxnTypeEnum.RECEIPT)
             dpEnt.setBankCode(ddBankCode.SelectedValue)
             dpEnt.setInvoiceNo(invoiceNo)

@@ -176,16 +176,16 @@ function open_popupModal(page,size)
 		<td class="hSpace">&nbsp;</td>
         <td class="normalLabel">Payment Date <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
-      	<td class="normalLabel">
+       	<td class="normalLabel">
 		<asp:TextBox ID="txtPaymentDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="2"></asp:TextBox> 
         <rjs:PopCalendar id="popCalendar1" runat="server"
            Control="txtPaymentDate"
            Shadow="True" ShowWeekend="True" Move="True"
            Format="dd mm yyyy" Fade="0.5" Separator= "/"
-           ToolTip="Click For Calendar: ([Format])"                                
+           ToolTip="Click For Calendar: ([Format])"
+           To-Today="True"                                            
           />
         </td>
-		<td class="hSpace">&nbsp;</td>
     	<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -203,9 +203,20 @@ function open_popupModal(page,size)
                    <asp:RadioButton ID="rbCompany" runat="server" GroupName="Category" TabIndex="4" Text="Company" Checked="True" AutoPostBack="true"/>
         </td>
 		<td class="hSpace">&nbsp;</td>		
-        <td class="normalLabel">Receipt No <font color="#FF0000">*</font></td>
-        <td class="hSpace">&nbsp;</td>
-		<td><asp:TextBox ID="txtReceiptNo" runat="server" CssClass="textBoxSmallDisabled" MaxLength="12" TabIndex="5"></asp:TextBox></td>
+		<td class="normalLabel">Bank In Date <font color="#FF0000">*</font></td>
+	    <td class="hSpace">&nbsp;</td>
+        <td class="normalLabel">
+        <asp:TextBox ID="txtBankInDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="15"></asp:TextBox> 
+        <rjs:PopCalendar id="popCalendar2" runat="server"
+           Control="txtBankInDate"
+           Shadow="True" ShowWeekend="True" Move="True"
+           Format="dd mm yyyy" Fade="0.5" Separator= "/"
+           ToolTip="Click For Calendar: ([Format])"
+           To-Today="False"
+           From-Control="txtPaymentDate"
+           From-Date=""                                                     
+          />
+        </td>
       	<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
@@ -221,9 +232,9 @@ function open_popupModal(page,size)
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtDebtorName" runat="server" CssClass="textBoxLarge" MaxLength="200" TabIndex="6"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="normalLabel">[PassCard No]</td>
-		<td class="hSpace">&nbsp;</td>
-        <td><asp:TextBox ID="txtPassCardNo" runat="server" CssClass="textBoxSmall" MaxLength="200" TabIndex="7"></asp:TextBox></td>
+		<td class="normalLabel">Receipt No <font color="#FF0000">*</font></td>
+        <td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtReceiptNo" runat="server" CssClass="textBoxSmallDisabled" MaxLength="12" TabIndex="5"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>
@@ -240,9 +251,9 @@ function open_popupModal(page,size)
 		<td nowrap><asp:DropDownList ID="ddInvoice" AutoPostBack ="True" OnSelectedIndexChanged="ddInvoice_SelectedIndexChanged" runat="server" TabIndex="5" DataSourceID="dsInvoice" DataTextField="InvoiceNo" DataValueField="DebtorAccountHeaderId" CssClass="dropdownLarge"></asp:DropDownList><asp:SqlDataSource ID="dsInvoice" runat="server" ConnectionString="<%$ ConnectionStrings:CPMConnectionString %>"></asp:SqlDataSource>
 		</td>
         <td class="hSpace">&nbsp;</td>
-        <td class="hSpace">&nbsp;</td>
-        <td class="hSpace">&nbsp;</td>
-      	<td class="hSpace">&nbsp;</td>
+        <td class="normalLabel">[PassCard No]</td>
+		<td class="hSpace">&nbsp;</td>
+        <td><asp:TextBox ID="txtPassCardNo" runat="server" CssClass="textBoxSmall" MaxLength="200" TabIndex="7"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
     	<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
@@ -465,9 +476,11 @@ function open_popupModal(page,size)
                                         </asp:SqlDataSource>
 		</td>
 		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">Bank In Date <font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>
-        <td class="hSpace">&nbsp;</td>
+        <td>
+        
+        </td>
         <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>

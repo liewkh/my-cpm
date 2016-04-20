@@ -234,7 +234,7 @@
       select (select remark from debtorpaymentcancellation where debtorpaymentid = dp.debtorpaymentid) as statusdesc,dp.status,dp.debtorid,
       (select codedesc from codemstr where codecat='PTY' and codeabbr = dp.paymenttype) as paymentType,dp.paymenttype as paymentTypeCode,
       dp.debtorpaymentid,dp.paymentdate,dp.receiptno,dp.description,dp.amount + isnull(dp.gstamount,0) as amount,
-      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DP.TXNTYPE) AS TXNTYPEDESC,DP.TXNTYPE
+      (SELECT CODEDESC FROM CODEMSTR WHERE CODECAT = 'TXN' AND CODEABBR = DP.TXNTYPE) AS TXNTYPEDESC,DP.TXNTYPE, DP.BANKINDATE
       from debtorpayment dp
       where 1=1
     </part>
@@ -440,5 +440,30 @@
       d.Category =  #Category#
     </part>
   </dynamic-mapped-statement>
+
+  <dynamic-mapped-statement name="Search-DebtorAutoBillGenAll">
+    <part type="static">
+      SELECT d.DebtorId,(select codedesc from codemstr where codecat = 'CTG' and codeabbr = d.Category) as Category,d.LastInvoiceNo,d.LastInvoiceDate,d.LastPayment,
+      dah.InvoiceNo,dah.InvoiceDate,dah.InvoicePeriod,dah.status,dah.amount
+      FROM Debtor d,DebtorAccountHeader DAH
+      WHERE d.debtorid = DAH.debtorId
+    </part>
+    <part type="dynamic" prepend="AND">
+      D.DebtorId = #DebtorId#
+    </part>
+    <part type="static">
+      AND D.Status = 'A'
+    </part>
+    <part type="static">
+      AND DAH.Status &lt;&gt; 'C'
+    </part>
+    <part type="static">
+      AND DAH.TxnType = 'I'
+    </part>
+    <part type="dynamic" prepend="AND" skip="0">
+      d.Category =  #Category#
+    </part>
+  </dynamic-mapped-statement>
+
 
 </sql-map>

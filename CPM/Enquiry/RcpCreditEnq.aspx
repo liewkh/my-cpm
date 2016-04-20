@@ -305,13 +305,13 @@
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorRcp" runat="server" AllowPaging="True" AllowSorting="True" ShowHeader="true"  
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="DEBTORPAYMENTID,PAYMENTDATE,RECEIPTNO,DESCRIPTION,PAYMENTTYPE,PAYMENTTYPECODE,AMOUNT,STATUS,STATUSDESC,TXNTYPEDESC,TXNTYPE"
+                                            CellSpacing="1" DataKeyNames="DEBTORPAYMENTID,PAYMENTDATE,RECEIPTNO,DESCRIPTION,PAYMENTTYPE,PAYMENTTYPECODE,AMOUNT,STATUS,STATUSDESC,TXNTYPEDESC,TXNTYPE,BANKINDATE"
                                             DataSourceID="dsDebtorRcp">
                                             <Columns>
                                                 <asp:BoundField DataField="PAYMENTDATE" HeaderText="Receipt/Cn Date" SortExpression="PAYMENTDATE"
                                                     NullDisplayText="N/A" DataFormatString="{0:d}" htmlencode="false" />
-                                                <asp:BoundField DataField="TXNTYPEDESC" HeaderText="Type" SortExpression="TXNTYPEDESC"
-                                                    NullDisplayText="N/A" />                                                    
+                                                <asp:BoundField DataField="BANKINDATE" HeaderText="Bank In Date" SortExpression="BANKINDATE"
+                                                    NullDisplayText="N/A" DataFormatString="{0:d}" htmlencode="false" />                                                    
                                                 <asp:BoundField DataField="RECEIPTNO" HeaderText="Receipt/Cn No" SortExpression="RECEIPTNO"
                                                     NullDisplayText="N/A" />
                                                 <asp:BoundField DataField="DESCRIPTION" HeaderText="Description" SortExpression="DESCRIPTION"

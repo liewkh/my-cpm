@@ -6,6 +6,7 @@ Public Class CodeCatEnum
     Public Const PAYMENTTYPE As String = "PTY"
     Public Const DEBTORSTATUS As String = "DSTA"
     Public Const ITEMREPLACEMENT As String = "IRS"
+    Public Const BANKINDATE As String = "BID"
 
     Public Const NATIONALITY As String = "NAT"
     Public Const PASSPORTLOCATION As String = "PPLC"
