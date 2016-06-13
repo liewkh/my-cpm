@@ -128,7 +128,7 @@ Partial Class Transaction_ManualTaxInvoice
     Protected Sub btnClear_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         clear()
         txtDebtorName.Text = ""
-        txtInvoicePeriod.Text = ""
+        txtInvoicePeriodDate.Text = ""
         ViewState("strSQL") = Nothing
         bindData()
     End Sub
@@ -260,6 +260,11 @@ Partial Class Transaction_ManualTaxInvoice
 
             trans = cn.BeginTransaction
 
+            If String.IsNullOrEmpty(txtInvoicePeriodDate.Text) Then
+                lblmsg.Text = "Invoice Period is a Required field."
+                Exit Sub
+            End If
+
             'rcpNo = dm.getReceiptNextRunningNo(ddLocation.SelectedValue, trans, cn)
             If rbCompany.Checked = True Then
                 debtorCategory = CategoryEnum.COMPANY
@@ -270,7 +275,7 @@ Partial Class Transaction_ManualTaxInvoice
             dahEnt.setDebtorId(hidDebtorId.Value)
             dahEnt.setInvoiceNo(dm.getNextRunningNo(debtorCategory, hidLocationInfoId.Value, trans, cn, "M", Request.Params("TaxCode")))
             dahEnt.setInvoiceDate(txtTaxInvoiceDate.Text)
-            dahEnt.setInvoicePeriod(Trim(txtInvoicePeriod.Text))
+            dahEnt.setInvoicePeriod(MonthName(DatePart(DateInterval.Month, DateAdd(DateInterval.Month, +0, Date.Parse(txtInvoicePeriodDate.Text))), True) + "-" + Year(txtInvoicePeriodDate.Text).ToString)
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
@@ -307,7 +312,7 @@ Partial Class Transaction_ManualTaxInvoice
             invEnt.setDebtorId(hidDebtorId.Value)
             invEnt.setDebtorAccountHeaderId(dahId)
             invEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
-            invEnt.setMonth(txtTaxInvoiceDate.Text)
+            invEnt.setMonth(txtInvoicePeriodDate.Text)
             invEnt.setAmount(txtTotalAmount)
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
             invEnt.setLastUpdatedDatetime(Now)
@@ -348,7 +353,7 @@ Partial Class Transaction_ManualTaxInvoice
             txtAmount.Text = ""
             txtQty.Text = ""
             txtDescription.Text = ""
-            txtInvoicePeriod.Text = ""
+            txtInvoicePeriodDate.Text = ""
             gvMisc.DataSource = Nothing
             gvMisc.DataBind()
             btnConfirm.Visible = False

@@ -174,7 +174,7 @@ function open_popupModal(page,size)
                             </asp:SqlDataSource>
         </td>
 		<td class="hSpace">&nbsp;</td>
-        <td class="normalLabel">Payment Date <font color="#FF0000">*</font></td>
+        <td class="normalLabel">Receipt Date <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
        	<td class="normalLabel">
 		<asp:TextBox ID="txtPaymentDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="2"></asp:TextBox> 

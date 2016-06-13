@@ -270,6 +270,7 @@ Partial Class Transaction_DebitNoteV2
         ViewState("CurrentTable") = Nothing
         txtSubTotal.Text = ""
         txtSubTotal.Visible = False
+        txtInvoicePeriodDate.Text = ""
 
 
     End Sub
@@ -305,7 +306,10 @@ Partial Class Transaction_DebitNoteV2
             End If
 
 
-            
+            If String.IsNullOrEmpty(txtInvoicePeriodDate.Text) Then
+                lblmsg.Text = "Invoice Period is a Required field."
+                Exit Sub
+            End If
 
 
             'rcpNo = dm.getReceiptNextRunningNo(ddLocation.SelectedValue, trans, cn)
@@ -319,7 +323,7 @@ Partial Class Transaction_DebitNoteV2
             dahEnt.setReferenceOldInvoice(ddInvoice.SelectedValue)
             dahEnt.setInvoiceNo(dm.getDebitNoteNextRunningNo(hidLocationInfoId.Value, trans, cn, Request.Params("TaxCode")))
             dahEnt.setInvoiceDate(txtDebitNoteDate.Text)
-            dahEnt.setInvoicePeriod("")
+            dahEnt.setInvoicePeriod(MonthName(DatePart(DateInterval.Month, DateAdd(DateInterval.Month, +0, Date.Parse(txtInvoicePeriodDate.Text))), True) + "-" + Year(txtInvoicePeriodDate.Text).ToString)
             dahEnt.setLastUpdatedBy(lp.getUserMstrId)
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
@@ -363,7 +367,7 @@ Partial Class Transaction_DebitNoteV2
             invEnt.setDebtorId(hidDebtorId.Value)
             invEnt.setDebtorAccountHeaderId(dahId)
             invEnt.setStatus(InvoiceStatusEnum.OUTSTANDING)
-            invEnt.setMonth(txtDebitNoteDate.Text)
+            invEnt.setMonth(txtInvoicePeriodDate.Text)
             invEnt.setAmount(txtTotalAmount)
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
             invEnt.setLastUpdatedDatetime(Now)

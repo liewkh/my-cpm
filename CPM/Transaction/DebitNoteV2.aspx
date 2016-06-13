@@ -11,8 +11,6 @@
     <link rel="stylesheet" type="text/css" href="../include/stylesheet.css" />
     <script type="text/javascript" language="JavaScript" src='../include/effect.js'></script>
     <script type="text/javascript" language="JavaScript" src='../include/javascript.js'></script>
-
-    
 </head>
 
 <script language="javascript" type="text/javascript">
@@ -70,9 +68,6 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
 } 
                                     
 </script>
-
-
-
 
 <body> 
 <form id="Form1" action='' runat="server" >
@@ -165,9 +160,17 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
                    <asp:RadioButton ID="rbCompany" runat="server" GroupName="Category" TabIndex="4" Text="Company" Checked="True" AutoPostBack="true"/>
         </td>
 		<td class="hSpace">&nbsp;</td>		
-        <td class="hSpace">&nbsp;</td>		
+        <td class="normalLabel">Invoice Period <font color="#FF0000">*</font></td>		
         <td class="hSpace">&nbsp;</td>
-		<td class="hSpace">&nbsp;</td>		
+		<td class="normalLabel">
+		<asp:TextBox ID="txtInvoicePeriodDate" runat="server" class="date-picker" CssClass="dateBox" Enabled="true" MaxLength="12" TabIndex="2"></asp:TextBox> 
+        <rjs:PopCalendar id="popCalendar2" runat="server"
+           Control="txtInvoicePeriodDate" To-Today="true" 
+           Shadow="True" ShowWeekend="True" Move="True"
+           Format="mm yyyy" Fade="0.5" Separator= "/"
+           ToolTip="Click For Calendar: ([Format])" Enabled="true"                               
+          />
+          </td>	
       	<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td class="hSpace">&nbsp;</td>

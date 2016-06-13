@@ -438,9 +438,14 @@ Partial Class Transaction_Receipt
             divNoRef.Visible = True          
         ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
             divNoRef.Visible = True
+        ElseIf ddPaymentType.Text = PaymentTypeEnum.INTERBANKGIRO Then
+            divNoRef.Visible = True
         Else
             divNoRef.Visible = False
         End If
+
+        getBankInDate(ddPaymentType.Text)
+
     End Sub
 
     Protected Sub btnDataBack_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -904,6 +909,46 @@ Partial Class Transaction_Receipt
         noDupsArrList.CopyTo(uniqueItems)
         Return uniqueItems
     End Function
+
+    Public Sub getBankInDate(ByVal items As String)
+        Dim dtPaymentDate As New DataTable
+        Dim dtBankInDate As New DataTable
+        Dim Sql As String
+
+        Sql = "select getDate()"
+        dtPaymentDate = dm.execTable(Sql)
+
+        txtPaymentDate.Text = Utility.DataTypeUtils.formatDateString(dtPaymentDate.Rows.Item(0)(0).ToString())
+
+        Dim searchModel As New CPM.CodeMstrEntity
+        Dim sqlmap As New SQLMap
+
+        searchModel.setCodeCat(CodeCatEnum.BANKINDATE)
+        searchModel.setCodeAbbr(Trim(txtPaymentDate.Text.ToUpper))
+        searchModel.setActive(ConstantGlobal.Yes)
+
+        Dim strSQL As String = sqlmap.getMappedStatement("SetupMstr/Search-CodeMstr", searchModel)
+        dtBankInDate = dm.execTable(strSQL)
+
+
+        If ddPaymentType.Text = PaymentTypeEnum.CASH Then
+            If dtBankInDate.Rows.Count > 0 Then
+                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
+            Else
+                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
+            End If
+            txtBankInDate.Enabled = False
+            popCalendar2.Enabled = False
+        ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
+            txtBankInDate.Text = txtPaymentDate.Text
+            txtBankInDate.Enabled = False
+        ElseIf ddPaymentType.Text = PaymentTypeEnum.INTERBANKGIRO Or ddPaymentType.Text = PaymentTypeEnum.CHEQUE Then
+            txtBankInDate.Enabled = True
+            popCalendar2.Enabled = True
+        End If
+
+
+    End Sub
 
 
 End Class
