@@ -74,13 +74,11 @@ Partial Class Transaction_Receipt
                 divPrint.Visible = False
                 lblHeader1.Text = "Manual Receipt"
                 txtPaymentDate.Enabled = True
-                txtBankInDate.Enabled = True
                 popCalendar1.Enabled = True
             Else
                 divPrint.Visible = True
                 lblHeader1.Text = "Receipt"
                 txtPaymentDate.Enabled = False
-                txtBankInDate.Enabled = False
                 popCalendar1.Enabled = False
             End If
 
@@ -182,6 +180,7 @@ Partial Class Transaction_Receipt
         gvDebtorEnq.DataSource = Nothing
         gvDebtorInv.DataSource = Nothing
         ddInvoice.Items.Clear()
+        txtBankInDate.Enabled = True
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -444,7 +443,7 @@ Partial Class Transaction_Receipt
             divNoRef.Visible = False
         End If
 
-        getBankInDate(ddPaymentType.Text)
+        'getBankInDate(ddPaymentType.Text)
 
     End Sub
 

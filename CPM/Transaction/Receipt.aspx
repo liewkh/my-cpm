@@ -213,7 +213,6 @@ function open_popupModal(page,size)
            Format="dd mm yyyy" Fade="0.5" Separator= "/"
            ToolTip="Click For Calendar: ([Format])"
            To-Today="False"
-           From-Control="txtPaymentDate"
            From-Date=""                                                     
           />
         </td>
@@ -476,7 +475,7 @@ function open_popupModal(page,size)
                                         </asp:SqlDataSource>
 		</td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="normalLabel">Bank In Date <font color="#FF0000">*</font></td>
+        <td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
         <td>
         
