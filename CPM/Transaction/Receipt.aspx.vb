@@ -181,6 +181,8 @@ Partial Class Transaction_Receipt
         gvDebtorInv.DataSource = Nothing
         ddInvoice.Items.Clear()
         txtBankInDate.Enabled = True
+        txtBankInDate.Text = ""
+        getBankInDate()
     End Sub
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -441,6 +443,22 @@ Partial Class Transaction_Receipt
             divNoRef.Visible = True
         Else
             divNoRef.Visible = False
+        End If
+
+        manualReceipt = IIf(String.IsNullOrEmpty(Request.Params("manual")), "", Request.Params("manual"))
+
+        txtBankInDate.Enabled = True
+        popCalendar2.Enabled = True
+
+        If String.IsNullOrEmpty(manualReceipt) Then
+            If ddPaymentType.Text = PaymentTypeEnum.CASH Then
+                txtBankInDate.Enabled = False
+                popCalendar2.Enabled = False
+            ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
+                txtBankInDate.Enabled = False
+                popCalendar2.Enabled = False
+                txtBankInDate.Text = txtPaymentDate.Text
+            End If            
         End If
 
         'getBankInDate(ddPaymentType.Text)
@@ -909,7 +927,7 @@ Partial Class Transaction_Receipt
         Return uniqueItems
     End Function
 
-    Public Sub getBankInDate(ByVal items As String)
+    Public Sub getBankInDate()
         Dim dtPaymentDate As New DataTable
         Dim dtBankInDate As New DataTable
         Dim Sql As String
@@ -930,21 +948,21 @@ Partial Class Transaction_Receipt
         dtBankInDate = dm.execTable(strSQL)
 
 
-        If ddPaymentType.Text = PaymentTypeEnum.CASH Then
-            If dtBankInDate.Rows.Count > 0 Then
-                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
-            Else
-                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
-            End If
-            txtBankInDate.Enabled = False
-            popCalendar2.Enabled = False
-        ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
-            txtBankInDate.Text = txtPaymentDate.Text
-            txtBankInDate.Enabled = False
-        ElseIf ddPaymentType.Text = PaymentTypeEnum.INTERBANKGIRO Or ddPaymentType.Text = PaymentTypeEnum.CHEQUE Then
-            txtBankInDate.Enabled = True
-            popCalendar2.Enabled = True
+        'If ddPaymentType.Text = PaymentTypeEnum.CASH Then
+        If dtBankInDate.Rows.Count > 0 Then
+            txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
+        Else
+            txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
         End If
+        'txtBankInDate.Enabled = False
+        'popCalendar2.Enabled = False
+        'ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
+        'txtBankInDate.Text = txtPaymentDate.Text
+        'txtBankInDate.Enabled = False
+        'ElseIf ddPaymentType.Text = PaymentTypeEnum.INTERBANKGIRO Or ddPaymentType.Text = PaymentTypeEnum.CHEQUE Then
+        'txtBankInDate.Enabled = True
+        'popCalendar2.Enabled = True
+        'End If
 
 
     End Sub
