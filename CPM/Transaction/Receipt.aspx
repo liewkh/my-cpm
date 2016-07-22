@@ -113,8 +113,13 @@ function open_popupModal(page,size)
                                     
 </script>
 
-
-
+<script language="javascript">
+function Changed( textControl )
+{
+   //alert( textControl.value );
+   __doPostBack('LinkButton1',textControl.value);
+}
+</script>
 
 <body> 
 <form id="Form1" action='' runat="server" >
@@ -154,6 +159,7 @@ function open_popupModal(page,size)
 			<asp:HiddenField ID="hidDebtorAccountHeaderId" runat="server"/>
 			<asp:HiddenField ID="hidLocationInfoId" runat="server"/>
 		    <asp:HiddenField ID="hdPreview" runat="server"/>
+		    <asp:LinkButton ID="LinkButton1" runat="server" visible="false" OnClick="LinkButton1_Click" Text="LinkButton" />
 			</tr>
 		  </table>
 		</td>
@@ -177,13 +183,13 @@ function open_popupModal(page,size)
         <td class="normalLabel">Receipt Date <font color="#FF0000">*</font></td>
         <td class="hSpace">&nbsp;</td>
        	<td class="normalLabel">
-		<asp:TextBox ID="txtPaymentDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="2"></asp:TextBox> 
+		<asp:TextBox ID="txtPaymentDate" runat="server" CssClass="dateBox" MaxLength="12" TabIndex="2" onchange="javascript: Changed( this );"></asp:TextBox> 
         <rjs:PopCalendar id="popCalendar1" runat="server"
            Control="txtPaymentDate"
            Shadow="True" ShowWeekend="True" Move="True"
            Format="dd mm yyyy" Fade="0.5" Separator= "/"
            ToolTip="Click For Calendar: ([Format])"
-           To-Today="True"                                            
+           To-Today="True"                                         
           />
         </td>
     	<td class="hSpace">&nbsp;</td>

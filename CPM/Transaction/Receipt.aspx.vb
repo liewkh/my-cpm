@@ -82,7 +82,6 @@ Partial Class Transaction_Receipt
                 popCalendar1.Enabled = False
             End If
 
-
         Catch ex As Exception
             lblmsg.Text = ex.Message
 
@@ -202,6 +201,9 @@ Partial Class Transaction_Receipt
 
         btnMiscPayment.Attributes.Add("OnClick", "javascript:open_popupModal('../Transaction/MiscPayment.aspx?debtorId=" + hidDebtorId.Value + "','L');__doPostBack('btnSearch_Click','');")
 
+        Dim lnkbtn As LinkButton
+        lnkbtn = Me.FindControl("LinkButton1")
+        ClientScript.RegisterForEventValidation(lnkbtn.UniqueID)
 
         MyBase.Render(writer)
     End Sub
@@ -261,7 +263,7 @@ Partial Class Transaction_Receipt
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)        
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ScrollPage", "ResetScrollPosition();", True)
     End Sub
 
     Protected Sub gvDebtorEnq_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvDebtorEnq.SelectedIndexChanged
@@ -968,4 +970,35 @@ Partial Class Transaction_Receipt
     End Sub
 
 
+    Protected Sub LinkButton1_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        manualReceipt = IIf(String.IsNullOrEmpty(Request.Params("manual")), "", Request.Params("manual"))
+
+        If Not String.IsNullOrEmpty(manualReceipt) Then
+            Dim dtPaymentDate As New DataTable
+            Dim dtBankInDate As New DataTable
+            Dim Sql As String
+
+            Sql = "select getDate()"
+            dtPaymentDate = dm.execTable(Sql)
+
+            'txtPaymentDate.Text = Utility.DataTypeUtils.formatDateString(dtPaymentDate.Rows.Item(0)(0).ToString())
+
+            Dim searchModel As New CPM.CodeMstrEntity
+            Dim sqlmap As New SQLMap
+
+            searchModel.setCodeCat(CodeCatEnum.BANKINDATE)
+            searchModel.setCodeAbbr(Trim(txtPaymentDate.Text))
+            searchModel.setActive(ConstantGlobal.Yes)
+
+            Dim strSQL As String = sqlmap.getMappedStatement("SetupMstr/Search-CodeMstr", searchModel)
+            dtBankInDate = dm.execTable(strSQL)
+
+            If dtBankInDate.Rows.Count > 0 Then
+                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
+            Else
+                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
+            End If
+
+        End If
+    End Sub
 End Class
