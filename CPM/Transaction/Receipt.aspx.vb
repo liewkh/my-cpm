@@ -454,8 +454,9 @@ Partial Class Transaction_Receipt
 
         If String.IsNullOrEmpty(manualReceipt) Then
             If ddPaymentType.Text = PaymentTypeEnum.CASH Then
-                txtBankInDate.Enabled = False
-                popCalendar2.Enabled = False
+                txtBankInDate.Enabled = True
+                popCalendar2.Enabled = True
+                getBankInDate()
             ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
                 txtBankInDate.Enabled = False
                 popCalendar2.Enabled = False
@@ -463,7 +464,7 @@ Partial Class Transaction_Receipt
             End If            
         End If
 
-        'getBankInDate(ddPaymentType.Text)
+
 
     End Sub
 
@@ -996,7 +997,7 @@ Partial Class Transaction_Receipt
             If dtBankInDate.Rows.Count > 0 Then
                 txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(dtBankInDate.Rows.Item(0)(2))
             Else
-                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, dtPaymentDate.Rows.Item(0)(0)))
+                txtBankInDate.Text = Utility.DataTypeUtils.formatDateString(DateAdd(DateInterval.Day, 1, Date.Parse(txtPaymentDate.Text)))
             End If
 
         End If
