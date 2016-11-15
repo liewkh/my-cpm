@@ -26,6 +26,7 @@ Partial Class Maintenance_DebtorPassCard
             Response.Redirect(System.Configuration.ConfigurationManager.AppSettings("appPath") + "/login.aspx?login=expired")
         End If
 
+
         paramDebtorId = Request.Params("debtorId")
         paramLocationInfoId = Request.Params("locationInfoId")
         paramDebtorName = Request.Params("debtorName")
@@ -454,6 +455,9 @@ Partial Class Maintenance_DebtorPassCard
             pcEnt.setLastUpdatedBy(lp.getUserMstrId)
             pcEnt.setLastUpdatedDatetime(Now)
             pcEnt.setDepositPrint(ConstantGlobal.Yes)
+
+	    'VK - 20140301 - Set off deposit printing in invoices. Deposit manually via debit note.
+ 	    'VK - 20150105 - Set on deposit printing in invoices per GST Tax invoice requirement.
 
             chkFirtUseSql = "Select FirstUsedDate From PassCardMstr where PassCardMstrId = " & ddPass.SelectedValue
             dt = dm.execTable(chkFirtUseSql)

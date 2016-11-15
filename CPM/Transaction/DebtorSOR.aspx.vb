@@ -21,6 +21,7 @@ Partial Class Maintenance_DebtorSOR
     Private logger As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
 
     Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+        
         lp = Session("LoginProfile")
         If IsNothing(lp) Then
             Response.Redirect(System.Configuration.ConfigurationManager.AppSettings("appPath") + "/login.aspx?login=expired")

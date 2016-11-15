@@ -1186,12 +1186,14 @@ Partial Class Transaction_SeasonUpDowngrade
         Dim dt As New DataTable
         Dim sql As String = ""
 
+'vk changed 5/10/2015 - deposit amt to be taken from seasontypemstr instead of passcardmstr
+
         Try
 
             If ddOldPass.SelectedIndex > 0 Then
 
-                sql = "SELECT P.DEPOSIT,D.SEASONTYPEMSTRID FROM PASSCARDMSTR P,DEBTORPASSBAY D WHERE P.PASSCARDMSTRID = " & ddOldPass.SelectedValue & _
-                      " AND D.PASSCARDMSTRID = P.PASSCARDMSTRID AND D.STATUS = 'A' AND D.DEBTORID = " & hidDebtorId.Value
+                sql = "SELECT S.DEPOSIT,D.SEASONTYPEMSTRID FROM PASSCARDMSTR P,DEBTORPASSBAY D, SEASONTYPEMSTR S WHERE P.PASSCARDMSTRID = " & ddOldPass.SelectedValue & _
+                      " AND D.PASSCARDMSTRID = P.PASSCARDMSTRID AND S.SEASONTYPEMSTRID = D.SEASONTYPEMSTRID AND D.STATUS = 'A' AND D.DEBTORID = " & hidDebtorId.Value
                 dt = dm.execTable(sql)
 
                 If dt.Rows.Count = 0 Then

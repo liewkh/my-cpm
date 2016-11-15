@@ -163,6 +163,8 @@ Partial Class Transaction_InvoiceCancellation
         'For Print
         If e.CommandName.Equals("Print") Then
             'PrintReceipt(e.CommandArgument)
+        ElseIf Not e.CommandName.Equals("Select") Then
+            SearchData()
         End If
     End Sub
 

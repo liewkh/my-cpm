@@ -278,9 +278,9 @@ Partial Class Transaction_SOR
         Try
 
             Dim sqlStatement As String = "select datename(mm,DATEADD(month, DATEDIFF(month, 0, GETDATE()+31) + N.number, 0)) + '-' " & _
-            " + datename(yy,DATEADD(month, DATEDIFF(month, 0, GETDATE()) + N.number, 0)) as Date1, " & _
+            " + datename(yy,DATEADD(month, DATEDIFF(month, 0, GETDATE()+31) + N.number, 0)) as Date1, " & _
             " convert(Datetime,DATEADD(month, DATEDIFF(month, 0, GETDATE()+31) + N.number, 0),120) as Date2 " & _
-            " FROM master.dbo.spt_values N WHERE (N.type = 'P' AND N.number <=  4)"
+            " FROM master.dbo.spt_values N WHERE (N.type = 'P' AND N.number <=  2)"
 
             dt = dm.execTable(sqlStatement)
 

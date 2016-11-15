@@ -48,6 +48,7 @@
                     Sys.UI.DomElement.setLocation(pnlPopup, x, y);
                 }
 
+
                 function onUpdated() {
                     // get the update progress div
                     var pnlPopup = $get('<%= pnlPopup.ClientID %>');
@@ -140,7 +141,7 @@ document.forms(0).submit;
 	            
 	            <tr>
 	              		<div id="longTextContent" style="display: none">
-			<p>Please select the month and year for the invoice.</p>			
+			<p>Please select the month and year (Parking period) for the invoice.</p>			
                                            <asp:DropDownList ID="ddMonth" runat="server">
                                                 <asp:ListItem Value="">Please Choose One</asp:ListItem>
                                                 <asp:ListItem Value="01">January</asp:ListItem>

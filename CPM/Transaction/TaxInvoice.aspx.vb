@@ -283,7 +283,7 @@ Partial Class Transaction_TaxInvoice
                     txtTotalGSTAmount += CDbl(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
                 End If
 
-                txtTotalAmount += Val(row.Item("TOTAL"))
+                txtTotalAmount += CDbl(row.Item("TOTAL"))
                 dadEnt.setDebtorAccountHeaderId(dahId)
                 dadEnt.setMonths("")
                 dadEnt.setDetails(row.Item("DESCRIPTION"))

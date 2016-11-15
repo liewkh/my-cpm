@@ -167,7 +167,7 @@ document.getElementById("txtPaymentAmount").innerText=formatCurrency(sum);
      	<td class="normalLabel">
 		<asp:TextBox ID="txtInvoicePeriodDate" runat="server" class="date-picker" CssClass="dateBox" Enabled="true" MaxLength="12" TabIndex="2"></asp:TextBox> 
         <rjs:PopCalendar id="popCalendar2" runat="server"
-           Control="txtInvoicePeriodDate" To-Today="true" 
+           Control="txtInvoicePeriodDate" To-Today="false" 
            Shadow="True" ShowWeekend="True" Move="True"
            Format="mm yyyy" Fade="0.5" Separator= "/"
            ToolTip="Click For Calendar: ([Format])" Enabled="true"                               

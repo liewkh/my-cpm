@@ -124,6 +124,7 @@ Partial Class Maintenance_Debtor
             ddStatus.Enabled = True
         Else
             ddStatus.Enabled = False
+ 	    btnPassCard.Enabled = False
         End If
 
         lblmsg.Text = ""

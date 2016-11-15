@@ -685,7 +685,7 @@ Partial Class Transaction_CreditNote
             dpEnt.setDebtorAccountHeaderId(ddInvoice.SelectedValue)
             dpEnt.setPaymentDate(txtPaymentDate.Text)
             dpEnt.setDescription(Trim(txtDescription.Text))
-            'dpEnt.setPaymentType(PaymentTypeEnum.CREDITNOTE)
+            dpEnt.setPaymentType(PaymentTypeEnum.CREDITNOTE)
             dpEnt.setTxnType(TxnTypeEnum.CREDITNOTE)
             dpEnt.setStatus(ReceiptStatusEnum._NEW)
             dpEnt.setGSTAmount(txtGSTAmount.Text)

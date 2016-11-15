@@ -77,7 +77,7 @@ Partial Class Transaction_Receipt
                 popCalendar1.Enabled = True
             Else
                 divPrint.Visible = True
-                lblHeader1.Text = "Receipt"
+                lblHeader1.Text = "Online Receipt"
                 txtPaymentDate.Enabled = False
                 popCalendar1.Enabled = False
             End If
@@ -449,19 +449,24 @@ Partial Class Transaction_Receipt
 
         manualReceipt = IIf(String.IsNullOrEmpty(Request.Params("manual")), "", Request.Params("manual"))
 
+ 
+ 
+
         txtBankInDate.Enabled = True
         popCalendar2.Enabled = True
 
-        If String.IsNullOrEmpty(manualReceipt) Then
+        If String.IsNullOrEmpty(manualReceipt) Then   'if true means online receipt program
             If ddPaymentType.Text = PaymentTypeEnum.CASH Then
-                txtBankInDate.Enabled = True
-                popCalendar2.Enabled = True
+'vk - changed to false for online receipt on 25/7/2016
+                txtBankInDate.Enabled = False
+                popCalendar2.Enabled = False
                 getBankInDate()
             ElseIf ddPaymentType.Text = PaymentTypeEnum.CREDITCARD Then
                 txtBankInDate.Enabled = False
                 popCalendar2.Enabled = False
                 txtBankInDate.Text = txtPaymentDate.Text
-            End If            
+            End If 
+	          
         End If
 
 

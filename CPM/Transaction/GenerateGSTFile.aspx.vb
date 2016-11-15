@@ -179,10 +179,10 @@ Partial Class Transaction_GenerateGSTFile
             logger.Debug("Start Generating GST Files... " + DateTime.Now())
 
             If ddLocation.SelectedIndex > 0 Then
-                Sql = "select * from GSTExportVw with (nowait) where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue + _
+                Sql = "select * from GSTExportVw where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue + _
                       " and locationinfoid = " + ddLocation.SelectedValue
             Else
-                Sql = "select * from GSTExportVw with (nowait) where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue
+                Sql = "select * from GSTExportVw where Years = " + ddYear.SelectedValue + " and Months = " + ddMonth.SelectedValue
             End If
 
             Sql = Sql + " order by seq"

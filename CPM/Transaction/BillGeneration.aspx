@@ -87,7 +87,6 @@
            prm.abortPostBack();
       }        
     }
-    
 </script>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional"  >
             <contenttemplate> 
@@ -206,7 +205,7 @@
 	</tr>
 
 	<tr>
-		<td class="normalLabel">Invoice Period <font color="#FF0000">*</font></td>
+		<td class="normalLabel">Invoice Period (Parking Month)<font color="#FF0000">*</font></td>
 		<td class="hSpace">&nbsp;</td>
         <td nowrap>  <asp:DropDownList ID="ddMonth" runat="server">
                                                 <asp:ListItem Value="">Please Choose One</asp:ListItem>

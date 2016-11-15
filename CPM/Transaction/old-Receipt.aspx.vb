@@ -401,6 +401,7 @@ Partial Class Transaction_Receipt
         Dim selectSql As String = ""
         Dim dtHeader As New DataTable
         Dim dtInvHist As New DataTable
+        Dim flgNotEnufFund As Boolean = False
         
         Try
 
@@ -528,7 +529,12 @@ Partial Class Transaction_Receipt
 
                             invHistEnt.setInvoiceHistoryId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_InvoiceHistoryID).ToString)
                             If payAmt < Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) Then
-                                invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                                If payAmt < 0 Then
+                                    flgNotEnufFund = True
+                                    invHistEnt.setPaidAmount(0)
+                                Else
+                                    invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + payAmt)
+                                End If
                             Else
                                 invHistEnt.setPaidAmount(dtInvHist.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
                             End If
@@ -550,9 +556,13 @@ Partial Class Transaction_Receipt
 
                             dahEnt.setDebtorAccountHeaderId(gvDebtorInv.DataKeys(row.RowIndex)(invHistDao.COLUMN_DebtorAccountHeaderId).ToString)
                             If payAmt < 0 Then
+                                If flgNotEnufFund Then
+                                    Continue For
+                                End If
                                 'dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + runningPayAmt)
                                 dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt))
-                                strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt) & "|"
+                                'strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt) & "|"
+                                strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & (Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString) + payAmt) & "|"
                             Else
                                 dahEnt.setPaidAmount(dtHeader.Rows(0).Item(dahDao.COLUMN_PaidAmount) + Val(gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString))
                                 strInvHistoryId = strInvHistoryId & invHistEnt.getInvoiceHistoryId & "-" & gvDebtorInv.DataKeys(row.RowIndex)("OSAMOUNT").ToString & "|"
@@ -768,8 +778,8 @@ Partial Class Transaction_Receipt
             rptMgr.setParameterDiscrete("othersQty", "")
 
             rptMgr.setParameterDiscrete("rm", Utility.Tools.SpellNumber(Amt))
- 
-  	    rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
+
+	    rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
 
             rptMgr.Logon()
             hdPreview.Value = "1"

@@ -555,13 +555,21 @@ Partial Class Transaction_ItemReplacement
             dahEnt.setLastUpdatedDatetime(Now)
             dahEnt.setStatus(InvoiceStatusEnum.PAID)
             dahEnt.setAmount(Val(txtDeposit.Text))
+
+'vk added to put paidamount the same as amount 20131005
+	    dahEnt.setPaidAmount(Val(txtDeposit.Text))
+
             dahEnt.setBatchNo("")
             dahEnt.setTxnType(TxnTypeEnum.DEBITNOTE)
             Dim dahId As Long = dahDao.insertDB(dahEnt, cn, trans)
 
             dadEnt.setDebtorAccountHeaderId(dahId)
             dadEnt.setMonths("")
-            dadEnt.setDetails(ddReason.SelectedItem.Text)
+
+'vk added to include the user remark into the debit note 20131005
+
+            dadEnt.setDetails(ddReason.SelectedItem.Text+":"+Trim(txtRemark.Text))
+
             dadEnt.setUnitPrice(0)
             dadEnt.setQuantity(0)
             dadEnt.setAmount(Val(txtDeposit.Text))
@@ -573,7 +581,11 @@ Partial Class Transaction_ItemReplacement
             invEnt.setDebtorAccountHeaderId(dahId)
             invEnt.setStatus(InvoiceStatusEnum.PAID)
             invEnt.setMonth(txtTransactionDate.Text)
-            invEnt.setAmount(Val(txtDeposit.Text))
+	    invEnt.setAmount(Val(txtDeposit.Text))
+
+'vk added to put paidamount the same as amount 20131005
+            invEnt.setPaidAmount(Val(txtDeposit.Text))
+
             invEnt.setLastUpdatedBy(lp.getUserMstrId)
             invEnt.setLastUpdatedDatetime(Now)
             Dim invHistId As Long = invDao.insertDB(invEnt, cn, trans)
