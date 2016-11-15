@@ -667,10 +667,6 @@ Public Class InvoiceManager
 
 
                     Try
-	
-			'vk added Now.month <> 12 the check where current system month is not 12
-			'for manual invoice gen, the system month is the actual start invoice month	
-			'therefore for auto invoice gen, need to minus 1 month as the system month is 1 month prior to actual start invoice month
 
                         If duration = 3 AND Now.Month <> 12 Then 'For Querterly cases
                             month = Convert.ToString(Val(month) - 1)

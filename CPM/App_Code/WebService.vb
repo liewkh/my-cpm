@@ -56,7 +56,7 @@ Public Class WebService
 
             BatchNo = dm.getNextBatchNo(trans, cn)
 
-            logger.Debug("Start Auto Generating Invoice By Monthly")
+            logger.Debug("Start Auto Generating Invoice By Monthly For Debtor With no OS")
             logger.Debug("Batch No : " + BatchNo)
             debtorSearchModel.setStatus(DebtorStatusEnum.ACTIVE)
 
@@ -163,7 +163,7 @@ Public Class WebService
             End If
 
 
-            logger.Debug("End Auto Generating Invoice By Monthly")
+            logger.Debug("End Auto Generating Invoice By Monthly For Debtor with No OS")
 
         Catch ex As Exception
             trans.Rollback()
@@ -214,7 +214,7 @@ Public Class WebService
 
             BatchNo = dm.getNextBatchNo(trans, cn)
 
-            logger.Debug("Start Auto Generating Invoice By Quarterly")
+            logger.Debug("Start Auto Generating Invoice By Quarterly For debtor With no OS")
             logger.Debug("Batch No : " + BatchNo)
             debtorSearchModel.setStatus(DebtorStatusEnum.ACTIVE)
 
@@ -323,7 +323,7 @@ Public Class WebService
             End If
 
 
-            logger.Debug("End Auto Generating Invoice By Quarterly")
+            logger.Debug("End Auto Generating Invoice By Quarterly For Debtor With No OS")
 
         Catch ex As Exception
             trans.Rollback()
@@ -399,7 +399,7 @@ Public Class WebService
 
             BatchNo = dm.getNextBatchNo(trans, cn)
 
-            logger.Debug("Start Auto Generating Invoice By Monthly")
+            logger.Debug("Start Auto Generating Invoice By Monthly For All Debtors")
             logger.Debug("Batch No : " + BatchNo)
             debtorSearchModel.setStatus(DebtorStatusEnum.ACTIVE)
 
@@ -471,18 +471,26 @@ Public Class WebService
                     Dim dtOSCounter As DataTable = dm.execTableInTrans(strSQLCheckOSCounter, cn, trans)
 
                     Dim updateDebCounterSql As String = ""
-                    If dtOSCounter.Rows.Count > 0 Then
-                        updateDebCounterSql = "Update Debtor set BillGenerationCounter = BillGenerationCounter + 1 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
-                        OSFlag = True
-                        dm.execTable(updateDebCounterSql)
-                        AuditOSDebtor(lp.getUserMstrId, row(debtorDao.COLUMN_DebtorID).ToString(), BatchNo, dtOSCounter.Rows(0).Item("amount").ToString(), cn, trans)
-                        trans.Commit()
-                        trans = cn.BeginTransaction
-                    Else
-                        updateDebCounterSql = "Update Debtor set BillGenerationCounter = 0 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
+
+		    'vk 2016-04-22 : to remove the if checking so that all invoices will be generated even there is o/s balance
+
+
+                    'If dtOSCounter.Rows.Count > 0 Then
+
+                    '   updateDebCounterSql = "Update Debtor set BillGenerationCounter = BillGenerationCounter + 1 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
+                    '    OSFlag = True
+                    '    dm.execTable(updateDebCounterSql)
+                    '    AuditOSDebtor(lp.getUserMstrId, row(debtorDao.COLUMN_DebtorID).ToString(), BatchNo, dtOSCounter.Rows(0).Item("amount").ToString(), cn, trans)
+                    '    trans.Commit()
+                    '    trans = cn.BeginTransaction
+
+                    'Else
+
+                       updateDebCounterSql = "Update Debtor set BillGenerationCounter = 0 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
                         dm.execTable(updateDebCounterSql)
                         OSFlag = False
-                    End If
+
+                    'End If
                     'End of Reset Counter Check
 
                     If Not OSFlag Then
@@ -491,6 +499,9 @@ Public Class WebService
                             genFlag = True
                         Next j
                     End If
+			
+		    
+
 
                     If genFlag Then
                         noOfInvoice += 1
@@ -506,7 +517,7 @@ Public Class WebService
             End If
 
 
-            logger.Debug("End Auto Generating Invoice By Monthly")
+            logger.Debug("End Auto Generating Invoice By Monthly For All Debtors")
 
         Catch ex As Exception
             trans.Rollback()
@@ -557,7 +568,7 @@ Public Class WebService
 
             BatchNo = dm.getNextBatchNo(trans, cn)
 
-            logger.Debug("Start Auto Generating Invoice By Quarterly")
+            logger.Debug("Start Auto Generating Invoice By Quarterly For All Debtors")
             logger.Debug("Batch No : " + BatchNo)
             debtorSearchModel.setStatus(DebtorStatusEnum.ACTIVE)
 
@@ -631,18 +642,24 @@ Public Class WebService
                     Dim dtOSCounter As DataTable = dm.execTableInTrans(strSQLCheckOSCounter, cn, trans)
 
                     Dim updateDebCounterSql As String = ""
-                    If dtOSCounter.Rows.Count > 0 Then
-                        updateDebCounterSql = "Update Debtor set BillGenerationCounter = BillGenerationCounter + 1 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
-                        OSFlag = True
-                        dm.execTable(updateDebCounterSql)
-                        AuditOSDebtor(lp.getUserMstrId, row(debtorDao.COLUMN_DebtorID).ToString(), BatchNo, dtOSCounter.Rows(0).Item("amount").ToString(), cn, trans)
-                        trans.Commit()
-                        trans = cn.BeginTransaction
-                    Else
+
+ 		    'vk 2016-04-22 : to remove the if checking so that <else part will be executed> all invoices will be generated even there is o/s balance
+
+
+                    'If dtOSCounter.Rows.Count > 0 Then
+                    '   updateDebCounterSql = "Update Debtor set BillGenerationCounter = BillGenerationCounter + 1 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
+                    '    OSFlag = True
+                    '    dm.execTable(updateDebCounterSql)
+                    '    AuditOSDebtor(lp.getUserMstrId, row(debtorDao.COLUMN_DebtorID).ToString(), BatchNo, dtOSCounter.Rows(0).Item("amount").ToString(), cn, trans)
+                    '    trans.Commit()
+                    '    trans = cn.BeginTransaction
+                    'Else
+
                         updateDebCounterSql = "Update Debtor set BillGenerationCounter = 0 where DebtorId = " + row(debtorDao.COLUMN_DebtorID).ToString()
                         dm.execTable(updateDebCounterSql)
                         OSFlag = False
-                    End If
+
+                    'End If
                     'End of Reset Counter Check
 
                     If Not OSFlag Then
