@@ -22,8 +22,8 @@ Partial Class Report_PaymentOutstanding
 
             Dim sql As String = "select locationinfoid,locationName,0 as seq from locationinfo where locationinfoid = " & lp.getDefaultLocationInfoId & _
                                 "union select -1 as codemstrid,codedesc,seq from codemstr where codecat = 'ALL' " & _
-                                "union select el.locationinfoid,li.locationname,0 as seq from employeelocation el,locationinfo li " & _
-                                "where el.locationinfoid = li.locationinfoid and el.employeemstrid = " & lp.getEmployeeMstrId & " order by seq,locationname"
+                                "union select el.locationinfoid,li.locationname,0 as seq from employeelocation el,locationinfo li where li.active = 'Y' " & _
+                                "and el.locationinfoid = li.locationinfoid and el.employeemstrid = " & lp.getEmployeeMstrId & " order by seq,locationname"
             dsLocation.SelectCommand = sql
             dsLocation.DataBind()
 
