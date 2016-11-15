@@ -324,7 +324,7 @@ Partial Class Enquiry_InvDebEnq
                     If e.ToString.Split("|")(1).Equals(TxnTypeEnum.DEBITNOTE) Then
                         rptMgr.setReportName("DebitNoteGST.Rpt")
                     Else
-                        If e.ToString.Split("|")(0).Substring(4, 1).Equals("S") or e.ToString.Split("|")(0).Substring(4, 1).Equals("O") or e.ToString.Split("|")(0).Substring(4, 1).Equals("Z") Then
+                         If e.ToString.Split("|")(0).Substring(4,1).Equals("S") or e.ToString.Split("|")(0).Substring(4,1).Equals("O") or e.ToString.Split("|")(0).Substring(4,1).Equals("Z") Then
                             rptMgr.setReportName("TaxInvoice.Rpt")
                             rptMgr.setParameterDiscrete("MIRemark", e.ToString.Split("|")(2).ToString())
                         Else
@@ -333,7 +333,9 @@ Partial Class Enquiry_InvDebEnq
                         'rptMgr.setParameterDiscrete("PassBay", strPassBay)
                     End If
                 Else
-                    rptMgr.setReportName("SeasonInvoice.Rpt")
+                    ' commented out by VK - 10/6/2016 and replaced with below correct rpt program rptMgr.setReportName("SeasonInvoice.Rpt")
+			'rptMgr.setReportName("DebitNoteGST.Rpt") 
+			rptMgr.setReportName("TaxInvoice.Rpt")
                 End If
 
 

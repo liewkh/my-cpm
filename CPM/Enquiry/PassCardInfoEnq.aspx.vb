@@ -102,6 +102,7 @@ Partial Class Enquiry_PassCardInfoEnq
         lblmsg.Text = ""
         lblRecCount.Text = ""
         txtPassCardSN.Text = ""
+        txtRemark.Text = ""
         txtDebtorName.Text = ""
         hidPassCardMstrId.value = ""
         ddItemType.SelectedIndex = 0
@@ -160,6 +161,7 @@ Partial Class Enquiry_PassCardInfoEnq
 
             lblmsg.Text = ""
             txtPassCardSN.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvPassCardEnq.SelectedDataKey(passCardMstrDao.COLUMN_SerialNo))
+	    txtRemark.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvPassCardEnq.SelectedDataKey(passCardMstrDao.COLUMN_Remark))
             ddItemType.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvPassCardEnq.SelectedDataKey(passCardMstrDao.COLUMN_ItemType))
             ddLocation.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvPassCardEnq.SelectedDataKey(passCardMstrDao.COLUMN_LocationInfoId))
             ddStatus.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvPassCardEnq.SelectedDataKey(passCardMstrDao.COLUMN_Status))

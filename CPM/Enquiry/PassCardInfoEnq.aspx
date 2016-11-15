@@ -173,6 +173,14 @@
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtPassCardSN" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="6"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
+
+		<td class="normalLabel">Remark</td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRemark" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="6"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+
+
+
 		<td class="normalLabel">[Status]</td>
 		<td class="hSpace">&nbsp;</td>
 		<td nowrap><asp:DropDownList ID="ddStatus" runat="server" TabIndex="8" DataSourceID="dsStatus" DataTextField="codeDesc" DataValueField="codeAbbr" CssClass="dropdownMedium">
