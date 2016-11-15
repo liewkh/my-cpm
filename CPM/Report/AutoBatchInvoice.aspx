@@ -106,7 +106,7 @@
 			<tr>
 			  <td class="hSpace">&nbsp;</td>
 			  <td class="hSpace">&nbsp;</td>
-			  <td class="header2" style="border:none;">&nbsp; Auto Batch Printing</td>
+			  <td class="header2" style="border:none;">&nbsp; AutoGen Invoice Batch Printing</td>
 			  <td class="hSpace">&nbsp;</td>
 			</tr>
 		  </table>		   

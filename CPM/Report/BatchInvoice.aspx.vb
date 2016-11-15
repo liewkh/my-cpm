@@ -146,7 +146,7 @@ Partial Class Report_BatchInvoice
             rptMgr.setParameterDiscrete("CompanyName", companyName)
             rptMgr.setParameterDiscrete("CompanyAddress", companyAddress)
             rptMgr.setParameterDiscrete("TelephoneNo", tel)
-            rptMgr.setParameterDiscrete("Fax", fax)
+            rptMgr.setParameterDiscrete("Fax", ddMonth.SelectedIndex)
             rptMgr.setParameterDiscrete("PrintedBy", lp.getUserLoginId)
             rptMgr.setParameterDiscrete("batchNo", ddBatchNo.SelectedValue)
             rptMgr.setParameterDiscrete("companyNo", companyNo)

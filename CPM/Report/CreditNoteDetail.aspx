@@ -181,6 +181,35 @@
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 	</tr>
+
+ </tr>
+
+    <tr>
+		<td class="normalLabel" style="width: 134px; height: 10px;">Payment Type</td>
+		<td class="hSpace" style="height: 10px">&nbsp;</td>
+        <td nowrap><asp:DropDownList ID="ddPayType" runat="server" TabIndex="14" CssClass="dropdownMedium">
+                      <asp:ListItem Value="">------ All -------</asp:ListItem>
+                      <asp:ListItem Value="CA">CASH</asp:ListItem>
+                      <asp:ListItem Value="CC">CREDIT CARD</asp:ListItem>
+		      <asp:ListItem Value="CQ">CHEQUE</asp:ListItem>
+                      <asp:ListItem Value="IBG">IBG</asp:ListItem>
+                   </asp:DropDownList>   
+		</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+	</tr>
+
+
 	
                     <tr>
                         <td class="normalLabel">Date From <font color="#FF0000">*</font></td>

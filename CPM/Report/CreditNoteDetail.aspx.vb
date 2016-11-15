@@ -64,6 +64,7 @@ Partial Class Report_CreditNoteDetail
         Dim fax As String = ""
         Dim locationInfoId As String = ""
         Dim txnType As String = ""
+        Dim payType As String = ""
         Dim debtorName As String = ""
         Dim status As String = ""
         Dim searchModel As New CPM.DebtorAccountHeaderEntity
@@ -85,6 +86,14 @@ Partial Class Report_CreditNoteDetail
                 txnType = ddTxnType.SelectedValue
             End If
 
+            If ddPayType.SelectedIndex = 0 Then
+                payType = "%"
+            Else
+                payType = ddPayType.SelectedValue
+            End If
+
+
+
             mySql = "SELECT COMPANYNAME,COMPANYNO,ADDRESS1,ADDRESS2,ADDRESS3,POSTCODE,TELEPHONE,FAX,(SELECT CODEDESC FROM CODEMSTR WHERE CODECAT='STA' AND CODEABBR= STATE) AS STATE FROM HQINFO"
             dt = dm.execTable(mySql)
 
@@ -105,6 +114,9 @@ Partial Class Report_CreditNoteDetail
             rptMgr.setParameterDiscrete("employeeMstrId", lp.getEmployeeMstrId)
             rptMgr.setParameterDiscrete("txnType", txnType)
 
+' vk added for version 2.1 July 2016
+
+	    rptMgr.setParameterDiscrete("payType", payType)
 
             rptMgr.Logon()
 
