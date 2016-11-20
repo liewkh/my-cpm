@@ -109,6 +109,10 @@ Partial Class Transaction_Receipt
                 searchModel.setCategory(CategoryEnum.INDIVIDUAL)                
             End If
 
+            If Trim(txtRef1.Text) <> "" Then
+                searchModel.setRef1(Trim(txtRef1.Text.ToUpper))
+            End If
+
             If ddLocation.SelectedIndex = 0 Then
                 Dim a As ListItem
                 Dim b As String = ""
@@ -181,6 +185,7 @@ Partial Class Transaction_Receipt
         ddInvoice.Items.Clear()
         txtBankInDate.Enabled = True
         txtBankInDate.Text = ""
+        txtRef1.Text = ""
         getBankInDate()
     End Sub
 
@@ -285,6 +290,7 @@ Partial Class Transaction_Receipt
             hidDebtorId.Value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_DebtorID).ToString
             txtDebtorName.Text = gvDebtorEnq.SelectedDataKey("DEBTOR").ToString
             hidLocationInfoId.Value = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_LocationInfoId).ToString
+            txtRef1.Text = gvDebtorEnq.SelectedDataKey(debtorDao.COLUMN_Ref1).ToString
             'DataMode()
 
 

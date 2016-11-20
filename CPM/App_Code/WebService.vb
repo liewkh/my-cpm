@@ -697,4 +697,74 @@ Public Class WebService
 
     End Sub
 
+    <WebMethod()> _
+   Public Sub GenerateRef1()
+        Dim sql As String = ""
+        Dim retValue As String = ""
+        Dim debtorSearchModel As New DebtorSearchModel
+        Dim sqlmap As New SQLMap
+        Dim dt, dtInv As New DataTable
+        Dim RefNo As String = ""
+        Dim dm As New DBManager
+        Dim cn As SqlConnection
+        Dim trans As SqlTransaction
+        Dim lp As New LoginProfile
+        Dim debtorEnt As New CPM.DebtorEntity
+        Dim debtorDao As New CPM.DebtorDAO
+
+        Dim logger As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
+
+        Try
+            cn = New SqlConnection(dm.getDBConn)
+            If Not cn.State = ConnectionState.Open Then
+                cn.Open()
+            End If
+
+            trans = cn.BeginTransaction
+
+            Dim prmDebtorId As String = System.Web.HttpContext.Current.Request.QueryString("DebtorId")
+            Dim prmLocationInfoId As String = System.Web.HttpContext.Current.Request.QueryString("locationInfoId")
+
+
+
+            If Not String.IsNullOrEmpty(prmDebtorId) Then
+                debtorSearchModel.setDebtorId(prmDebtorId)
+            End If
+
+            If Not String.IsNullOrEmpty(prmLocationInfoId) Then
+                debtorSearchModel.setLocationInfoId(prmLocationInfoId)
+            End If
+
+
+            Dim strDebtorSQL As String = sqlmap.getMappedStatement("Debtor/Search-Debtor", debtorSearchModel)
+            dt = dm.execTable(strDebtorSQL)
+            If dt.Rows.Count > 0 Then
+                For Each row As DataRow In dt.Rows
+                    Try
+                        RefNo = dm.getLocationCode(row(debtorDao.COLUMN_LocationInfoId).ToString()) + row(debtorDao.COLUMN_DebtorID).ToString.PadLeft(6, "0"c) + row("Debtor").PadLeft(3, "0"c).ToString.Substring(0, 3)
+                        logger.Debug("Ref No : " + RefNo)
+                        debtorEnt.setDebtorId(row(debtorDao.COLUMN_DebtorID).ToString())
+                        debtorEnt.setRef1(RefNo)
+                        debtorEnt.setLastUpdatedDatetime(DateTime.Now)
+                        debtorDao.updateDB(debtorEnt, cn, trans)
+                    Catch ex As Exception
+                        logger.Debug(ex.Message + " - " + RefNo + " - " + row(debtorDao.COLUMN_DebtorID).ToString)
+                    End Try
+                Next row
+                trans.Commit()
+            End If
+
+
+
+        Catch ex As Exception
+            trans.Rollback()
+            'lblMsg.Text = ex.Message
+            logger.Debug(ex.Message)
+        Finally
+            trans.Dispose()
+            cn.Close()
+        End Try
+
+    End Sub
+
 End Class

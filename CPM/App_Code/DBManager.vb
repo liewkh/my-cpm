@@ -640,4 +640,34 @@ Public Class DBManager
         End Try
         Return category
     End Function
+
+    Public Function getLocationCode(ByVal locationInfoId As String) As String
+
+        Dim selectSQL As String
+        Dim dm As New DBManager
+        Dim dt As New DataTable
+        Dim locationCode As String
+
+        Try
+
+            selectSQL = "SELECT LOCATIONCODE FROM LOCATIONINFO WHERE LOCATIONINFOID = " + locationInfoId
+
+            dt = dm.execTable(selectSQL)
+
+            If dt.Rows.Count > 0 Then
+                If dt.Rows(0)("LOCATIONCODE").Equals(System.DBNull.Value) Then
+                    Return "" 'If never setup
+                End If
+                locationCode = dt.Rows(0)("LOCATIONCODE")
+            Else
+                Throw New Exception("Missing Location Code")
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        Finally
+            dt = Nothing
+        End Try
+        Return locationCode
+    End Function
 End Class

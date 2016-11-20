@@ -80,6 +80,8 @@ Partial Class Maintenance_Debtor
         ddBank.SelectedIndex = 0
         txtBankAccountNo.Text = ""
         txtCompanyNo.Text = ""
+        txtRef1.text = ""
+        txtRef2.text = ""
 
         If rbCompany.Checked = True Then
             ddBank.SelectedIndex = 0
@@ -141,6 +143,10 @@ Partial Class Maintenance_Debtor
 
             If Trim(txtIC.Text) <> "" Then
                 searchModel.setICNo(Trim(txtIC.Text.ToUpper))
+            End If
+
+            If Trim(txtCompanyNo.Text) <> "" Then
+                searchModel.setCompanyNo(Trim(txtCompanyNo.Text.ToUpper))
             End If
 
             If rbCompany.Checked = True Then
@@ -383,6 +389,7 @@ Partial Class Maintenance_Debtor
         Dim strSQL As String = ""
         Dim msg As String = ""
         Dim isExist As Boolean = False
+        Dim retValue As Int32
 
         If Not Page.IsValid Then
             Exit Sub
@@ -467,10 +474,23 @@ Partial Class Maintenance_Debtor
             dt.Dispose()
 
             If Not isExist Then
-                InsertRecord(cn, trans)
+                retValue = InsertRecord(cn, trans)
                 trans.Commit()
                 clear()
                 lblmsg.Text = ConstantGlobal.Record_Added
+
+                Try
+                    'Generate JOMPAY Ref1
+                    Dim objHTTP, result
+                    objHTTP = CreateObject("Microsoft.XMLHTTP")
+                    objHTTP.open("POST", "http://localhost/CPM/WebService/WebService.asmx/GenerateRef1?DebtorId=" + Str(retValue) + "&locationInfoId=" + Str(ddLocation.SelectedValue), False)
+                    objHTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+                    objHTTP.Send()
+                    result = objHTTP.responseText
+                Catch ex As Exception
+                    logger.Error("Generate JOMPAY Ref1 For DebtorID : " + Str(retValue) + ex.Message)
+                End Try
+                '
             Else
                 Throw New ApplicationException(ConstantGlobal.Record_Already_Exist)
             End If
@@ -484,13 +504,12 @@ Partial Class Maintenance_Debtor
         End Try
     End Sub
 
-    Protected Sub InsertRecord(ByVal cn As SqlConnection, ByVal trans As SqlTransaction)
+    Protected Function InsertRecord(ByVal cn As SqlConnection, ByVal trans As SqlTransaction) As Int32
 
         Dim debtorEnt As New CPM.DebtorEntity
         Dim debtorDao As New CPM.DebtorDAO
 
         Try
-
 
             debtorEnt.setLocationInfoId(ddLocation.SelectedValue)
             debtorEnt.setRemark(Trim(txtRemark.Text))
@@ -554,7 +573,7 @@ Partial Class Maintenance_Debtor
 
             debtorEnt.setLastUpdatedDatetime(Now)
             debtorEnt.setLastUpdatedBy(lp.getUserMstrId)
-            debtorDao.insertDB(debtorEnt, cn, trans)
+            Return debtorDao.insertDB(debtorEnt, cn, trans)
 
         Catch ex As Exception
             Throw ex
@@ -565,7 +584,7 @@ Partial Class Maintenance_Debtor
         End Try
 
 
-    End Sub
+    End Function
 
     Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         bindData()
@@ -665,6 +684,7 @@ Partial Class Maintenance_Debtor
                 txtEmail.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_EmailAddress))
                 txtBankAccountNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_BankAccNo))
                 txtCompanyNo.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_CompanyNo))
+                txtRef1.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_Ref1))
             Else
                 rbIndividual.Checked = True
                 rbCompany.Checked = False
@@ -682,6 +702,7 @@ Partial Class Maintenance_Debtor
                 txtEmailInd.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_EmailAddress))
                 txtBankAccountNoInd.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_BankAccNo))
                 ddBankInd.SelectedValue = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_BankType))
+                txtRef2.Text = Utility.DataTypeUtils.parseHTMLSafeToString(gvDebtor.SelectedDataKey(debtorDao.COLUMN_Ref1))
             End If
 
             If gvDebtor.SelectedDataKey(debtorDao.COLUMN_InitialHalfMonth).Equals(ConstantGlobal.Yes) Then

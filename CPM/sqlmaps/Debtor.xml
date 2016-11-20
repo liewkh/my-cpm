@@ -7,7 +7,7 @@
       SELECT DebtorId,Category,LocationInfoId,Name As Debtor,(select li.locationname from locationinfo li where li.locationinfoid = Debtor.locationinfoid) as locationName,
       ICNo,TelNoOffice,TelNoMobile,TelNoHome,EmployerName,Address1,Address2,Address3,Address1 + ' ' + Address2 + ' ' + Address3 As Address,
       PostCode,ContactPerson,Designation,Remark,LastInvoiceNo,LastInvoiceDate,LastPayment,State,
-      Balance,Status,LastUpdatedBy as LUB,LastUpdatedDatetime as LUDT,INITIALHALFMONTH,INVOICINGFREQUENCY,FaxNo,BankType,BankAccNo,CompanyNo,EmailAddress FROM Debtor
+      Balance,Status,LastUpdatedBy as LUB,LastUpdatedDatetime as LUDT,INITIALHALFMONTH,INVOICINGFREQUENCY,FaxNo,BankType,BankAccNo,CompanyNo,EmailAddress,Ref1 FROM Debtor
       WHERE 1=1
     </part>
     <part type="dynamic" prepend="AND">
@@ -34,6 +34,12 @@
     <part type="dynamic" prepend="AND" skip="0">
       DebtorId = #DebtorId#
     </part>
+    <part type="dynamic" prepend="AND">
+      CompanyNo LIKE  #CompanyNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      Ref1 LIKE #Ref1#
+    </part>
   </dynamic-mapped-statement>
 
   <dynamic-mapped-statement name="Search-DebtorByPassBayNo">
@@ -44,7 +50,7 @@
       d.Address2,d.Address3,d.Address1 + ' ' + d.Address2 + ' ' + d.Address3 As Address,
       d.PostCode,d.ContactPerson,d.Designation,d.Remark,d.LastInvoiceNo,d.LastInvoiceDate,d.LastPayment,d.State,
       d.Balance,d.Status,d.LastUpdatedBy as LUB,d.LastUpdatedDatetime as LUDT,d.INITIALHALFMONTH,
-      d.INVOICINGFREQUENCY,d.FaxNo,d.BankType,d.BankAccNo,d.CompanyNo,d.EmailAddress
+      d.INVOICINGFREQUENCY,d.FaxNo,d.BankType,d.BankAccNo,d.CompanyNo,d.EmailAddress, d.Ref1
       FROM Debtor d, DebtorPassBay dpb
       WHERE d.debtorid = dpb.debtorid
     </part>
@@ -74,6 +80,9 @@
     </part>
     <part type="dynamic" prepend="AND" skip="0">
       dpb.SerialNo LIKE #SerialNo#
+    </part>
+    <part type="dynamic" prepend="AND" >
+      d.Ref1 LIKE #Ref1#
     </part>
   </dynamic-mapped-statement>
   

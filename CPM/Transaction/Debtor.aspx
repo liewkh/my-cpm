@@ -216,6 +216,24 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 	</tr>
+	
+	<tr>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">Ref-1</td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRef2" runat="server" CssClass="textBoxMediumDisabled" MaxLength="50" TabIndex="16" enable="false"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>				
+	</tr>
 
     <tr>
 		<td class="normalLabel" style="width: 134px">Tel No (Office)</td>
@@ -361,7 +379,7 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>
         <td><asp:TextBox ID="txtCompanyName" runat="server" CssClass="textBoxMedium" MaxLength="200" TabIndex="15"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
-		<td class="normalLabel">Company No</td>
+		<td class="normalLabel">[Company No]</td>
 		<td class="hSpace">&nbsp;</td>
 		<td><asp:TextBox ID="txtCompanyNo" runat="server" CssClass="textBoxMedium" MaxLength="50" TabIndex="16"></asp:TextBox></td>
 		<td class="hSpace">&nbsp;</td>
@@ -374,6 +392,23 @@ function onUpdating(){
 		<td class="hSpace">&nbsp;</td>				
 	</tr>
 
+    <tr>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">Ref-1</td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRef1" runat="server" CssClass="textBoxMediumDisabled" MaxLength="50" TabIndex="16" enable="false"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>				
+	</tr>
 
     <tr>
 		<td class="normalLabel" style="width: 134px">Address <font color="#FF0000">*</font></td>
@@ -642,7 +677,7 @@ function onUpdating(){
                                     BorderWidth="1px" HorizontalAlign="Left" CellSpacing="1" DataKeyNames="DEBTORID,CATEGORY,LOCATIONINFOID,DEBTOR,
                                     ICNO,TELNOOFFICE,TELNOMOBILE,TELNOHOME,EMPLOYERNAME,ADDRESS1,ADDRESS2,ADDRESS3,ADDRESS,POSTCODE,LOCATIONNAME,
                                     CONTACTPERSON,DESIGNATION,REMARK,LASTINVOICENO,LASTINVOICEDATE,LASTPAYMENT,STATE,
-                                    BALANCE,STATUS,LUDT,LUB,INITIALHALFMONTH,INVOICINGFREQUENCY,FAXNO,BANKTYPE,BANKACCNO,COMPANYNO,EMAILADDRESS" DataSourceID="dsDebtor">
+                                    BALANCE,STATUS,LUDT,LUB,INITIALHALFMONTH,INVOICINGFREQUENCY,FAXNO,BANKTYPE,BANKACCNO,COMPANYNO,EMAILADDRESS,REF1" DataSourceID="dsDebtor">
                                     <Columns>
                                         <asp:BoundField DataField="LOCATIONNAME" HeaderText="Location" SortExpression="LOCATIONNAME"
                                             NullDisplayText="N/A" />

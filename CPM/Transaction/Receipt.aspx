@@ -266,6 +266,24 @@ function Changed( textControl )
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>
 		<td class="hSpace">&nbsp;</td>		
+	</tr>
+	
+	<tr>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+        <td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="normalLabel">[Ref-1]</td>
+		<td class="hSpace">&nbsp;</td>
+		<td><asp:TextBox ID="txtRef1" runat="server" CssClass="textBoxSmall" MaxLength="50" TabIndex="8"></asp:TextBox></td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>
+		<td class="hSpace">&nbsp;</td>				
 	</tr>	
 	
   <div id="divSearch" runat="server" visible="true">
@@ -312,7 +330,7 @@ function Changed( textControl )
                                     <td bgcolor="white">
                                         <asp:GridView ID="gvDebtorEnq" runat="server" AllowPaging="True" AllowSorting="True"
                                             AutoGenerateColumns="False" CellPadding="0" Width="100%" BorderWidth="1px" HorizontalAlign="Left"
-                                            CellSpacing="1" DataKeyNames="DEBTORID,CATEGORY,DEBTOR,LOCATIONINFOID,LOCATIONNAME,ADDRESS"
+                                            CellSpacing="1" DataKeyNames="DEBTORID,CATEGORY,DEBTOR,LOCATIONINFOID,LOCATIONNAME,ADDRESS,REF1"
                                             DataSourceID="dsDebtorEnq">
                                             <Columns>
                                                 <asp:BoundField DataField="LOCATIONNAME" HeaderText="Location" SortExpression="LOCATIONNAME"
