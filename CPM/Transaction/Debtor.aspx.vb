@@ -482,8 +482,8 @@ Partial Class Maintenance_Debtor
                 Try
                     'Generate JOMPAY Ref1
                     Dim objHTTP, result
-                    objHTTP = CreateObject("Microsoft.XMLHTTP")
-                    objHTTP.open("POST", "http://localhost/CPM/WebService/WebService.asmx/GenerateRef1?DebtorId=" + Str(retValue) + "&locationInfoId=" + Str(ddLocation.SelectedValue), False)
+                    objHTTP = CreateObject("Microsoft.XMLHTTP")                    
+                    objHTTP.open("POST", "http://" + System.Net.Dns.GetHostAddresses(Request.Url.Host)(0).ToString() + "/CPM/WebService/WebService.asmx/GenerateRef1?DebtorId=" + Str(retValue) + "&locationInfoId=" + Str(ddLocation.SelectedValue), False)
                     objHTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
                     objHTTP.Send()
                     result = objHTTP.responseText
