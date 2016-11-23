@@ -481,12 +481,7 @@ Partial Class Maintenance_Debtor
 
                 Try
                     'Generate JOMPAY Ref1
-                    Dim objHTTP, result
-                    objHTTP = CreateObject("Microsoft.XMLHTTP")                    
-                    objHTTP.open("POST", "http://" + System.Net.Dns.GetHostAddresses(Request.Url.Host)(0).ToString() + "/CPM/WebService/WebService.asmx/GenerateRef1?DebtorId=" + Str(retValue) + "&locationInfoId=" + Str(ddLocation.SelectedValue), False)
-                    objHTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-                    objHTTP.Send()
-                    result = objHTTP.responseText
+                    GenerateRef1(retValue, ddLocation.SelectedValue)
                 Catch ex As Exception
                     logger.Error("Generate JOMPAY Ref1 For DebtorID : " + Str(retValue) + ex.Message)
                 End Try
@@ -779,6 +774,71 @@ Partial Class Maintenance_Debtor
         Catch ex As Exception
             lblmsg.Text = ex.Message
             logger.Error(ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub GenerateRef1(ByVal prmDebtorId As String, ByVal prmLocationInfoId As String)
+        Dim sql As String = ""
+        Dim retValue As String = ""
+        Dim debtorSearchModel As New DebtorSearchModel
+        Dim sqlmap As New SQLMap
+        Dim dt, dtInv As New DataTable
+        Dim RefNo As String = ""
+        Dim dm As New DBManager
+        Dim cn As SqlConnection
+        Dim trans As SqlTransaction
+        Dim lp As New LoginProfile
+        Dim debtorEnt As New CPM.DebtorEntity
+        Dim debtorDao As New CPM.DebtorDAO
+
+        Dim logger As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
+
+        Try
+            cn = New SqlConnection(dm.getDBConn)
+            If Not cn.State = ConnectionState.Open Then
+                cn.Open()
+            End If
+
+            trans = cn.BeginTransaction
+
+
+            If Not String.IsNullOrEmpty(prmDebtorId) Then
+                debtorSearchModel.setDebtorId(prmDebtorId)
+            End If
+
+            If Not String.IsNullOrEmpty(prmLocationInfoId) Then
+                debtorSearchModel.setLocationInfoId(prmLocationInfoId)
+            End If
+
+
+            Dim strDebtorSQL As String = sqlmap.getMappedStatement("Debtor/Search-Debtor", debtorSearchModel)
+            dt = dm.execTable(strDebtorSQL)
+            If dt.Rows.Count > 0 Then
+                For Each row As DataRow In dt.Rows
+                    Try
+                        RefNo = dm.getLocationCode(row(debtorDao.COLUMN_LocationInfoId).ToString()) + row(debtorDao.COLUMN_DebtorID).ToString.PadLeft(6, "0"c) + row("Debtor").PadLeft(3, "0"c).ToString.Substring(0, 3)
+                        logger.Debug("Ref No : " + RefNo)
+                        debtorEnt.setDebtorId(row(debtorDao.COLUMN_DebtorID).ToString())
+                        debtorEnt.setRef1(RefNo)
+                        debtorEnt.setLastUpdatedDatetime(DateTime.Now)
+                        debtorDao.updateDB(debtorEnt, cn, trans)
+                    Catch ex As Exception
+                        logger.Debug(ex.Message + " - " + RefNo + " - " + row(debtorDao.COLUMN_DebtorID).ToString)
+                    End Try
+                Next row
+                trans.Commit()
+            End If
+
+
+
+        Catch ex As Exception
+            trans.Rollback()
+            lblmsg.Text = ex.Message
+            logger.Debug(ex.Message)
+        Finally
+            trans.Dispose()
+            cn.Close()
         End Try
 
     End Sub
