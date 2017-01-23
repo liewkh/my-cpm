@@ -475,13 +475,13 @@ Partial Class Maintenance_Debtor
 
             If Not isExist Then
                 retValue = InsertRecord(cn, trans)
-                trans.Commit()
-                clear()
+                trans.Commit()                
                 lblmsg.Text = ConstantGlobal.Record_Added
 
                 Try
                     'Generate JOMPAY Ref1
                     GenerateRef1(retValue, ddLocation.SelectedValue)
+                    clear()
                 Catch ex As Exception
                     logger.Error("Generate JOMPAY Ref1 For DebtorID : " + Str(retValue) + ex.Message)
                 End Try
@@ -493,7 +493,7 @@ Partial Class Maintenance_Debtor
         Catch ex As Exception
             lblmsg.Text = ex.Message
             trans.Rollback()
-        Finally
+        Finally            
             trans.Dispose()
             cn.Close()
         End Try

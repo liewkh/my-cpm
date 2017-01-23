@@ -341,7 +341,7 @@ Partial Class Transaction_DebitNoteV2
                     txtTotalGSTAmount += CDbl(row.Item("TOTAL")) * (dm.getCurrentTax() / 100)
                 End If
 
-                txtTotalAmount += Val(row.Item("TOTAL"))
+                txtTotalAmount += CDbl(row.Item("TOTAL"))
                 dadEnt.setDebtorAccountHeaderId(dahId)
                 dadEnt.setMonths(row.Item("MONTH"))
                 dadEnt.setDetails(row.Item("DESCRIPTION"))
